@@ -126,9 +126,11 @@ public class ActionPluginParam {
 		DJMIXER                      ( R.string.media_djmixer                      , true  ),
 		/** リミキサ。 */
 		REMIXER                      ( R.string.media_remixer                      , true  ),
-
 		/** レーベル。 */
 		RECORD_LABEL                 ( R.string.media_record_label                 , true  ),
+		/** コメント。 */
+		COMMENT                      ( R.string.media_comment                      , true  ),
+
 		/** メディア。 */
 		MEDIA                        ( R.string.media_media                        , false ),
 		/** ディスクNo。 */
@@ -140,8 +142,18 @@ public class ActionPluginParam {
 		/** トラック合計。 */
 		TRACK_TOTAL                  ( R.string.media_track_total                  , false ),
 
-		/** コメント。 */
-		COMMENT                      ( R.string.media_comment                      , true  ),
+		/** 音声フォーマット。 */
+		FORMAT                       ( R.string.media_bit_rate                     , false ),
+		/** 音声エンコード種別。 */
+		ENCODING_TYPE                ( R.string.media_encoding_type                , false ),
+		/** ビットレート。 */
+		BIT_RATE                     ( R.string.media_bit_rate                     , false ),
+		/** サンプリングレート。 */
+		SAMPLE_RATE                  ( R.string.media_sample_rate                  , false ),
+		/** 音声チャンネル数。 */
+		CHANNELS                     ( R.string.media_channels                     , false ),
+		/** 音声の長さ(ms)。 */
+		DURATION                     ( R.string.media_duration                     , false ),
 
 		/** ループ開始。 */
 		LOOP_START                   ( R.string.media_loop                         , false ),

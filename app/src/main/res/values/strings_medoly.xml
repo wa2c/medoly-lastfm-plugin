@@ -39,15 +39,21 @@
 	<string name="media_mixer">Mixer</string>
 	<string name="media_djmixer">DJ Mixer</string>
 	<string name="media_remixer">Remixer</string>
-
 	<string name="media_record_label">Record Label</string>
+	<string name="media_comment">Comment</string>
+
 	<string name="media_media">Media</string>
 	<string name="media_disc">Disc</string>
 	<string name="media_disc_total">Total Disc</string>
 	<string name="media_track">Track</string>
 	<string name="media_track_total">Total Track</string>
 
-	<string name="media_comment">Comment</string>
+	<string name="media_duration">Duration</string>
+	<string name="media_format">Media Format</string>
+	<string name="media_encoding_type">Media Codec</string>
+	<string name="media_bit_rate">Bit Rate</string>
+	<string name="media_sample_rate">Sample Rate</string>
+	<string name="media_channels">Audio Channel</string>
 
 	<string name="media_loop">Loop</string>
 	<string name="media_tempo">Tempo</string>
