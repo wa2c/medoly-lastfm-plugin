@@ -109,14 +109,11 @@ public class PluginReceiver extends BroadcastReceiver {
                 Caller.getInstance().setCache(new FileSystemCache(new File(context.getExternalCacheDir().getPath() + File.separator + "last.fm")));
 
                 // 認証
+                String username = preferences.getString(context.getString(R.string.prefkey_auth_username), "");
+                String password = preferences.getString(context.getString(R.string.prefkey_auth_password), "");
+                session = Authenticator.getMobileSession(username, password, Token.getKey1(context), Token.getKey2(context));
                 if (session == null) {
-                    String username = preferences.getString(context.getString(R.string.prefkey_auth_username), "");
-                    String password = preferences.getString(context.getString(R.string.prefkey_auth_password), "");
-                    String k = context.getString(R.string.base_app_name) + "__" + context.getString(R.string.domain_name);
-                    session = Authenticator.getMobileSession(username, password, Token.getKey1(context), Token.getKey2(context));
-                    if (session == null) {
-                        return false;
-                    }
+                    return false;
                 }
 
                 // 送信

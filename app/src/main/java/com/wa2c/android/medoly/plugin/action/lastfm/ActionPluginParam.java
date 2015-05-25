@@ -2,6 +2,11 @@ package com.wa2c.android.medoly.plugin.action.lastfm;
 
 import android.content.Context;
 
+
+
+/**
+ * プラグイン共通パラメータ。
+ */
 public class ActionPluginParam {
 
 	/** Medoly package. */
@@ -406,6 +411,5 @@ public class ActionPluginParam {
 			this.omissible = omissible;
 		}
 	}
-
 
 }

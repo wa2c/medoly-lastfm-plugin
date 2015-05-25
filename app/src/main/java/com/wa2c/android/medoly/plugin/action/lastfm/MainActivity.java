@@ -24,6 +24,9 @@ import de.umass.lastfm.cache.FileSystemCache;
 import de.umass.util.StringUtilities;
 
 
+/**
+ * メイン画面のアクティビティ。
+ */
 public class MainActivity extends Activity {
 
 	@Override

@@ -3,8 +3,9 @@ package com.wa2c.android.medoly.plugin.action.lastfm;
 import android.content.Context;
 import android.widget.Toast;
 
+
 /**
- * Created by wa2c on 2015/05/06.
+ * アプリユーティリティ。
  */
 public class AppUtils {
 
