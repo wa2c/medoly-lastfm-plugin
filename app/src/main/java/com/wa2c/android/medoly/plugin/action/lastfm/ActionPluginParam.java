@@ -207,9 +207,9 @@ public class ActionPluginParam {
 		URL_DISCOGS_ARTIST_SITE      ( R.string.media_url_discogs_artist_site      , false ),
 
 		// Music Brainz Information
-		MUSICBRAINZ_RELEASEID        ( R.string.media_musicbrainz_releaseid        , false ),
-		MUSICBRAINZ_ARTISTID         ( R.string.media_musicbrainz_artistid         , false ),
-		MUSICBRAINZ_RELEASEARTISTID  ( R.string.media_musicbrainz_releaseartistid  , false ),
+		MUSICBRAINZ_RELEASEID        ( R.string.media_musicbrainz_release_id, false ),
+		MUSICBRAINZ_ARTISTID         ( R.string.media_musicbrainz_artist_id, false ),
+		MUSICBRAINZ_RELEASEARTISTID  ( R.string.media_musicbrainz_release_artist_id, false ),
 		MUSICBRAINZ_RELEASE_GROUP_ID ( R.string.media_musicbrainz_release_group_id , false ),
 		MUSICBRAINZ_DISC_ID          ( R.string.media_musicbrainz_disc_id          , false ),
 		MUSICBRAINZ_TRACK_ID         ( R.string.media_musicbrainz_track_id         , false ),

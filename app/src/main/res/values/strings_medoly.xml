@@ -81,9 +81,9 @@
 	<string name="media_url_discogs_release_site">Discogs Release Site URL</string>
 	<string name="media_url_discogs_artist_site">Discogs Artist Site URL</string>
 
-	<string name="media_musicbrainz_releaseid">MusicBranz Release ID</string>
-	<string name="media_musicbrainz_artistid">MusicBranz Artist ID</string>
-	<string name="media_musicbrainz_releaseartistid">MusicBranz Release Artist ID</string>
+	<string name="media_musicbrainz_release_id">MusicBranz Release ID</string>
+	<string name="media_musicbrainz_artist_id">MusicBranz Artist ID</string>
+	<string name="media_musicbrainz_release_artist_id">MusicBranz Release Artist ID</string>
 	<string name="media_musicbrainz_release_group_id">MusicBranz Release Group ID</string>
 	<string name="media_musicbrainz_disc_id">MusicBranz Disc ID</string>
 	<string name="media_musicbrainz_track_id">MusicBranz Track ID</string>
