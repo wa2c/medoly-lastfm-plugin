@@ -48,6 +48,8 @@
 	<string name="media_track">トラック</string>
 	<string name="media_track_total">トラック合計</string>
 
+	<string name="media_tag_type">タグ種別</string>
+	<string name="media_character_encoding">文字コード</string>
 	<string name="media_duration">曲の長さ</string>
 	<string name="media_format">音声フォーマット</string>
 	<string name="media_encoding_type">音声エンコード種別</string>

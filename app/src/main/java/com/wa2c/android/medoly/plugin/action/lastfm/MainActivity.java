@@ -13,6 +13,8 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
+import com.wa2c.android.medoly.plugin.action.ActionPluginParam;
+import com.wa2c.android.medoly.plugin.action.Logger;
 import com.wa2c.android.medoly.plugin.action.lastfm.dialog.AuthDialogFragment;
 
 import java.io.File;

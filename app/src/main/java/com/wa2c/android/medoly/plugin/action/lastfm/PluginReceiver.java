@@ -8,6 +8,9 @@ import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 
+import com.wa2c.android.medoly.plugin.action.ActionPluginParam;
+import com.wa2c.android.medoly.plugin.action.Logger;
+
 import java.io.File;
 import java.io.Serializable;
 import java.util.HashMap;
@@ -105,6 +108,12 @@ public class PluginReceiver extends BroadcastReceiver {
         @Override
         protected Boolean doInBackground(String... params) {
             try {
+                // 情報無しは無効
+                if (!propertyMap.containsKey(ActionPluginParam.MediaProperty.TITLE.getKeyName()) &&
+                    !propertyMap.containsKey(ActionPluginParam.MediaProperty.ARTIST.getKeyName())) {
+                    return false;
+                }
+
                 // フォルダ設定 (getMobileSessionの前に入れる必要あり)
                 Caller.getInstance().setCache(new FileSystemCache(new File(context.getExternalCacheDir().getPath() + File.separator + "last.fm")));
 
@@ -117,13 +126,32 @@ public class PluginReceiver extends BroadcastReceiver {
                 }
 
                 // 送信
+                String key;
                 ScrobbleData data = new ScrobbleData();
-                data.setMusicBrainzId(propertyMap.get(ActionPluginParam.MediaProperty.MUSICBRAINZ_RELEASEID.getKeyName()));
-                data.setTrack(propertyMap.get(ActionPluginParam.MediaProperty.TITLE.getKeyName()));
-                data.setArtist(propertyMap.get(ActionPluginParam.MediaProperty.ARTIST.getKeyName()));
-                data.setAlbumArtist(propertyMap.get(ActionPluginParam.MediaProperty.ALBUM_ARTIST.getKeyName()));
-                data.setAlbum(propertyMap.get(ActionPluginParam.MediaProperty.ALBUM.getKeyName()));
-                try { data.setTrackNumber(Integer.valueOf(propertyMap.get(ActionPluginParam.MediaProperty.TRACK.getKeyName()))); } catch (Exception e) { Logger.e(e); }
+
+                key = ActionPluginParam.MediaProperty.MUSICBRAINZ_RELEASEID.getKeyName();
+                if (propertyMap.containsKey(key)) data.setMusicBrainzId(propertyMap.get(key));
+                key = ActionPluginParam.MediaProperty.TITLE.getKeyName();
+                if (propertyMap.containsKey(key)) data.setTrack(propertyMap.get(key));
+                key = ActionPluginParam.MediaProperty.ARTIST.getKeyName();
+                if (propertyMap.containsKey(key)) data.setArtist(propertyMap.get(key));
+                key = ActionPluginParam.MediaProperty.ALBUM_ARTIST.getKeyName();
+                if (propertyMap.containsKey(key)) data.setAlbumArtist(propertyMap.get(key));
+                key = ActionPluginParam.MediaProperty.ALBUM.getKeyName();
+                if (propertyMap.containsKey(key)) data.setAlbum(propertyMap.get(key));
+
+                try {
+                    key = ActionPluginParam.MediaProperty.DURATION.getKeyName();
+                    if (propertyMap.containsKey(key)) data.setDuration(Integer.valueOf(key));
+                } catch (Exception e) {
+                    Logger.e(e);
+                }
+                try {
+                    key = ActionPluginParam.MediaProperty.TRACK.getKeyName();
+                    if (propertyMap.containsKey(key)) data.setTrackNumber(Integer.valueOf(key));
+                } catch (Exception e) {
+                    Logger.e(e);
+                }
                 data.setTimestamp((int) (System.currentTimeMillis() / 1000));
 
                 ScrobbleResult result = Track.scrobble(data, session);

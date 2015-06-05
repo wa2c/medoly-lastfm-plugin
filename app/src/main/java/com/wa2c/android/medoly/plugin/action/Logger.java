@@ -1,4 +1,4 @@
-package com.wa2c.android.medoly.plugin.action.lastfm;
+package com.wa2c.android.medoly.plugin.action;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -7,6 +7,8 @@ import android.os.Debug;
 import android.preference.PreferenceManager;
 import android.text.format.DateFormat;
 import android.util.Log;
+
+import com.wa2c.android.medoly.plugin.action.lastfm.BuildConfig;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;

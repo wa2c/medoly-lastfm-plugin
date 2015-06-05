@@ -48,6 +48,8 @@
 	<string name="media_track">Track</string>
 	<string name="media_track_total">Total Track</string>
 
+	<string name="media_tag_type">Tag Type</string>
+	<string name="media_character_encoding">Character Encoding</string>
 	<string name="media_duration">Duration</string>
 	<string name="media_format">Media Format</string>
 	<string name="media_encoding_type">Media Codec</string>

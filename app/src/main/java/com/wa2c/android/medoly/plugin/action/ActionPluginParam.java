@@ -1,7 +1,8 @@
-package com.wa2c.android.medoly.plugin.action.lastfm;
+package com.wa2c.android.medoly.plugin.action;
 
 import android.content.Context;
 
+import com.wa2c.android.medoly.plugin.action.lastfm.R;
 
 
 /**
@@ -147,6 +148,10 @@ public class ActionPluginParam {
 		/** トラック合計。 */
 		TRACK_TOTAL                  ( R.string.media_track_total                  , false ),
 
+		/** タグ種別。 */
+		TAG_TYPE                     ( R.string.media_tag_type                     , false ),
+		/** 文字コード。 */
+		CHARACTER_ENCODING           ( R.string.media_character_encoding           , false ),
 		/** 音声フォーマット。 */
 		FORMAT                       ( R.string.media_bit_rate                     , false ),
 		/** 音声エンコード種別。 */
@@ -207,8 +212,8 @@ public class ActionPluginParam {
 		URL_DISCOGS_ARTIST_SITE      ( R.string.media_url_discogs_artist_site      , false ),
 
 		// Music Brainz Information
-		MUSICBRAINZ_RELEASEID        ( R.string.media_musicbrainz_release_id, false ),
-		MUSICBRAINZ_ARTISTID         ( R.string.media_musicbrainz_artist_id, false ),
+		MUSICBRAINZ_RELEASEID        ( R.string.media_musicbrainz_release_id       , false ),
+		MUSICBRAINZ_ARTISTID         ( R.string.media_musicbrainz_artist_id        , false ),
 		MUSICBRAINZ_RELEASEARTISTID  ( R.string.media_musicbrainz_release_artist_id, false ),
 		MUSICBRAINZ_RELEASE_GROUP_ID ( R.string.media_musicbrainz_release_group_id , false ),
 		MUSICBRAINZ_DISC_ID          ( R.string.media_musicbrainz_disc_id          , false ),
