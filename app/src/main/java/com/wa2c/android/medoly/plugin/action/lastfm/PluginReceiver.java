@@ -31,8 +31,6 @@ import de.umass.lastfm.scrobble.ScrobbleResult;
  */
 public class PluginReceiver extends BroadcastReceiver {
 
-    /** 値マップのキー。 */
-    private static final String PLUGIN_VALUE_KEY  = "value_map";
     /** 前回のファイルパス設定キー。 */
     private static final String PREFKEY_PREVIOUS_MEDIA_PATH = "previous_media_path";
 
@@ -72,7 +70,7 @@ public class PluginReceiver extends BroadcastReceiver {
      */
     @SuppressWarnings("unchecked")
     private void post(Intent intent) {
-        Serializable serializable = intent.getSerializableExtra(PLUGIN_VALUE_KEY);
+        Serializable serializable = intent.getSerializableExtra(ActionPluginParam.PLUGIN_VALUE_KEY);
         if (serializable != null) {
             HashMap<String, String> propertyMap = (HashMap<String, String>) serializable;
 
