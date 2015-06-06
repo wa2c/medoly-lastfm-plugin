@@ -40,6 +40,12 @@
         <receiver
             android:name="com.wa2c.android.medoly.plugin.action.lastfm.PluginReceiver"
             android:label="@string/class_receiver_label">
+            <meta-data
+                android:name="LABEL_ACTION_1"
+                android:value="Love" />
+            <meta-data
+                android:name="ICON_ACTION_1"
+                android:resource="@drawable/ic_love" />
             <intent-filter>
                 <action android:name="com.wa2c.android.medoly.plugin.action.ACTION_MEDIA" />
 
@@ -48,6 +54,8 @@
                 <category android:name="com.wa2c.android.medoly.plugin.category.OPERATION_PLAY_NOW" />
                 <category android:name="com.wa2c.android.medoly.plugin.category.OPERATION_PLAY_START" />
             </intent-filter>
+
+
         </receiver>
     </application>
 
