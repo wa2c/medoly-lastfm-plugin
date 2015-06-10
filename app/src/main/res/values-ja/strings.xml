@@ -2,14 +2,19 @@
 <resources>
 	<!-- Package -->
 	<string name="app_description">Medolyで再生中のメディア情報をLast.fmに送信します。</string>
-	<string name="class_receiver_label">Last.fm送信イベント</string>
+	<string name="class_receiver_label">Last.fm アクション</string>
+	<string name="label_execute_love">Love</string>
+	<string name="label_execute_site">Last.fmを開く</string>
 
 	<!-- Activity -->
 	<string name="title_activity_settings">設定</string>
 
 	<!-- Post -->
-	<string name="message_post_success">Last.fmへの送信が完了しました。</string>
+	<string name="message_post_success">再生中の曲をLast.fmへ送信しました。</string>
 	<string name="message_post_failure">Last.fmへの送信に失敗しました。</string>
+	<string name="message_love_success">再生中のメディアをLoveトラックに追加しました。</string>
+	<string name="message_love_failure">Loveトラックへの追加に失敗しました。</string>
+
 	<string name="message_auth_success">認証が完了しました。</string>
 	<string name="message_auth_failure">認証に失敗しました。</string>
 

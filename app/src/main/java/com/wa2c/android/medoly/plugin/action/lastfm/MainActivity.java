@@ -36,7 +36,7 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-		final SharedPreferences preference = PreferenceManager.getDefaultSharedPreferences(this);
+		final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
 		// Account Auth
 		findViewById(R.id.twitterOAuthButton).setOnClickListener(new View.OnClickListener() {
@@ -80,18 +80,17 @@ public class MainActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 
-				String username = preference.getString(getString(R.string.prefkey_auth_username), "");
+				String username = sharedPreferences.getString(getString(R.string.prefkey_auth_username), "");
+				Uri uri;
 				if (TextUtils.isEmpty(username)) {
 					// ユーザ未認証
-					Uri uri = Uri.parse(getString(R.string.lastfm_url));
-					Intent i = new Intent(Intent.ACTION_VIEW, uri);
-					startActivity(i);
+					uri = Uri.parse(getString(R.string.lastfm_url));
 				} else {
 					// ユーザ認証済
-					Uri uri = Uri.parse(getString(R.string.lastfm_url_user, username));
-					Intent i = new Intent(Intent.ACTION_VIEW, uri);
-					startActivity(i);
+					uri = Uri.parse(getString(R.string.lastfm_url_user, username));
 				}
+				Intent i = new Intent(Intent.ACTION_VIEW, uri);
+				startActivity(i);
 			}
 		});
 

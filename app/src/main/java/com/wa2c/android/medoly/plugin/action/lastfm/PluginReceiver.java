@@ -4,7 +4,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 
@@ -19,6 +21,7 @@ import java.util.Set;
 
 import de.umass.lastfm.Authenticator;
 import de.umass.lastfm.Caller;
+import de.umass.lastfm.Result;
 import de.umass.lastfm.Session;
 import de.umass.lastfm.Track;
 import de.umass.lastfm.cache.FileSystemCache;
@@ -39,6 +42,17 @@ public class PluginReceiver extends BroadcastReceiver {
     /** 設定。 */
     private SharedPreferences sharedPreferences;
 
+    /**
+     * 投稿種別。
+     */
+    private enum PostType {
+        /** Scrobble */
+        SCROBBLE,
+        /** Love */
+        LOVE
+    }
+
+
 
     /**
      * メッセージ受信。
@@ -51,39 +65,78 @@ public class PluginReceiver extends BroadcastReceiver {
         this.sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
 
         Set<String> categories = intent.getCategories();
+        if (categories == null || categories.size() == 0) {
+            return;
+        }
+
+        if (!categories.contains(ActionPluginParam.PluginTypeCategory.TYPE_POST_MESSAGE.getCategoryValue())) {
+            return;
+        }
+
        if (categories.contains(ActionPluginParam.PluginOperationCategory.OPERATION_PLAY_START.getCategoryValue())) {
            // 再生開始
            if (this.sharedPreferences.getBoolean(context.getString(R.string.prefkey_operation_play_start_enabled), false)) {
-               post(intent);
+               post(intent, PostType.SCROBBLE);
            }
         } else if (categories.contains(ActionPluginParam.PluginOperationCategory.OPERATION_PLAY_NOW.getCategoryValue())) {
            // 再生中
            if (this.sharedPreferences.getBoolean(context.getString(R.string.prefkey_operation_play_now_enabled), true)) {
-               post(intent);
+               post(intent, PostType.SCROBBLE);
+           }
+       } else if (categories.contains(ActionPluginParam.PluginOperationCategory.OPERATION_EXECUTE.getCategoryValue())) {
+           // 実行
+           Bundle extras = intent.getExtras();
+           if (extras != null) {
+               if (extras.keySet().contains("id_execute_tweet")) {
+                   post(intent, PostType.LOVE);
+               } else if (extras.keySet().contains("id_execute_site")) {
+                   String username = sharedPreferences.getString(context.getString(R.string.prefkey_auth_username), "");
+                   Uri uri;
+                   if (TextUtils.isEmpty(username)) {
+                       // ユーザ未認証
+                       uri = Uri.parse(context.getString(R.string.lastfm_url));
+                   } else {
+                       // ユーザ認証済
+                       uri = Uri.parse(context.getString(R.string.lastfm_url_user, username));
+                   }
+
+                   Intent launchIntent = new Intent(Intent.ACTION_VIEW, uri);
+                   try {
+                       launchIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                       context.startActivity(launchIntent);
+                   } catch (android.content.ActivityNotFoundException e) {
+                       Logger.d(e);
+                   }
+               }
            }
        }
     }
+
+
 
     /**
      * 投稿前準備。
      * @param intent インテント。
      */
     @SuppressWarnings("unchecked")
-    private void post(Intent intent) {
+    private void post(Intent intent, PostType postType) {
         Serializable serializable = intent.getSerializableExtra(ActionPluginParam.PLUGIN_VALUE_KEY);
         if (serializable != null) {
             HashMap<String, String> propertyMap = (HashMap<String, String>) serializable;
 
-            String filePath = propertyMap.get(ActionPluginParam.MediaProperty.FOLDER_PATH.getKeyName()) + propertyMap.get(ActionPluginParam.MediaProperty.FILE_NAME.getKeyName());
-            String previousMediaPath = sharedPreferences.getString(PREFKEY_PREVIOUS_MEDIA_PATH, "");
-            boolean previousMediaEnabled = sharedPreferences.getBoolean(context.getString(R.string.prefkey_previous_media_enabled), false);
-            if (!TextUtils.isEmpty(filePath) && !TextUtils.isEmpty(previousMediaPath) && filePath.equals(previousMediaPath) && !previousMediaEnabled) {
-                // 前回と同じメディアは無視
+            // 音楽データ無し
+            if (!propertyMap.containsKey(ActionPluginParam.MediaProperty.FOLDER_PATH.getKeyName()) ||
+                !propertyMap.containsKey(ActionPluginParam.MediaProperty.FILE_NAME.getKeyName())) {
                 return;
             }
 
-           (new AsyncPostTask(propertyMap)).execute();
-           sharedPreferences.edit().putString(PREFKEY_PREVIOUS_MEDIA_PATH, filePath).apply();
+            // 情報無し
+            if (!propertyMap.containsKey(ActionPluginParam.MediaProperty.TITLE.getKeyName()) &&
+                !propertyMap.containsKey(ActionPluginParam.MediaProperty.ARTIST.getKeyName())) {
+                return;
+            }
+
+           (new AsyncPostTask(propertyMap, postType)).execute();
         }
     }
 
@@ -93,25 +146,22 @@ public class PluginReceiver extends BroadcastReceiver {
     private class AsyncPostTask extends AsyncTask<String, Void, Boolean> {
         /** プロパティマップ。 */
         private Map<String, String> propertyMap;
+        /** 当校種別。 */
+        private PostType postType;
+
         /** セッション */
         private Session session;
 
         private SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
 
-        public AsyncPostTask(Map<String, String> propertyMap) {
+        public AsyncPostTask(Map<String, String> propertyMap, PostType postType) {
             this.propertyMap = propertyMap;
-
+            this.postType = postType;
         }
 
         @Override
         protected Boolean doInBackground(String... params) {
             try {
-                // 情報無しは無効
-                if (!propertyMap.containsKey(ActionPluginParam.MediaProperty.TITLE.getKeyName()) &&
-                    !propertyMap.containsKey(ActionPluginParam.MediaProperty.ARTIST.getKeyName())) {
-                    return false;
-                }
-
                 // フォルダ設定 (getMobileSessionの前に入れる必要あり)
                 Caller.getInstance().setCache(new FileSystemCache(new File(context.getExternalCacheDir().getPath() + File.separator + "last.fm")));
 
@@ -123,37 +173,49 @@ public class PluginReceiver extends BroadcastReceiver {
                     return false;
                 }
 
-                // 送信
-                String key;
-                ScrobbleData data = new ScrobbleData();
+                if (postType == PostType.SCROBBLE) {
+                    // Scrobble
+                    String key;
+                    ScrobbleData data = new ScrobbleData();
 
-                key = ActionPluginParam.MediaProperty.MUSICBRAINZ_RELEASEID.getKeyName();
-                if (propertyMap.containsKey(key)) data.setMusicBrainzId(propertyMap.get(key));
-                key = ActionPluginParam.MediaProperty.TITLE.getKeyName();
-                if (propertyMap.containsKey(key)) data.setTrack(propertyMap.get(key));
-                key = ActionPluginParam.MediaProperty.ARTIST.getKeyName();
-                if (propertyMap.containsKey(key)) data.setArtist(propertyMap.get(key));
-                key = ActionPluginParam.MediaProperty.ALBUM_ARTIST.getKeyName();
-                if (propertyMap.containsKey(key)) data.setAlbumArtist(propertyMap.get(key));
-                key = ActionPluginParam.MediaProperty.ALBUM.getKeyName();
-                if (propertyMap.containsKey(key)) data.setAlbum(propertyMap.get(key));
+                    key = ActionPluginParam.MediaProperty.MUSICBRAINZ_RELEASEID.getKeyName();
+                    if (propertyMap.containsKey(key)) data.setMusicBrainzId(propertyMap.get(key));
+                    key = ActionPluginParam.MediaProperty.TITLE.getKeyName();
+                    if (propertyMap.containsKey(key)) data.setTrack(propertyMap.get(key));
+                    key = ActionPluginParam.MediaProperty.ARTIST.getKeyName();
+                    if (propertyMap.containsKey(key)) data.setArtist(propertyMap.get(key));
+                    key = ActionPluginParam.MediaProperty.ALBUM_ARTIST.getKeyName();
+                    if (propertyMap.containsKey(key)) data.setAlbumArtist(propertyMap.get(key));
+                    key = ActionPluginParam.MediaProperty.ALBUM.getKeyName();
+                    if (propertyMap.containsKey(key)) data.setAlbum(propertyMap.get(key));
 
-                try {
-                    key = ActionPluginParam.MediaProperty.DURATION.getKeyName();
-                    if (propertyMap.containsKey(key)) data.setDuration(Integer.valueOf(key));
-                } catch (Exception e) {
-                    Logger.e(e);
+                    try {
+                        key = ActionPluginParam.MediaProperty.DURATION.getKeyName();
+                        if (propertyMap.containsKey(key)) data.setDuration(Integer.valueOf(key));
+                    } catch (Exception e) {
+                        Logger.e(e);
+                    }
+                    try {
+                        key = ActionPluginParam.MediaProperty.TRACK.getKeyName();
+                        if (propertyMap.containsKey(key)) data.setTrackNumber(Integer.valueOf(key));
+                    } catch (Exception e) {
+                        Logger.e(e);
+                    }
+                    data.setTimestamp((int) (System.currentTimeMillis() / 1000));
+
+                    ScrobbleResult result = Track.scrobble(data, session);
+                    return result.isSuccessful();
+                } else if (postType == PostType.LOVE) {
+                    // Love
+                    String track  = propertyMap.get(ActionPluginParam.MediaProperty.TITLE.getKeyName());
+                    String artist  = propertyMap.get(ActionPluginParam.MediaProperty.ARTIST.getKeyName());
+
+                    Result res = Track.love(artist, track, session);
+                    return res.isSuccessful();
+                } else {
+                    return false;
                 }
-                try {
-                    key = ActionPluginParam.MediaProperty.TRACK.getKeyName();
-                    if (propertyMap.containsKey(key)) data.setTrackNumber(Integer.valueOf(key));
-                } catch (Exception e) {
-                    Logger.e(e);
-                }
-                data.setTimestamp((int) (System.currentTimeMillis() / 1000));
 
-                ScrobbleResult result = Track.scrobble(data, session);
-                return result.isSuccessful();
             } catch (Exception e) {
                 Logger.e(e);
                 return false;
@@ -162,16 +224,30 @@ public class PluginReceiver extends BroadcastReceiver {
 
         @Override
         protected void onPostExecute(Boolean result) {
-            if (result) {
-                if (sharedPreferences.getBoolean(context.getString(R.string.prefkey_tweet_success_message_show), false)) {
-                    AppUtils.showToast(context, R.string.message_post_success); // Succeed
+            if (isCancelled())
+                return; // キャンセルの場合は無視
+
+            if (postType == PostType.SCROBBLE) {
+                // Scrobble
+                if (result) {
+                    if (sharedPreferences.getBoolean(context.getString(R.string.prefkey_tweet_success_message_show), false)) {
+                        AppUtils.showToast(context, R.string.message_post_success); // Succeed
+                    }
+                } else {
+                    if (sharedPreferences.getBoolean(context.getString(R.string.prefkey_tweet_failure_message_show), true)) {
+                        AppUtils.showToast(context, R.string.message_post_failure); // Failed
+                    }
                 }
             } else {
-                if (sharedPreferences.getBoolean(context.getString(R.string.prefkey_tweet_failure_message_show), true)) {
-                    AppUtils.showToast(context, R.string.message_post_failure); // Failed
+                // Love
+                if (result) {
+                    AppUtils.showToast(context, R.string.message_love_success); // Succeed
+                } else {
+                    AppUtils.showToast(context, R.string.message_love_failure); // Failed
                 }
-                session = null;
             }
+
+            session = null;
         }
     }
 

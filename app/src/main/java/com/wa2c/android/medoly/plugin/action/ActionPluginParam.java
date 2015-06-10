@@ -61,6 +61,8 @@ public class ActionPluginParam {
 		OPERATION_PLAY_NOW,
 		/** 再生停止。 */
 		OPERATION_PLAY_STOP,
+		/** 再生完了。 */
+		OPERATION_PLAY_COMPLETE,
 		/** メディア終了。 */
 		OPERATION_MEDIA_CLOSE;
 

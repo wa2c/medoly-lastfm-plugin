@@ -2,16 +2,21 @@
 <resources>
 	<!-- Package -->
 	<string name="app_description">Send the media information of playing to Last.fm in Medoly.</string>
-	<string name="class_receiver_label">Last.fm sending events.</string>
+	<string name="class_receiver_label">Last.fm actions.</string>
+	<string name="label_execute_love">Love</string>
+	<string name="label_execute_site">Last.fm</string>
 
 	<!-- Activity -->
 	<string name="title_activity_settings">Setting</string>
 
 	<!-- Twitter -->
-	<string name="message_post_success">Send to Last.fm is completed.</string>
-	<string name="message_post_failure">Send to Last.fm is failed.</string>
+	<string name="message_post_success">The playback information was sent to Last.fm..</string>
+	<string name="message_post_failure">Failed to send to Last.fm.</string>
+	<string name="message_love_success">The playing media added to love tracks.</string>
+	<string name="message_love_failure">Failed to add to love tracks.</string>
 	<string name="message_auth_success">Auth succeeded.</string>
 	<string name="message_auth_failure">Auth failed.</string>
+
 
 	<!-- Main Activity -->
 	<string name="label_button_account_auth">Account Auth</string>
