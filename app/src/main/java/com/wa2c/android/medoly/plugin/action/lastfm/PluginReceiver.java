@@ -73,22 +73,42 @@ public class PluginReceiver extends BroadcastReceiver {
             return;
         }
 
-       if (categories.contains(ActionPluginParam.PluginOperationCategory.OPERATION_PLAY_START.getCategoryValue())) {
+        // 値を取得
+        HashMap<String, String> propertyMap = null;
+        boolean isEvent = false;
+        try {
+            if (intent.hasExtra(ActionPluginParam.PLUGIN_VALUE_KEY)) {
+                Serializable serializable = intent.getSerializableExtra(ActionPluginParam.PLUGIN_VALUE_KEY);
+                if (serializable != null) {
+                    propertyMap = (HashMap<String, String>) serializable;
+                }
+            }
+            if (propertyMap == null || propertyMap.isEmpty()) { return; }
+
+            if (intent.hasExtra(ActionPluginParam.PLUGIN_EVENT_KEY))
+                isEvent = intent.getBooleanExtra(ActionPluginParam.PLUGIN_EVENT_KEY, false);
+        } catch (ClassCastException | NullPointerException e) {
+            Logger.e(e);
+            return;
+        }
+
+
+        if (categories.contains(ActionPluginParam.PluginOperationCategory.OPERATION_PLAY_START.getCategoryValue())) {
            // 再生開始
-           if (this.sharedPreferences.getBoolean(context.getString(R.string.prefkey_operation_play_start_enabled), false)) {
-               post(intent, PostType.SCROBBLE);
+           if (!isEvent || this.sharedPreferences.getBoolean(context.getString(R.string.prefkey_operation_play_start_enabled), false)) {
+               post(propertyMap, PostType.SCROBBLE);
            }
         } else if (categories.contains(ActionPluginParam.PluginOperationCategory.OPERATION_PLAY_NOW.getCategoryValue())) {
            // 再生中
-           if (this.sharedPreferences.getBoolean(context.getString(R.string.prefkey_operation_play_now_enabled), true)) {
-               post(intent, PostType.SCROBBLE);
+           if (!isEvent || this.sharedPreferences.getBoolean(context.getString(R.string.prefkey_operation_play_now_enabled), true)) {
+               post(propertyMap, PostType.SCROBBLE);
            }
        } else if (categories.contains(ActionPluginParam.PluginOperationCategory.OPERATION_EXECUTE.getCategoryValue())) {
            // 実行
            Bundle extras = intent.getExtras();
            if (extras != null) {
                if (extras.keySet().contains("id_execute_tweet")) {
-                   post(intent, PostType.LOVE);
+                   post(propertyMap, PostType.LOVE);
                } else if (extras.keySet().contains("id_execute_site")) {
                    String username = sharedPreferences.getString(context.getString(R.string.prefkey_auth_username), "");
                    Uri uri;
@@ -115,29 +135,25 @@ public class PluginReceiver extends BroadcastReceiver {
 
 
     /**
-     * 投稿前準備。
-     * @param intent インテント。
+     * 投稿。
+     * @param propertyMap プロパティ情報。
      */
     @SuppressWarnings("unchecked")
-    private void post(Intent intent, PostType postType) {
-        Serializable serializable = intent.getSerializableExtra(ActionPluginParam.PLUGIN_VALUE_KEY);
-        if (serializable != null) {
-            HashMap<String, String> propertyMap = (HashMap<String, String>) serializable;
-
-            // 音楽データ無し
-            if (!propertyMap.containsKey(ActionPluginParam.MediaProperty.FOLDER_PATH.getKeyName()) ||
-                !propertyMap.containsKey(ActionPluginParam.MediaProperty.FILE_NAME.getKeyName())) {
-                return;
-            }
-
-            // 情報無し
-            if (!propertyMap.containsKey(ActionPluginParam.MediaProperty.TITLE.getKeyName()) &&
-                !propertyMap.containsKey(ActionPluginParam.MediaProperty.ARTIST.getKeyName())) {
-                return;
-            }
-
-           (new AsyncPostTask(propertyMap, postType)).execute();
+    private void post(HashMap<String, String> propertyMap, PostType postType) {
+        // 音楽データ無し
+        if (!propertyMap.containsKey(ActionPluginParam.MediaProperty.FOLDER_PATH.getKeyName()) ||
+            !propertyMap.containsKey(ActionPluginParam.MediaProperty.FILE_NAME.getKeyName())) {
+            AppUtils.showToast(context, R.string.message_no_media);
+            return;
         }
+
+        // 情報無し
+        if (!propertyMap.containsKey(ActionPluginParam.MediaProperty.TITLE.getKeyName()) &&
+            !propertyMap.containsKey(ActionPluginParam.MediaProperty.ARTIST.getKeyName())) {
+            return;
+        }
+
+       (new AsyncPostTask(propertyMap, postType)).execute();
     }
 
     /**

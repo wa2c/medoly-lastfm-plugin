@@ -3,13 +3,14 @@
 	<!-- Package -->
 	<string name="app_description">Send the media information of playing to Last.fm in Medoly.</string>
 	<string name="class_receiver_label">Last.fm actions.</string>
-	<string name="label_execute_love">Love</string>
+	<string name="label_execute_love">Add Loved Tracks</string>
 	<string name="label_execute_site">Last.fm</string>
 
 	<!-- Activity -->
 	<string name="title_activity_settings">Setting</string>
 
 	<!-- Twitter -->
+	<string name="message_no_media">The media is not selected.</string>
 	<string name="message_post_success">The playback information was sent to Last.fm..</string>
 	<string name="message_post_failure">Failed to send to Last.fm.</string>
 	<string name="message_love_success">The playing media added to love tracks.</string>

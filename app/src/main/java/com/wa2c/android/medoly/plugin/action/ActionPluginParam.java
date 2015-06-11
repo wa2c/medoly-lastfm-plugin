@@ -12,8 +12,6 @@ public class ActionPluginParam {
 
 	/** Medoly package. */
 	public static String MEDOLY_PACKAGE = "com.wa2c.android.medoly";
-	/** Medoly package. */
-	public static String MEDOLY_ACTIVITY = "com.wa2c.android.medoly.Main";
 
 	/** Action. */
 	public static final String PLUGIN_ACTION = "com.wa2c.android.medoly.plugin.action.ACTION_MEDIA";

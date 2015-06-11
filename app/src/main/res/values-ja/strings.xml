@@ -3,13 +3,14 @@
 	<!-- Package -->
 	<string name="app_description">Medolyで再生中のメディア情報をLast.fmに送信します。</string>
 	<string name="class_receiver_label">Last.fm アクション</string>
-	<string name="label_execute_love">Love</string>
+	<string name="label_execute_love">Loveトラックに追加</string>
 	<string name="label_execute_site">Last.fmを開く</string>
 
 	<!-- Activity -->
 	<string name="title_activity_settings">設定</string>
 
 	<!-- Post -->
+	<string name="message_no_media">メディアが選択されていません。</string>
 	<string name="message_post_success">再生中の曲をLast.fmへ送信しました。</string>
 	<string name="message_post_failure">Last.fmへの送信に失敗しました。</string>
 	<string name="message_love_success">再生中のメディアをLoveトラックに追加しました。</string>
