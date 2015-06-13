@@ -288,14 +288,14 @@ public class PluginReceiver extends BroadcastReceiver {
             } else if (postType == PostType.LOVE) {
                 // Love
                 if (result) {
-                    AppUtils.showToast(context, R.string.message_love_success); // Succeed
+                    AppUtils.showToast(context, context.getString(R.string.message_love_success,  propertyMap.get(ActionPluginParam.MediaProperty.TITLE.getKeyName()))); // Succeed
                 } else {
                     AppUtils.showToast(context, R.string.message_love_failure); // Failed
                 }
             } else if (postType == PostType.UNLOVE) {
                 // UnLove
                 if (result) {
-                    AppUtils.showToast(context, R.string.message_unlove_success); // Succeed
+                    AppUtils.showToast(context, context.getString(R.string.message_unlove_success,  propertyMap.get(ActionPluginParam.MediaProperty.TITLE.getKeyName()))); // Succeed
                 } else {
                     AppUtils.showToast(context, R.string.message_unlove_failure); // Failed
                 }

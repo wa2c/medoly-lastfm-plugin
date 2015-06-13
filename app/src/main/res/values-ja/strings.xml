@@ -12,11 +12,11 @@
 
 	<!-- Post -->
 	<string name="message_no_media">メディアが選択されていません。</string>
-	<string name="message_post_success">再生中の曲をLast.fmへ送信しました。</string>
+	<string name="message_post_success">\"%1$s\" をLast.fmへ送信しました。</string>
 	<string name="message_post_failure">Last.fmへの送信に失敗しました。</string>
-	<string name="message_love_success">再生中のメディアをLoveトラックに追加しました。</string>
+	<string name="message_love_success">\"%1$s\" をLoveトラックに追加しました。</string>
 	<string name="message_love_failure">Loveトラックへの追加に失敗しました。</string>
-	<string name="message_unlove_success">再生中のメディアをLoveトラックから削除しました。</string>
+	<string name="message_unlove_success">\"%1$s\" をLoveトラックから削除しました。</string>
 	<string name="message_unlove_failure">Loveトラックの削除に失敗しました。</string>
 
 	<string name="message_auth_success">認証が完了しました。</string>
