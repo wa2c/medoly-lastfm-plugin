@@ -8,8 +8,8 @@ android {
         applicationId "com.wa2c.android.medoly.plugin.action.lastfm"
         minSdkVersion 13
         targetSdkVersion 22
-        versionCode 3
-        versionName "1.0.2"
+        versionCode 4
+        versionName "1.0.5"
     }
     buildTypes {
         debug {
