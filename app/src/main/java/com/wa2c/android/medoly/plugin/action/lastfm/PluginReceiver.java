@@ -35,7 +35,7 @@ import de.umass.lastfm.scrobble.ScrobbleResult;
 public class PluginReceiver extends BroadcastReceiver {
 
     /** 前回のファイルパス設定キー。 */
-    private static final String PREFKEY_PREVIOUS_MEDIA_PATH = "previous_media_path";
+    private static final String PREFKEY_PREVIOUS_MEDIA_URI = "previous_media_uri";
 
     /** コンテキスト。 */
     private Context context;
@@ -49,7 +49,9 @@ public class PluginReceiver extends BroadcastReceiver {
         /** Scrobble */
         SCROBBLE,
         /** Love */
-        LOVE
+        LOVE,
+        /** UnLove */
+        UNLOVE
     }
 
 
@@ -72,6 +74,9 @@ public class PluginReceiver extends BroadcastReceiver {
         if (!categories.contains(ActionPluginParam.PluginTypeCategory.TYPE_POST_MESSAGE.getCategoryValue())) {
             return;
         }
+
+        // URIを取得
+        Uri mediaUri = intent.getData();
 
         // 値を取得
         HashMap<String, String> propertyMap = null;
@@ -96,31 +101,40 @@ public class PluginReceiver extends BroadcastReceiver {
         if (categories.contains(ActionPluginParam.PluginOperationCategory.OPERATION_PLAY_START.getCategoryValue())) {
            // 再生開始
            if (!isEvent || this.sharedPreferences.getBoolean(context.getString(R.string.prefkey_operation_play_start_enabled), false)) {
-               post(propertyMap, PostType.SCROBBLE);
+               post(mediaUri, propertyMap, PostType.SCROBBLE);
            }
         } else if (categories.contains(ActionPluginParam.PluginOperationCategory.OPERATION_PLAY_NOW.getCategoryValue())) {
            // 再生中
            if (!isEvent || this.sharedPreferences.getBoolean(context.getString(R.string.prefkey_operation_play_now_enabled), true)) {
-               post(propertyMap, PostType.SCROBBLE);
+               post(mediaUri, propertyMap, PostType.SCROBBLE);
            }
        } else if (categories.contains(ActionPluginParam.PluginOperationCategory.OPERATION_EXECUTE.getCategoryValue())) {
-           // 実行
+            final String EXECUTE_LOVE_ID = "execute_id_love";
+            final String EXECUTE_UNLOVE_ID = "execute_id_unlove";
+            final String EXECUTE_SITE_ID = "execute_id_site";
+
+            // Execute
            Bundle extras = intent.getExtras();
            if (extras != null) {
-               if (extras.keySet().contains("id_execute_tweet")) {
-                   post(propertyMap, PostType.LOVE);
-               } else if (extras.keySet().contains("id_execute_site")) {
+               if (extras.keySet().contains(EXECUTE_LOVE_ID)) {
+                   // Love
+                   post(mediaUri, propertyMap, PostType.LOVE);
+               }  if (extras.keySet().contains(EXECUTE_UNLOVE_ID)) {
+                   // UnLove
+                   post(mediaUri, propertyMap, PostType.UNLOVE);
+               } else if (extras.keySet().contains(EXECUTE_SITE_ID)) {
+                   // Last.fm
                    String username = sharedPreferences.getString(context.getString(R.string.prefkey_auth_username), "");
-                   Uri uri;
+                   Uri siteUri;
                    if (TextUtils.isEmpty(username)) {
                        // ユーザ未認証
-                       uri = Uri.parse(context.getString(R.string.lastfm_url));
+                       siteUri = Uri.parse(context.getString(R.string.lastfm_url));
                    } else {
                        // ユーザ認証済
-                       uri = Uri.parse(context.getString(R.string.lastfm_url_user, username));
+                       siteUri = Uri.parse(context.getString(R.string.lastfm_url_user, username));
                    }
 
-                   Intent launchIntent = new Intent(Intent.ACTION_VIEW, uri);
+                   Intent launchIntent = new Intent(Intent.ACTION_VIEW, siteUri);
                    try {
                        launchIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                        context.startActivity(launchIntent);
@@ -139,10 +153,9 @@ public class PluginReceiver extends BroadcastReceiver {
      * @param propertyMap プロパティ情報。
      */
     @SuppressWarnings("unchecked")
-    private void post(HashMap<String, String> propertyMap, PostType postType) {
+    private void post(Uri uri, HashMap<String, String> propertyMap, PostType postType) {
         // 音楽データ無し
-        if (!propertyMap.containsKey(ActionPluginParam.MediaProperty.FOLDER_PATH.getKeyName()) ||
-            !propertyMap.containsKey(ActionPluginParam.MediaProperty.FILE_NAME.getKeyName())) {
+        if (uri == null) {
             AppUtils.showToast(context, R.string.message_no_media);
             return;
         }
@@ -151,6 +164,17 @@ public class PluginReceiver extends BroadcastReceiver {
         if (!propertyMap.containsKey(ActionPluginParam.MediaProperty.TITLE.getKeyName()) &&
             !propertyMap.containsKey(ActionPluginParam.MediaProperty.ARTIST.getKeyName())) {
             return;
+        }
+
+        if (postType == PostType.SCROBBLE) {
+            String mediaUri = uri.toString();
+            String previousMediaUri = sharedPreferences.getString(PREFKEY_PREVIOUS_MEDIA_URI, "");
+            boolean previousMediaEnabled = sharedPreferences.getBoolean(context.getString(R.string.prefkey_previous_media_enabled), false);
+            if (!previousMediaEnabled && !TextUtils.isEmpty(mediaUri) && !TextUtils.isEmpty(previousMediaUri) && mediaUri.equals(previousMediaUri)) {
+                // 前回と同じメディアは無視
+                return;
+            }
+            sharedPreferences.edit().putString(PREFKEY_PREVIOUS_MEDIA_URI, mediaUri).apply();
         }
 
        (new AsyncPostTask(propertyMap, postType)).execute();
@@ -228,6 +252,13 @@ public class PluginReceiver extends BroadcastReceiver {
 
                     Result res = Track.love(artist, track, session);
                     return res.isSuccessful();
+                } else if (postType == PostType.UNLOVE) {
+                    // UnLove
+                    String track  = propertyMap.get(ActionPluginParam.MediaProperty.TITLE.getKeyName());
+                    String artist  = propertyMap.get(ActionPluginParam.MediaProperty.ARTIST.getKeyName());
+
+                    Result res = Track.unlove(artist, track, session);
+                    return res.isSuccessful();
                 } else {
                     return false;
                 }
@@ -254,12 +285,19 @@ public class PluginReceiver extends BroadcastReceiver {
                         AppUtils.showToast(context, R.string.message_post_failure); // Failed
                     }
                 }
-            } else {
+            } else if (postType == PostType.LOVE) {
                 // Love
                 if (result) {
                     AppUtils.showToast(context, R.string.message_love_success); // Succeed
                 } else {
                     AppUtils.showToast(context, R.string.message_love_failure); // Failed
+                }
+            } else if (postType == PostType.UNLOVE) {
+                // UnLove
+                if (result) {
+                    AppUtils.showToast(context, R.string.message_unlove_success); // Succeed
+                } else {
+                    AppUtils.showToast(context, R.string.message_unlove_failure); // Failed
                 }
             }
 

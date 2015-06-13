@@ -50,13 +50,17 @@
                 <category android:name="com.wa2c.android.medoly.plugin.category.OPERATION_PLAY_START" />
             </intent-filter>
 
-            <meta-data android:name="id_execute_tweet" android:value="0" />
-            <meta-data android:name="label_execute_tweet" android:resource="@string/label_execute_love" />
-            <meta-data android:name="icon_execute_tweet" android:resource="@drawable/ic_action_heart" />
+            <meta-data android:name="execute_id_love" android:value="0" />
+            <meta-data android:name="execute_label_love" android:resource="@string/label_execute_love" />
+            <meta-data android:name="execute_icon_love" android:resource="@drawable/ic_action_love" />
 
-            <meta-data android:name="id_execute_site" android:value="1" />
-            <meta-data android:name="label_execute_site" android:resource="@string/label_execute_site" />
-            <meta-data android:name="icon_execute_site" android:resource="@drawable/ic_action_lastfm" />
+            <meta-data android:name="execute_id_unlove" android:value="1" />
+            <meta-data android:name="execute_label_unlove" android:resource="@string/label_execute_unlove" />
+            <meta-data android:name="execute_icon_unlove" android:resource="@drawable/ic_action_unlove" />
+
+            <meta-data android:name="execute_id_site" android:value="2" />
+            <meta-data android:name="execute_label_site" android:resource="@string/label_execute_site" />
+            <meta-data android:name="execute_icon_site" android:resource="@drawable/ic_action_lastfm" />
 
         </receiver>
     </application>
