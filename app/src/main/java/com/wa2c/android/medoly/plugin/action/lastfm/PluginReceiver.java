@@ -66,17 +66,16 @@ public class PluginReceiver extends BroadcastReceiver {
         this.context = context;
         this.sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
 
-        Set<String> categories = intent.getCategories();
-        if (categories == null || categories.size() == 0) {
-            return;
-        }
-
-        if (!categories.contains(ActionPluginParam.PluginTypeCategory.TYPE_POST_MESSAGE.getCategoryValue())) {
-            return;
-        }
-
         // URIを取得
-        Uri mediaUri = intent.getData();
+        Uri mediaUri = null;
+        if (intent.getExtras() != null) {
+            Object extraStream = intent.getExtras().get(Intent.EXTRA_STREAM);
+            if (extraStream != null && extraStream instanceof Uri)
+                mediaUri = (Uri)extraStream;
+        } else if (intent.getData() != null) {
+            // Old version
+            mediaUri = intent.getData();
+        }
 
         // 値を取得
         HashMap<String, String> propertyMap = null;
@@ -97,23 +96,28 @@ public class PluginReceiver extends BroadcastReceiver {
             return;
         }
 
+        // カテゴリ取得
+        Set<String> categories = intent.getCategories();
+        if (categories == null || categories.size() == 0) {
+            return;
+        }
 
         if (categories.contains(ActionPluginParam.PluginOperationCategory.OPERATION_PLAY_START.getCategoryValue())) {
-           // 再生開始
+            // Play Start
            if (!isEvent || this.sharedPreferences.getBoolean(context.getString(R.string.prefkey_operation_play_start_enabled), false)) {
                post(mediaUri, propertyMap, PostType.SCROBBLE);
            }
         } else if (categories.contains(ActionPluginParam.PluginOperationCategory.OPERATION_PLAY_NOW.getCategoryValue())) {
-           // 再生中
+            // Play Now
            if (!isEvent || this.sharedPreferences.getBoolean(context.getString(R.string.prefkey_operation_play_now_enabled), true)) {
                post(mediaUri, propertyMap, PostType.SCROBBLE);
            }
        } else if (categories.contains(ActionPluginParam.PluginOperationCategory.OPERATION_EXECUTE.getCategoryValue())) {
+            // Execute
             final String EXECUTE_LOVE_ID = "execute_id_love";
             final String EXECUTE_UNLOVE_ID = "execute_id_unlove";
             final String EXECUTE_SITE_ID = "execute_id_site";
 
-            // Execute
            Bundle extras = intent.getExtras();
            if (extras != null) {
                if (extras.keySet().contains(EXECUTE_LOVE_ID)) {
@@ -159,7 +163,6 @@ public class PluginReceiver extends BroadcastReceiver {
             AppUtils.showToast(context, R.string.message_no_media);
             return;
         }
-
         // 情報無し
         if (!propertyMap.containsKey(ActionPluginParam.MediaProperty.TITLE.getKeyName()) &&
             !propertyMap.containsKey(ActionPluginParam.MediaProperty.ARTIST.getKeyName())) {

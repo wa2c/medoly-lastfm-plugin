@@ -7,7 +7,7 @@ android {
     defaultConfig {
         applicationId "com.wa2c.android.medoly.plugin.action.lastfm"
         minSdkVersion 13
-        targetSdkVersion 22
+        targetSdkVersion 15
         versionCode 4
         versionName "1.0.5"
     }
