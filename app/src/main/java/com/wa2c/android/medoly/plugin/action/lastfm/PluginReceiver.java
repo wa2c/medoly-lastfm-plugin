@@ -66,12 +66,13 @@ public class PluginReceiver extends BroadcastReceiver {
         this.context = context;
         this.sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
 
+        Bundle extras = intent.getExtras();
+
         // URIを取得
         Uri mediaUri = null;
-        if (intent.getExtras() != null) {
-            Object extraStream = intent.getExtras().get(Intent.EXTRA_STREAM);
-            if (extraStream != null && extraStream instanceof Uri)
-                mediaUri = (Uri)extraStream;
+        Object extraStream = null;
+        if (extras != null && (extraStream = intent.getExtras().get(Intent.EXTRA_STREAM)) != null && extraStream instanceof Uri) {
+            mediaUri = (Uri)extraStream;
         } else if (intent.getData() != null) {
             // Old version
             mediaUri = intent.getData();
@@ -118,8 +119,7 @@ public class PluginReceiver extends BroadcastReceiver {
             final String EXECUTE_UNLOVE_ID = "execute_id_unlove";
             final String EXECUTE_SITE_ID = "execute_id_site";
 
-           Bundle extras = intent.getExtras();
-           if (extras != null) {
+          if (extras != null) {
                if (extras.keySet().contains(EXECUTE_LOVE_ID)) {
                    // Love
                    post(mediaUri, propertyMap, PostType.LOVE);
@@ -154,6 +154,7 @@ public class PluginReceiver extends BroadcastReceiver {
 
     /**
      * 投稿。
+     * @uri URI。
      * @param propertyMap プロパティ情報。
      */
     @SuppressWarnings("unchecked")
@@ -164,8 +165,8 @@ public class PluginReceiver extends BroadcastReceiver {
             return;
         }
         // 情報無し
-        if (!propertyMap.containsKey(ActionPluginParam.MediaProperty.TITLE.getKeyName()) &&
-            !propertyMap.containsKey(ActionPluginParam.MediaProperty.ARTIST.getKeyName())) {
+        if (propertyMap.get(ActionPluginParam.MediaProperty.TITLE.getKeyName()) == null ||
+            propertyMap.get(ActionPluginParam.MediaProperty.ARTIST.getKeyName()) == null) {
             return;
         }
 
