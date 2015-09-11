@@ -105,49 +105,49 @@ public class PluginReceiver extends BroadcastReceiver {
 
         if (categories.contains(ActionPluginParam.PluginOperationCategory.OPERATION_PLAY_START.getCategoryValue())) {
             // Play Start
-           if (!isEvent || this.sharedPreferences.getBoolean(context.getString(R.string.prefkey_operation_play_start_enabled), false)) {
-               post(mediaUri, propertyMap, PostType.SCROBBLE);
-           }
+            if (!isEvent || this.sharedPreferences.getBoolean(context.getString(R.string.prefkey_operation_play_start_enabled), false)) {
+                post(mediaUri, propertyMap, PostType.SCROBBLE);
+            }
         } else if (categories.contains(ActionPluginParam.PluginOperationCategory.OPERATION_PLAY_NOW.getCategoryValue())) {
             // Play Now
-           if (!isEvent || this.sharedPreferences.getBoolean(context.getString(R.string.prefkey_operation_play_now_enabled), true)) {
-               post(mediaUri, propertyMap, PostType.SCROBBLE);
-           }
-       } else if (categories.contains(ActionPluginParam.PluginOperationCategory.OPERATION_EXECUTE.getCategoryValue())) {
+            if (!isEvent || this.sharedPreferences.getBoolean(context.getString(R.string.prefkey_operation_play_now_enabled), true)) {
+                post(mediaUri, propertyMap, PostType.SCROBBLE);
+            }
+        } else if (categories.contains(ActionPluginParam.PluginOperationCategory.OPERATION_EXECUTE.getCategoryValue())) {
             // Execute
             final String EXECUTE_LOVE_ID = "execute_id_love";
             final String EXECUTE_UNLOVE_ID = "execute_id_unlove";
             final String EXECUTE_SITE_ID = "execute_id_site";
 
-          if (extras != null) {
-               if (extras.keySet().contains(EXECUTE_LOVE_ID)) {
-                   // Love
-                   post(mediaUri, propertyMap, PostType.LOVE);
-               }  if (extras.keySet().contains(EXECUTE_UNLOVE_ID)) {
-                   // UnLove
-                   post(mediaUri, propertyMap, PostType.UNLOVE);
-               } else if (extras.keySet().contains(EXECUTE_SITE_ID)) {
-                   // Last.fm
-                   String username = sharedPreferences.getString(context.getString(R.string.prefkey_auth_username), "");
-                   Uri siteUri;
-                   if (TextUtils.isEmpty(username)) {
-                       // ユーザ未認証
-                       siteUri = Uri.parse(context.getString(R.string.lastfm_url));
-                   } else {
-                       // ユーザ認証済
-                       siteUri = Uri.parse(context.getString(R.string.lastfm_url_user, username));
-                   }
+            if (extras != null) {
+                if (extras.keySet().contains(EXECUTE_LOVE_ID)) {
+                    // Love
+                    post(mediaUri, propertyMap, PostType.LOVE);
+                }  if (extras.keySet().contains(EXECUTE_UNLOVE_ID)) {
+                    // UnLove
+                    post(mediaUri, propertyMap, PostType.UNLOVE);
+                } else if (extras.keySet().contains(EXECUTE_SITE_ID)) {
+                    // Last.fm
+                    String username = sharedPreferences.getString(context.getString(R.string.prefkey_auth_username), "");
+                    Uri siteUri;
+                    if (TextUtils.isEmpty(username)) {
+                        // ユーザ未認証
+                        siteUri = Uri.parse(context.getString(R.string.lastfm_url));
+                    } else {
+                        // ユーザ認証済
+                        siteUri = Uri.parse(context.getString(R.string.lastfm_url_user, username));
+                    }
 
-                   Intent launchIntent = new Intent(Intent.ACTION_VIEW, siteUri);
-                   try {
-                       launchIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                       context.startActivity(launchIntent);
-                   } catch (android.content.ActivityNotFoundException e) {
-                       Logger.d(e);
-                   }
-               }
-           }
-       }
+                    Intent launchIntent = new Intent(Intent.ACTION_VIEW, siteUri);
+                    try {
+                        launchIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        context.startActivity(launchIntent);
+                    } catch (android.content.ActivityNotFoundException e) {
+                        Logger.d(e);
+                    }
+                }
+            }
+        }
     }
 
 
@@ -166,7 +166,7 @@ public class PluginReceiver extends BroadcastReceiver {
         }
         // 情報無し
         if (propertyMap.get(ActionPluginParam.MediaProperty.TITLE.getKeyName()) == null ||
-            propertyMap.get(ActionPluginParam.MediaProperty.ARTIST.getKeyName()) == null) {
+                propertyMap.get(ActionPluginParam.MediaProperty.ARTIST.getKeyName()) == null) {
             return;
         }
 
@@ -181,7 +181,7 @@ public class PluginReceiver extends BroadcastReceiver {
             sharedPreferences.edit().putString(PREFKEY_PREVIOUS_MEDIA_URI, mediaUri).apply();
         }
 
-       (new AsyncPostTask(propertyMap, postType)).execute();
+        (new AsyncPostTask(propertyMap, postType)).execute();
     }
 
     /**
