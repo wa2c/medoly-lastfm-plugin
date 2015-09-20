@@ -10,6 +10,7 @@
     <!-- Activity -->
     <string name="title_activity_settings">Setting</string>
 
+
     <!-- Twitter -->
     <string name="message_no_media">The media is not selected.</string>
     <string name="message_post_success">The playback information was sent to Last.fm..</string>
