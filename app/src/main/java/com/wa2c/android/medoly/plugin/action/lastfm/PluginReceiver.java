@@ -10,8 +10,10 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 
-import com.wa2c.android.medoly.plugin.action.ActionPluginParam;
-import com.wa2c.android.medoly.plugin.action.Logger;
+import com.wa2c.android.medoly.library.MediaProperty;
+import com.wa2c.android.medoly.library.MedolyParam;
+import com.wa2c.android.medoly.library.PluginOperationCategory;
+import com.wa2c.android.medoly.utils.Logger;
 
 import java.io.File;
 import java.io.Serializable;
@@ -82,16 +84,16 @@ public class PluginReceiver extends BroadcastReceiver {
         HashMap<String, String> propertyMap = null;
         boolean isEvent = false;
         try {
-            if (intent.hasExtra(ActionPluginParam.PLUGIN_VALUE_KEY)) {
-                Serializable serializable = intent.getSerializableExtra(ActionPluginParam.PLUGIN_VALUE_KEY);
+            if (intent.hasExtra(MedolyParam.PLUGIN_VALUE_KEY)) {
+                Serializable serializable = intent.getSerializableExtra(MedolyParam.PLUGIN_VALUE_KEY);
                 if (serializable != null) {
                     propertyMap = (HashMap<String, String>) serializable;
                 }
             }
             if (propertyMap == null || propertyMap.isEmpty()) { return; }
 
-            if (intent.hasExtra(ActionPluginParam.PLUGIN_EVENT_KEY))
-                isEvent = intent.getBooleanExtra(ActionPluginParam.PLUGIN_EVENT_KEY, false);
+            if (intent.hasExtra(MedolyParam.PLUGIN_EVENT_KEY))
+                isEvent = intent.getBooleanExtra(MedolyParam.PLUGIN_EVENT_KEY, false);
         } catch (ClassCastException | NullPointerException e) {
             Logger.e(e);
             return;
@@ -103,17 +105,17 @@ public class PluginReceiver extends BroadcastReceiver {
             return;
         }
 
-        if (categories.contains(ActionPluginParam.PluginOperationCategory.OPERATION_PLAY_START.getCategoryValue())) {
+        if (categories.contains(PluginOperationCategory.OPERATION_PLAY_START.getCategoryValue())) {
             // Play Start
             if (!isEvent || this.sharedPreferences.getBoolean(context.getString(R.string.prefkey_operation_play_start_enabled), false)) {
                 post(mediaUri, propertyMap, PostType.SCROBBLE);
             }
-        } else if (categories.contains(ActionPluginParam.PluginOperationCategory.OPERATION_PLAY_NOW.getCategoryValue())) {
+        } else if (categories.contains(PluginOperationCategory.OPERATION_PLAY_NOW.getCategoryValue())) {
             // Play Now
             if (!isEvent || this.sharedPreferences.getBoolean(context.getString(R.string.prefkey_operation_play_now_enabled), true)) {
                 post(mediaUri, propertyMap, PostType.SCROBBLE);
             }
-        } else if (categories.contains(ActionPluginParam.PluginOperationCategory.OPERATION_EXECUTE.getCategoryValue())) {
+        } else if (categories.contains(PluginOperationCategory.OPERATION_EXECUTE.getCategoryValue())) {
             // Execute
             final String EXECUTE_LOVE_ID = "execute_id_love";
             final String EXECUTE_UNLOVE_ID = "execute_id_unlove";
@@ -154,8 +156,9 @@ public class PluginReceiver extends BroadcastReceiver {
 
     /**
      * 投稿。
-     * @uri URI。
+     * @param uri URI。
      * @param propertyMap プロパティ情報。
+     * @param postType 投稿k種別。
      */
     @SuppressWarnings("unchecked")
     private void post(Uri uri, HashMap<String, String> propertyMap, PostType postType) {
@@ -165,8 +168,8 @@ public class PluginReceiver extends BroadcastReceiver {
             return;
         }
         // 情報無し
-        if (propertyMap.get(ActionPluginParam.MediaProperty.TITLE.getKeyName()) == null ||
-                propertyMap.get(ActionPluginParam.MediaProperty.ARTIST.getKeyName()) == null) {
+        if (propertyMap.get(MediaProperty.TITLE.getKeyName()) == null ||
+                propertyMap.get(MediaProperty.ARTIST.getKeyName()) == null) {
             return;
         }
 
@@ -222,25 +225,25 @@ public class PluginReceiver extends BroadcastReceiver {
                     String key;
                     ScrobbleData data = new ScrobbleData();
 
-                    key = ActionPluginParam.MediaProperty.MUSICBRAINZ_RELEASEID.getKeyName();
+                    key = MediaProperty.MUSICBRAINZ_RELEASEID.getKeyName();
                     if (propertyMap.containsKey(key)) data.setMusicBrainzId(propertyMap.get(key));
-                    key = ActionPluginParam.MediaProperty.TITLE.getKeyName();
+                    key = MediaProperty.TITLE.getKeyName();
                     if (propertyMap.containsKey(key)) data.setTrack(propertyMap.get(key));
-                    key = ActionPluginParam.MediaProperty.ARTIST.getKeyName();
+                    key = MediaProperty.ARTIST.getKeyName();
                     if (propertyMap.containsKey(key)) data.setArtist(propertyMap.get(key));
-                    key = ActionPluginParam.MediaProperty.ALBUM_ARTIST.getKeyName();
+                    key = MediaProperty.ALBUM_ARTIST.getKeyName();
                     if (propertyMap.containsKey(key)) data.setAlbumArtist(propertyMap.get(key));
-                    key = ActionPluginParam.MediaProperty.ALBUM.getKeyName();
+                    key = MediaProperty.ALBUM.getKeyName();
                     if (propertyMap.containsKey(key)) data.setAlbum(propertyMap.get(key));
 
                     try {
-                        key = ActionPluginParam.MediaProperty.DURATION.getKeyName();
+                        key = MediaProperty.DURATION.getKeyName();
                         if (propertyMap.containsKey(key)) data.setDuration(Integer.valueOf(key));
                     } catch (Exception e) {
                         Logger.e(e);
                     }
                     try {
-                        key = ActionPluginParam.MediaProperty.TRACK.getKeyName();
+                        key = MediaProperty.TRACK.getKeyName();
                         if (propertyMap.containsKey(key)) data.setTrackNumber(Integer.valueOf(key));
                     } catch (Exception e) {
                         Logger.e(e);
@@ -251,15 +254,15 @@ public class PluginReceiver extends BroadcastReceiver {
                     return result.isSuccessful();
                 } else if (postType == PostType.LOVE) {
                     // Love
-                    String track  = propertyMap.get(ActionPluginParam.MediaProperty.TITLE.getKeyName());
-                    String artist  = propertyMap.get(ActionPluginParam.MediaProperty.ARTIST.getKeyName());
+                    String track  = propertyMap.get(MediaProperty.TITLE.getKeyName());
+                    String artist  = propertyMap.get(MediaProperty.ARTIST.getKeyName());
 
                     Result res = Track.love(artist, track, session);
                     return res.isSuccessful();
                 } else if (postType == PostType.UNLOVE) {
                     // UnLove
-                    String track  = propertyMap.get(ActionPluginParam.MediaProperty.TITLE.getKeyName());
-                    String artist  = propertyMap.get(ActionPluginParam.MediaProperty.ARTIST.getKeyName());
+                    String track  = propertyMap.get(MediaProperty.TITLE.getKeyName());
+                    String artist  = propertyMap.get(MediaProperty.ARTIST.getKeyName());
 
                     Result res = Track.unlove(artist, track, session);
                     return res.isSuccessful();
@@ -292,14 +295,14 @@ public class PluginReceiver extends BroadcastReceiver {
             } else if (postType == PostType.LOVE) {
                 // Love
                 if (result) {
-                    AppUtils.showToast(context, context.getString(R.string.message_love_success,  propertyMap.get(ActionPluginParam.MediaProperty.TITLE.getKeyName()))); // Succeed
+                    AppUtils.showToast(context, context.getString(R.string.message_love_success,  propertyMap.get(MediaProperty.TITLE.getKeyName()))); // Succeed
                 } else {
                     AppUtils.showToast(context, R.string.message_love_failure); // Failed
                 }
             } else if (postType == PostType.UNLOVE) {
                 // UnLove
                 if (result) {
-                    AppUtils.showToast(context, context.getString(R.string.message_unlove_success,  propertyMap.get(ActionPluginParam.MediaProperty.TITLE.getKeyName()))); // Succeed
+                    AppUtils.showToast(context, context.getString(R.string.message_unlove_success,  propertyMap.get(MediaProperty.TITLE.getKeyName()))); // Succeed
                 } else {
                     AppUtils.showToast(context, R.string.message_unlove_failure); // Failed
                 }

@@ -13,9 +13,9 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
-import com.wa2c.android.medoly.plugin.action.ActionPluginParam;
-import com.wa2c.android.medoly.plugin.action.Logger;
+import com.wa2c.android.medoly.library.MedolyParam;
 import com.wa2c.android.medoly.plugin.action.lastfm.dialog.AuthDialogFragment;
+import com.wa2c.android.medoly.utils.Logger;
 
 import java.io.File;
 
@@ -103,7 +103,7 @@ public class MainActivity extends Activity {
 		});
 
 		// Launch Medoly
-		final Intent launchIntent =  getPackageManager().getLaunchIntentForPackage(ActionPluginParam.MEDOLY_PACKAGE);
+		final Intent launchIntent =  getPackageManager().getLaunchIntentForPackage(MedolyParam.MEDOLY_PACKAGE);
 		findViewById(R.id.launchMedolyButton).setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
