@@ -13,7 +13,7 @@
         android:title="@string/pref_title_operation_play_start_enabled" />
 
     <CheckBoxPreference
-        android:defaultValue="false"
+        android:defaultValue="true"
         android:key="@string/prefkey_previous_media_enabled"
         android:summary="@string/pref_summary_previous_media_enabled"
         android:title="@string/pref_title_previous_media_enabled" />

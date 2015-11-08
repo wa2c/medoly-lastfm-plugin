@@ -31,6 +31,7 @@ android {
 
 
 dependencies {
-    compile project(':medolylibrary')
     compile 'de.u-mass:lastfm-java:0.1.2'
+    compile 'com.google.code.gson:gson:2.4'
+    compile project(':medolylibrary')
 }

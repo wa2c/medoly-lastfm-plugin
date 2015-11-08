@@ -17,7 +17,11 @@ import com.wa2c.android.medoly.utils.Logger;
 
 import java.io.File;
 import java.io.Serializable;
+import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -47,7 +51,7 @@ public class PluginReceiver extends BroadcastReceiver {
     /**
      * 投稿種別。
      */
-    private enum PostType {
+    public enum PostType {
         /** Scrobble */
         SCROBBLE,
         /** Love */
@@ -55,6 +59,24 @@ public class PluginReceiver extends BroadcastReceiver {
         /** UnLove */
         UNLOVE
     }
+
+
+    /**
+     * 投稿結果。
+     */
+    public enum PostResult {
+        /** 成功。 */
+        SUCCEEDED,
+        /** 失敗。 */
+        FAILED,
+        /** 認証失敗。 */
+        AUTH_FAILED,
+        /** 投稿一時保存。 */
+        SAVED,
+        /** 無視。 */
+        IGNORE
+    }
+
 
 
 
@@ -105,6 +127,7 @@ public class PluginReceiver extends BroadcastReceiver {
             return;
         }
 
+        // 各アクション実行
         if (categories.contains(PluginOperationCategory.OPERATION_PLAY_START.getCategoryValue())) {
             // Play Start
             if (!isEvent || this.sharedPreferences.getBoolean(context.getString(R.string.prefkey_operation_play_start_enabled), false)) {
@@ -167,9 +190,10 @@ public class PluginReceiver extends BroadcastReceiver {
             AppUtils.showToast(context, R.string.message_no_media);
             return;
         }
-        // 情報無し
-        if (propertyMap.get(MediaProperty.TITLE.getKeyName()) == null ||
-                propertyMap.get(MediaProperty.ARTIST.getKeyName()) == null) {
+
+        // 必須情報無し
+        if (TextUtils.isEmpty(propertyMap.get(MediaProperty.TITLE.getKeyName())) ||
+            TextUtils.isEmpty(propertyMap.get(MediaProperty.ARTIST.getKeyName()))) {
             return;
         }
 
@@ -190,7 +214,7 @@ public class PluginReceiver extends BroadcastReceiver {
     /**
      * 投稿タスク。
      */
-    private class AsyncPostTask extends AsyncTask<String, Void, Boolean> {
+    private class AsyncPostTask extends AsyncTask<String, Void, PostResult> {
         /** プロパティマップ。 */
         private Map<String, String> propertyMap;
         /** 当校種別。 */
@@ -207,83 +231,57 @@ public class PluginReceiver extends BroadcastReceiver {
         }
 
         @Override
-        protected Boolean doInBackground(String... params) {
+        protected PostResult doInBackground(String... params) {
+            // 認証情報取得
+            String username = preferences.getString(context.getString(R.string.prefkey_auth_username), "");
+            String password = preferences.getString(context.getString(R.string.prefkey_auth_password), "");
+            if (TextUtils.isEmpty(username)) {
+                return PostResult.AUTH_FAILED;
+            }
+
             try {
+                // 認証
                 // フォルダ設定 (getMobileSessionの前に入れる必要あり)
                 Caller.getInstance().setCache(new FileSystemCache(new File(context.getExternalCacheDir().getPath() + File.separator + "last.fm")));
-
-                // 認証
-                String username = preferences.getString(context.getString(R.string.prefkey_auth_username), "");
-                String password = preferences.getString(context.getString(R.string.prefkey_auth_password), "");
                 session = Authenticator.getMobileSession(username, password, Token.getKey1(context), Token.getKey2(context));
-                if (session == null) {
-                    return false;
-                }
+            } catch (Exception e) {
+                // 認証失敗してもエラーとしない
+                Logger.e(e);
+            }
 
+            try {
                 if (postType == PostType.SCROBBLE) {
-                    // Scrobble
-                    String key;
-                    ScrobbleData data = new ScrobbleData();
-
-                    key = MediaProperty.MUSICBRAINZ_RELEASEID.getKeyName();
-                    if (propertyMap.containsKey(key)) data.setMusicBrainzId(propertyMap.get(key));
-                    key = MediaProperty.TITLE.getKeyName();
-                    if (propertyMap.containsKey(key)) data.setTrack(propertyMap.get(key));
-                    key = MediaProperty.ARTIST.getKeyName();
-                    if (propertyMap.containsKey(key)) data.setArtist(propertyMap.get(key));
-                    key = MediaProperty.ALBUM_ARTIST.getKeyName();
-                    if (propertyMap.containsKey(key)) data.setAlbumArtist(propertyMap.get(key));
-                    key = MediaProperty.ALBUM.getKeyName();
-                    if (propertyMap.containsKey(key)) data.setAlbum(propertyMap.get(key));
-
-                    try {
-                        key = MediaProperty.DURATION.getKeyName();
-                        if (propertyMap.containsKey(key)) data.setDuration(Integer.valueOf(key));
-                    } catch (Exception e) {
-                        Logger.e(e);
-                    }
-                    try {
-                        key = MediaProperty.TRACK.getKeyName();
-                        if (propertyMap.containsKey(key)) data.setTrackNumber(Integer.valueOf(key));
-                    } catch (Exception e) {
-                        Logger.e(e);
-                    }
-                    data.setTimestamp((int) (System.currentTimeMillis() / 1000));
-
-                    ScrobbleResult result = Track.scrobble(data, session);
-                    return result.isSuccessful();
+                    return scrobble(session, propertyMap);
                 } else if (postType == PostType.LOVE) {
-                    // Love
-                    String track  = propertyMap.get(MediaProperty.TITLE.getKeyName());
-                    String artist  = propertyMap.get(MediaProperty.ARTIST.getKeyName());
-
-                    Result res = Track.love(artist, track, session);
-                    return res.isSuccessful();
+                    return love(session, propertyMap);
                 } else if (postType == PostType.UNLOVE) {
-                    // UnLove
-                    String track  = propertyMap.get(MediaProperty.TITLE.getKeyName());
-                    String artist  = propertyMap.get(MediaProperty.ARTIST.getKeyName());
-
-                    Result res = Track.unlove(artist, track, session);
-                    return res.isSuccessful();
+                    return unlove(session, propertyMap);
                 } else {
-                    return false;
+                    return PostResult.IGNORE;
                 }
-
             } catch (Exception e) {
                 Logger.e(e);
-                return false;
+                return PostResult.FAILED;
+            } finally {
+                session = null;
             }
         }
 
         @Override
-        protected void onPostExecute(Boolean result) {
+        protected void onPostExecute(PostResult result) {
             if (isCancelled())
                 return; // キャンセルの場合は無視
 
+            if (result == PostResult.IGNORE || result == PostResult.SAVED) {
+                return;
+            } else if (result == PostResult.AUTH_FAILED) {
+                AppUtils.showToast(context, R.string.message_account_not_auth);
+                return;
+            }
+
             if (postType == PostType.SCROBBLE) {
                 // Scrobble
-                if (result) {
+                if (result == PostResult.SUCCEEDED) {
                     if (sharedPreferences.getBoolean(context.getString(R.string.prefkey_tweet_success_message_show), false)) {
                         AppUtils.showToast(context, R.string.message_post_success); // Succeed
                     }
@@ -294,14 +292,14 @@ public class PluginReceiver extends BroadcastReceiver {
                 }
             } else if (postType == PostType.LOVE) {
                 // Love
-                if (result) {
+                if (result == PostResult.SUCCEEDED) {
                     AppUtils.showToast(context, context.getString(R.string.message_love_success,  propertyMap.get(MediaProperty.TITLE.getKeyName()))); // Succeed
                 } else {
                     AppUtils.showToast(context, R.string.message_love_failure); // Failed
                 }
             } else if (postType == PostType.UNLOVE) {
                 // UnLove
-                if (result) {
+                if (result == PostResult.SUCCEEDED) {
                     AppUtils.showToast(context, context.getString(R.string.message_unlove_success,  propertyMap.get(MediaProperty.TITLE.getKeyName()))); // Succeed
                 } else {
                     AppUtils.showToast(context, R.string.message_unlove_failure); // Failed
@@ -309,6 +307,148 @@ public class PluginReceiver extends BroadcastReceiver {
             }
 
             session = null;
+        }
+    }
+
+
+    /**
+     * Scrobble.
+     * @param session セッション。
+     * @param propertyMap プロパティマップ。
+     * @return 投稿結果。
+     */
+    private PostResult scrobble(Session session, Map<String, String> propertyMap) {
+        if (propertyMap == null)
+            return PostResult.FAILED;
+
+        try {
+            String key;
+            ScrobbleData data = new ScrobbleData();
+
+            key = MediaProperty.MUSICBRAINZ_RELEASEID.getKeyName();
+            if (propertyMap.containsKey(key)) data.setMusicBrainzId(propertyMap.get(key));
+            key = MediaProperty.TITLE.getKeyName();
+            if (propertyMap.containsKey(key)) data.setTrack(propertyMap.get(key));
+            key = MediaProperty.ARTIST.getKeyName();
+            if (propertyMap.containsKey(key)) data.setArtist(propertyMap.get(key));
+            key = MediaProperty.ALBUM_ARTIST.getKeyName();
+            if (propertyMap.containsKey(key)) data.setAlbumArtist(propertyMap.get(key));
+            key = MediaProperty.ALBUM.getKeyName();
+            if (propertyMap.containsKey(key)) data.setAlbum(propertyMap.get(key));
+
+            try {
+                key = MediaProperty.DURATION.getKeyName();
+                if (propertyMap.containsKey(key)) data.setDuration(Integer.valueOf(key));
+            } catch (Exception e) {
+                Logger.e(e);
+            }
+            try {
+                key = MediaProperty.TRACK.getKeyName();
+                if (propertyMap.containsKey(key)) data.setTrackNumber(Integer.valueOf(key));
+            } catch (Exception e) {
+                Logger.e(e);
+            }
+            data.setTimestamp((int) (System.currentTimeMillis() / 1000));
+
+            // 無効データを無視
+            if (TextUtils.isEmpty(data.getTrack()) || TextUtils.isEmpty(data.getArtist()))
+                return PostResult.IGNORE;
+
+            // 送信データ作成
+            List<ScrobbleData> dataList = new ArrayList<>();
+            ScrobbleData[] datas = AppUtils.loadObject(context, context.getString(R.string.prefkey_unsent_scrobble_data), ScrobbleData[].class);
+            if (datas != null) dataList.addAll(Arrays.asList(datas)); // 未送信データ読み込み
+            dataList.add(data);
+
+            // セッションがある場合は送信
+            if (session != null) {
+                List<ScrobbleResult> resultList = new ArrayList<>(dataList.size());
+                final int maxSize = 50;
+                int from = 0;
+                while (from < dataList.size()) {
+                    int to = Math.min(from + maxSize, dataList.size());
+                    List<ScrobbleData> subDataList = dataList.subList(from, to);
+                    resultList.addAll(Track.scrobble(subDataList, session));
+                    from += maxSize;
+                }
+
+                // 送信成功項目を削除
+                for (int i = resultList.size() - 1; i >= 0; i--) {
+                    ScrobbleResult result = resultList.get(i);
+                    if (result.isSuccessful()) {
+                        dataList.remove(i);
+                    }
+                }
+            }
+
+            // 未送信データを保存
+            AppUtils.saveObject(context, context.getString(R.string.prefkey_unsent_scrobble_data), dataList.toArray());
+
+            if (session == null) {
+                return PostResult.SAVED;
+            } else  if (dataList.size() == 0)
+                return PostResult.SUCCEEDED;
+            else
+                return PostResult.FAILED;
+        } catch (Exception e) {
+            Logger.e(e);
+            return PostResult.FAILED;
+        }
+    }
+
+    /**
+     * Love.
+     * @param session セッション。
+     * @param propertyMap プロパティマップ。
+     * @return 投稿結果。
+     */
+    private PostResult love(Session session, Map<String, String> propertyMap) {
+        if (session == null || propertyMap == null)
+            return PostResult.FAILED;
+
+        try {
+            // 無効データを無視
+            String track  = propertyMap.get(MediaProperty.TITLE.getKeyName());
+            String artist  = propertyMap.get(MediaProperty.ARTIST.getKeyName());
+            if (TextUtils.isEmpty(track) || TextUtils.isEmpty(artist))
+                return PostResult.IGNORE;
+
+            Result res = Track.love(artist, track, session);
+            if (res.isSuccessful())
+                return PostResult.SUCCEEDED;
+            else
+                return PostResult.FAILED;
+        } catch (Exception e) {
+            Logger.e(e);
+            return PostResult.FAILED;
+        }
+    }
+
+    /**
+     * UnLove.
+     * @param session セッション。
+     * @param propertyMap プロパティマップ。
+     * @return 投稿結果。
+     */
+    private PostResult unlove(Session session, Map<String, String> propertyMap) {
+        if (session == null || propertyMap == null)
+            return PostResult.FAILED;
+
+        try {
+            // 無効データを無視
+            String track  = propertyMap.get(MediaProperty.TITLE.getKeyName());
+            String artist  = propertyMap.get(MediaProperty.ARTIST.getKeyName());
+            if (TextUtils.isEmpty(track) || TextUtils.isEmpty(artist))
+                return PostResult.IGNORE;
+
+            Result res = Track.unlove(artist, track, session);
+            if (res.isSuccessful())
+                return PostResult.SUCCEEDED;
+            else
+                return PostResult.FAILED;
+        } catch (Exception e) {
+            Logger.e(e);
+            return PostResult.FAILED;
         }
     }
 
