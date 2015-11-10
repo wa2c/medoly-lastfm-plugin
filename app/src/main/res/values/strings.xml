@@ -8,6 +8,7 @@
     <string name="label_execute_site">Last.fm</string>
 
     <!-- Activity -->
+    <string name="title_activity_unsent_list">Unsent List</string>
     <string name="title_activity_settings">Setting</string>
 
 
@@ -23,6 +24,7 @@
     <string name="message_auth_failure">Auth failed.</string>
 
 
+
     <!-- Main Activity -->
     <string name="label_button_account_auth">Account Auth</string>
     <string name="label_button_lastfm_site">Last.fm Site</string>
@@ -33,8 +35,21 @@
     <string name="message_account_not_auth">Account is not been authenticated.</string>
     <string name="message_account_clear">Account auth cleared.</string>
 
+    <!-- Unsent List Activity -->
+    <string name="label_unsent_played_time">Played time: %1$s</string>
+    <string name="label_unsent_save_disabled">Not save</string>
+    <string name="label_unsent_check_all">Check All</string>
+    <string name="label_unsent_delete">Delete</string>
+    <string name="message_dialog_unsent_delete_confirm">Delete checked data.</string>
+    <string name="message_unsent_check_data">Check data.</string>
+    <string name="message_unsent_delete_failure">Failed to delete data.</string>
+    <string name="message_unsent_no_data">No unsent data.</string>
+    <string name="title_dialog_unsent_delete_confirm">Confirm</string>
+
     <!-- Settings Activity -->
     <string name="settings_summary_current_value">[Current Value: %1$s]</string>
+
+
 
     <!-- Auth Dialog -->
     <string name="title_dialog_auth">Account Auth</string>

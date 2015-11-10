@@ -17,7 +17,6 @@ import com.wa2c.android.medoly.utils.Logger;
 
 import java.io.File;
 import java.io.Serializable;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -323,52 +322,60 @@ public class PluginReceiver extends BroadcastReceiver {
 
         try {
             String key;
-            ScrobbleData data = new ScrobbleData();
+            ScrobbleData newData = new ScrobbleData();
 
             key = MediaProperty.MUSICBRAINZ_RELEASEID.getKeyName();
-            if (propertyMap.containsKey(key)) data.setMusicBrainzId(propertyMap.get(key));
+            if (propertyMap.containsKey(key)) newData.setMusicBrainzId(propertyMap.get(key));
             key = MediaProperty.TITLE.getKeyName();
-            if (propertyMap.containsKey(key)) data.setTrack(propertyMap.get(key));
+            if (propertyMap.containsKey(key)) newData.setTrack(propertyMap.get(key));
             key = MediaProperty.ARTIST.getKeyName();
-            if (propertyMap.containsKey(key)) data.setArtist(propertyMap.get(key));
+            if (propertyMap.containsKey(key)) newData.setArtist(propertyMap.get(key));
             key = MediaProperty.ALBUM_ARTIST.getKeyName();
-            if (propertyMap.containsKey(key)) data.setAlbumArtist(propertyMap.get(key));
+            if (propertyMap.containsKey(key)) newData.setAlbumArtist(propertyMap.get(key));
             key = MediaProperty.ALBUM.getKeyName();
-            if (propertyMap.containsKey(key)) data.setAlbum(propertyMap.get(key));
+            if (propertyMap.containsKey(key)) newData.setAlbum(propertyMap.get(key));
 
             try {
                 key = MediaProperty.DURATION.getKeyName();
-                if (propertyMap.containsKey(key)) data.setDuration(Integer.valueOf(key));
+                if (propertyMap.containsKey(key)) newData.setDuration(Integer.valueOf(key));
             } catch (Exception e) {
                 Logger.e(e);
             }
             try {
                 key = MediaProperty.TRACK.getKeyName();
-                if (propertyMap.containsKey(key)) data.setTrackNumber(Integer.valueOf(key));
+                if (propertyMap.containsKey(key)) newData.setTrackNumber(Integer.valueOf(key));
             } catch (Exception e) {
                 Logger.e(e);
             }
-            data.setTimestamp((int) (System.currentTimeMillis() / 1000));
+            newData.setTimestamp((int) (System.currentTimeMillis() / 1000));
 
             // 無効データを無視
-            if (TextUtils.isEmpty(data.getTrack()) || TextUtils.isEmpty(data.getArtist()))
+            if (TextUtils.isEmpty(newData.getTrack()) || TextUtils.isEmpty(newData.getArtist()))
                 return PostResult.IGNORE;
 
             // 送信データ作成
             List<ScrobbleData> dataList = new ArrayList<>();
-            ScrobbleData[] datas = AppUtils.loadObject(context, context.getString(R.string.prefkey_unsent_scrobble_data), ScrobbleData[].class);
-            if (datas != null) dataList.addAll(Arrays.asList(datas)); // 未送信データ読み込み
-            dataList.add(data);
+            ScrobbleData[] dataArray = AppUtils.loadObject(context, context.getString(R.string.prefkey_unsent_scrobble_data), ScrobbleData[].class);
+            if (dataArray != null) dataList.addAll(Arrays.asList(dataArray)); // 未送信データ読み込み
+            dataList.add(newData);
 
             // セッションがある場合は送信
             if (session != null) {
                 List<ScrobbleResult> resultList = new ArrayList<>(dataList.size());
                 final int maxSize = 50;
                 int from = 0;
+                boolean cancelSending = true;
                 while (from < dataList.size()) {
                     int to = Math.min(from + maxSize, dataList.size());
                     List<ScrobbleData> subDataList = dataList.subList(from, to);
                     resultList.addAll(Track.scrobble(subDataList, session));
+                    for (ScrobbleResult r : resultList) {
+                        if (r.isSuccessful()) {
+                            cancelSending = false;
+                            break;
+                        }
+                    }
+                    if (cancelSending) break; // 1件も送信できていない場合、以降の送信処理をキャンセル
                     from += maxSize;
                 }
 
@@ -381,12 +388,18 @@ public class PluginReceiver extends BroadcastReceiver {
                 }
             }
 
+            boolean notSave = sharedPreferences.getBoolean(context.getString(R.string.prefkey_unsent_scrobble_not_save), false);
+
+            // 保存なし (既存のデータはそのまま残す)
+            if (notSave) {
+                dataList.remove(newData);
+            }
             // 未送信データを保存
             AppUtils.saveObject(context, context.getString(R.string.prefkey_unsent_scrobble_data), dataList.toArray());
 
-            if (session == null) {
+            if (session == null && !notSave) {
                 return PostResult.SAVED;
-            } else  if (dataList.size() == 0)
+            } else if (dataList.size() == 0)
                 return PostResult.SUCCEEDED;
             else
                 return PostResult.FAILED;

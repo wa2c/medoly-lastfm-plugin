@@ -8,6 +8,7 @@
     <string name="label_execute_site">Last.fmを開く</string>
 
     <!-- Activity -->
+    <string name="title_activity_unsent_list">未送信リスト</string>
     <string name="title_activity_settings">設定</string>
 
     <!-- Post -->
@@ -22,6 +23,8 @@
     <string name="message_auth_success">認証が完了しました。</string>
     <string name="message_auth_failure">認証に失敗しました。</string>
 
+
+
     <!-- Main Activity -->
     <string name="label_button_account_auth">アカウント認証</string>
     <string name="label_button_lastfm_site">Last.fm サイト</string>
@@ -32,8 +35,21 @@
     <string name="message_account_not_auth">アカウントが認証されていません。</string>
     <string name="message_account_clear">アカウント情報をクリアしました。</string>
 
+    <!-- Unsent List Activity -->
+    <string name="label_unsent_played_time">再生日時: %1$s</string>
+    <string name="label_unsent_save_disabled">保存しない</string>
+    <string name="label_unsent_check_all">全チェック</string>
+    <string name="label_unsent_delete">削除</string>
+    <string name="message_dialog_unsent_delete_confirm">チェックされたデータを削除します。</string>
+    <string name="message_unsent_check_data">対象データをチェックしてください。</string>
+    <string name="message_unsent_delete_failure">データの削除に失敗しました。</string>
+    <string name="message_unsent_no_data">未送信のデータはありません。</string>
+    <string name="title_dialog_unsent_delete_confirm">確認</string>
+
     <!-- Settings Activity -->
     <string name="settings_summary_current_value">[Current Value: %1$s]</string>
+
+
 
     <!-- Auth Dialog -->
     <string name="title_dialog_auth">アカウント認証</string>

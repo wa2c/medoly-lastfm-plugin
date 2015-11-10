@@ -28,6 +28,7 @@
     <string name="prefkey_auth_password">auth_password</string>
 
     <string name="prefkey_unsent_scrobble_data">unsent_scrobble_data</string>
+    <string name="prefkey_unsent_scrobble_not_save">unsent_scrobble_not_save</string>
 
     <string name="prefkey_operation_play_now_enabled">operation_play_now_enabled</string>
     <string name="prefkey_operation_play_start_enabled">operation_play_start_enabled</string>

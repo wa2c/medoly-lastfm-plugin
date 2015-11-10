@@ -5,7 +5,10 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.Fragment;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.widget.Toast;
 
 import com.wa2c.android.medoly.plugin.action.lastfm.R;
@@ -23,6 +26,11 @@ public abstract class AbstractDialogFragment extends DialogFragment {
      * ダイアログ状態管理。
      */
     private static final Map<String, DialogFragment> shownDialogMap = new HashMap<>();
+
+    /** アクティビティ。 */
+    protected Activity context;
+    /** 設定。 */
+    protected SharedPreferences preferences;
 
 
 
@@ -65,6 +73,19 @@ public abstract class AbstractDialogFragment extends DialogFragment {
     }
 
 
+
+    /**
+     * onCreateDialogイベント処理。
+     */
+    @Override
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+        super.onCreateDialog(savedInstanceState);
+
+        context = getActivity();
+        preferences = PreferenceManager.getDefaultSharedPreferences(context);
+
+        return null;
+    }
 
     /**
      * onConfigurationChangedイベント処理。

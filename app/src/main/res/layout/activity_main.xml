@@ -26,12 +26,12 @@
                 android:text="@string/label_button_account_auth" />
 
             <Button
+                android:id="@+id/unsentListButton"
                 android:layout_width="@dimen/main_button_width"
                 android:layout_height="wrap_content"
-                android:text="@string/label_button_lastfm_site"
-                android:id="@+id/lastfmSiteButton"
                 android:layout_gravity="center_horizontal"
-                android:layout_margin="@dimen/main_button_margin" />
+                android:layout_margin="@dimen/main_button_margin"
+                android:text="@string/title_activity_unsent_list" />
 
             <Button
                 android:id="@+id/settingsButton"
@@ -40,6 +40,14 @@
                 android:layout_gravity="center"
                 android:layout_margin="@dimen/main_button_margin"
                 android:text="@string/label_button_settings" />
+
+            <Button
+                android:id="@+id/lastfmSiteButton"
+                android:layout_width="@dimen/main_button_width"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="@dimen/main_button_margin"
+                android:text="@string/label_button_lastfm_site" />
 
             <Button
                 android:id="@+id/launchMedolyButton"
@@ -54,18 +62,18 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
+                android:layout_margin="@dimen/main_button_margin"
                 android:text="@string/message_no_medoly"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:layout_margin="@dimen/main_button_margin" />
+                android:textAppearance="?android:attr/textAppearanceMedium" />
 
             <TextView
                 android:id="@+id/accountAuthTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
+                android:layout_margin="@dimen/main_button_margin"
                 android:text="@string/message_account_auth"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:layout_margin="@dimen/main_button_margin" />
+                android:textAppearance="?android:attr/textAppearanceMedium" />
 
         </LinearLayout>
     </ScrollView>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.wa2c.android.medoly.plugin.action.lastfm">
+    package="com.wa2c.android.medoly.plugin.action.lastfm" >
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -11,25 +11,25 @@
         android:description="@string/app_description"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme" >
         <activity
-            android:name="com.wa2c.android.medoly.plugin.action.lastfm.MainActivity"
-            android:launchMode="singleTask">
+            android:name=".MainActivity"
+            android:launchMode="singleTask" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
             </intent-filter>
         </activity>
         <activity
-            android:name="com.wa2c.android.medoly.plugin.action.lastfm.SettingsActivity"
+            android:name=".SettingsActivity"
             android:label="@string/title_activity_settings"
             android:launchMode="singleTask" />
 
         <receiver
-            android:name="com.wa2c.android.medoly.plugin.action.lastfm.PluginReceiver"
-            android:label="@string/class_receiver_label">
-
+            android:name=".PluginReceiver"
+            android:label="@string/class_receiver_label" >
             <intent-filter>
                 <action android:name="com.wa2c.android.medoly.plugin.action.ACTION_MEDIA" />
 
@@ -39,19 +39,37 @@
                 <category android:name="com.wa2c.android.medoly.plugin.category.OPERATION_PLAY_START" />
             </intent-filter>
 
-            <meta-data android:name="execute_id_love" android:value="0" />
-            <meta-data android:name="execute_label_love" android:resource="@string/label_execute_love" />
-            <meta-data android:name="execute_icon_love" android:resource="@drawable/ic_action_love" />
-
-            <meta-data android:name="execute_id_unlove" android:value="1" />
-            <meta-data android:name="execute_label_unlove" android:resource="@string/label_execute_unlove" />
-            <meta-data android:name="execute_icon_unlove" android:resource="@drawable/ic_action_unlove" />
-
-            <meta-data android:name="execute_id_site" android:value="2" />
-            <meta-data android:name="execute_label_site" android:resource="@string/label_execute_site" />
-            <meta-data android:name="execute_icon_site" android:resource="@drawable/ic_action_lastfm" />
-
+            <meta-data
+                android:name="execute_id_love"
+                android:value="0" />
+            <meta-data
+                android:name="execute_label_love"
+                android:resource="@string/label_execute_love" />
+            <meta-data
+                android:name="execute_icon_love"
+                android:resource="@drawable/ic_action_love" />
+            <meta-data
+                android:name="execute_id_unlove"
+                android:value="1" />
+            <meta-data
+                android:name="execute_label_unlove"
+                android:resource="@string/label_execute_unlove" />
+            <meta-data
+                android:name="execute_icon_unlove"
+                android:resource="@drawable/ic_action_unlove" />
+            <meta-data
+                android:name="execute_id_site"
+                android:value="2" />
+            <meta-data
+                android:name="execute_label_site"
+                android:resource="@string/label_execute_site" />
+            <meta-data
+                android:name="execute_icon_site"
+                android:resource="@drawable/ic_action_lastfm" />
         </receiver>
+
+        <activity android:name=".UnsentListActivity" >
+        </activity>
     </application>
 
 </manifest>
