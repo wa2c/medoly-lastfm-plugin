@@ -281,11 +281,11 @@ public class PluginReceiver extends BroadcastReceiver {
             if (postType == PostType.SCROBBLE) {
                 // Scrobble
                 if (result == PostResult.SUCCEEDED) {
-                    if (sharedPreferences.getBoolean(context.getString(R.string.prefkey_tweet_success_message_show), false)) {
+                    if (sharedPreferences.getBoolean(context.getString(R.string.prefkey_post_success_message_show), false)) {
                         AppUtils.showToast(context, R.string.message_post_success); // Succeed
                     }
                 } else {
-                    if (sharedPreferences.getBoolean(context.getString(R.string.prefkey_tweet_failure_message_show), true)) {
+                    if (sharedPreferences.getBoolean(context.getString(R.string.prefkey_post_failure_message_show), true)) {
                         AppUtils.showToast(context, R.string.message_post_failure); // Failed
                     }
                 }
@@ -394,6 +394,22 @@ public class PluginReceiver extends BroadcastReceiver {
             if (notSave) {
                 dataList.remove(newData);
             }
+
+            // 未送信データ保存件数上限取得
+            int unsentMax;
+            int maxDefault = context.getResources().getInteger(R.integer.pref_default_unsent_max);
+            String unsentMaxString = sharedPreferences.getString(context.getString(R.string.prefkey_unsent_max), String.valueOf(maxDefault));
+            try {
+                unsentMax = Integer.parseInt(unsentMaxString);
+            } catch (Exception e) {
+                unsentMax = maxDefault;
+            }
+
+            // 上限以上を削除
+            if (unsentMax > 0 && dataList.size() > unsentMax) {
+                dataList = dataList.subList(dataList.size() - unsentMax, unsentMax);
+            }
+
             // 未送信データを保存
             AppUtils.saveObject(context, context.getString(R.string.prefkey_unsent_scrobble_data), dataList.toArray());
 

@@ -33,11 +33,13 @@
     <string name="prefkey_operation_play_now_enabled">operation_play_now_enabled</string>
     <string name="prefkey_operation_play_start_enabled">operation_play_start_enabled</string>
     <string name="prefkey_previous_media_enabled">previous_media_enabled</string>
-    <string name="prefkey_trim_before_empty_enabled">trim_before_empty_enabled</string>
-    <string name="prefkey_omit_newline">omit_newline</string>
-    <string name="prefkey_tweet_success_message_show">tweet_success_message_show</string>
-    <string name="prefkey_tweet_failure_message_show">tweet_failure_message_show</string>
+    <string name="prefkey_post_success_message_show">post_success_message_show</string>
+    <string name="prefkey_post_failure_message_show">post_failure_message_show</string>
+    <string name="prefkey_unsent_max">unsent_max</string>
     <string name="prefkey_application_details">application_details</string>
     <string name="prefkey_about">about</string>
+
+    <!-- Default -->
+    <integer name="pref_default_unsent_max">1000</integer>
 
 </resources>

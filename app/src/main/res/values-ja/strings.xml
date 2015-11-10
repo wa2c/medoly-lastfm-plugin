@@ -47,7 +47,7 @@
     <string name="title_dialog_unsent_delete_confirm">確認</string>
 
     <!-- Settings Activity -->
-    <string name="settings_summary_current_value">[Current Value: %1$s]</string>
+    <string name="settings_summary_current_value">[現在の値: %1$s]</string>
 
 
 
@@ -71,6 +71,8 @@
     <string name="pref_summary_post_success_message_show">送信に成功した際にメッセージを表示します。</string>
     <string name="pref_title_post_failure_message_show">失敗メッセージ表示</string>
     <string name="pref_summary_post_failure_message_show">送信に失敗した際にメッセージを表示します。</string>
+    <string name="pref_title_unsent_max">未送信データ上限</string>
+    <string name="pref_summary_unsent_max">未送信データ保存件数の上限を設定します。0の場合は無制限となります。</string>
     <string name="pref_title_application_details">アプリ情報</string>
     <string name="pref_summary_application_details">アプリ情報を表示します。</string>
     <string name="pref_title_about">About</string>

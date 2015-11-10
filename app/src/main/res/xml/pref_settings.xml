@@ -20,15 +20,24 @@
 
     <CheckBoxPreference
         android:defaultValue="false"
-        android:key="@string/prefkey_tweet_success_message_show"
+        android:key="@string/prefkey_post_success_message_show"
         android:summary="@string/pref_summary_post_success_message_show"
         android:title="@string/pref_title_post_success_message_show" />
 
     <CheckBoxPreference
         android:defaultValue="true"
-        android:key="@string/prefkey_tweet_failure_message_show"
+        android:key="@string/prefkey_post_failure_message_show"
         android:summary="@string/pref_summary_post_failure_message_show"
         android:title="@string/pref_title_post_failure_message_show" />
+
+    <EditTextPreference
+        android:defaultValue="@integer/pref_default_unsent_max"
+        android:digits="0123456789"
+        android:inputType="number"
+        android:key="@string/prefkey_unsent_max"
+        android:maxLength="5"
+        android:summary="@string/pref_summary_unsent_max"
+        android:title="@string/pref_title_unsent_max" />
 
     <Preference
         android:key="@string/prefkey_application_details"
