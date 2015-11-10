@@ -4,7 +4,9 @@
     <string name="app_description">Send the media information of playing to Last.fm in Medoly.</string>
     <string name="class_receiver_label">Last.fm actions.</string>
     <string name="label_execute_love">Love</string>
-    <string name="label_execute_unlove">UnLove</string>
+    <string name="label_execute_unlove">Unlove</string>
+    <string name="label_execute_ban">Ban</string>
+    <string name="label_execute_unban">Unban</string>
     <string name="label_execute_site">Last.fm</string>
 
     <!-- Activity -->
@@ -20,6 +22,10 @@
     <string name="message_love_failure">Failed to add to love tracks.</string>
     <string name="message_unlove_success">\"%1$s\" was removed from love tracks.</string>
     <string name="message_unlove_failure">Failed to remove from love tracks.</string>
+    <string name="message_ban_success">\"%1$s\" was added to ban tracks.</string>
+    <string name="message_ban_failure">Failed to add to ban tracks.</string>
+    <string name="message_unban_success">\"%1$s\" was removed from ban tracks.</string>
+    <string name="message_unban_failure">Failed to remove from ban tracks.</string>
     <string name="message_auth_success">Auth succeeded.</string>
     <string name="message_auth_failure">Auth failed.</string>
 

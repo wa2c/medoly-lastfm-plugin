@@ -48,6 +48,7 @@
             <meta-data
                 android:name="execute_icon_love"
                 android:resource="@drawable/ic_action_love" />
+
             <meta-data
                 android:name="execute_id_unlove"
                 android:value="1" />
@@ -57,9 +58,32 @@
             <meta-data
                 android:name="execute_icon_unlove"
                 android:resource="@drawable/ic_action_unlove" />
+
+            <!-- 実行不可のため封印
+            <meta-data
+                android:name="execute_id_ban"
+                android:value="2" />
+            <meta-data
+                android:name="execute_label_ban"
+                android:resource="@string/label_execute_ban" />
+            <meta-data
+                android:name="execute_icon_ban"
+                android:resource="@drawable/ic_action_ban" />
+
+            <meta-data
+                android:name="execute_id_unban"
+                android:value="3" />
+            <meta-data
+                android:name="execute_label_unban"
+                android:resource="@string/label_execute_unban" />
+            <meta-data
+                android:name="execute_icon_unban"
+                android:resource="@drawable/ic_action_unban" />
+            -->
+
             <meta-data
                 android:name="execute_id_site"
-                android:value="2" />
+                android:value="4" />
             <meta-data
                 android:name="execute_label_site"
                 android:resource="@string/label_execute_site" />

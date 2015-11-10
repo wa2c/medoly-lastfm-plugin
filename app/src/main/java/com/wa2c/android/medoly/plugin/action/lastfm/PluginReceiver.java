@@ -55,8 +55,12 @@ public class PluginReceiver extends BroadcastReceiver {
         SCROBBLE,
         /** Love */
         LOVE,
-        /** UnLove */
-        UNLOVE
+        /** Unlove */
+        UNLOVE,
+        /** Ban */
+        BAN,
+        /** Unban */
+        UNBAN,
     }
 
 
@@ -93,7 +97,7 @@ public class PluginReceiver extends BroadcastReceiver {
 
         // URIを取得
         Uri mediaUri = null;
-        Object extraStream = null;
+        Object extraStream;
         if (extras != null && (extraStream = intent.getExtras().get(Intent.EXTRA_STREAM)) != null && extraStream instanceof Uri) {
             mediaUri = (Uri)extraStream;
         } else if (intent.getData() != null) {
@@ -141,15 +145,23 @@ public class PluginReceiver extends BroadcastReceiver {
             // Execute
             final String EXECUTE_LOVE_ID = "execute_id_love";
             final String EXECUTE_UNLOVE_ID = "execute_id_unlove";
+            final String EXECUTE_BAN_ID = "execute_id_ban";
+            final String EXECUTE_UNBAN_ID = "execute_id_unban";
             final String EXECUTE_SITE_ID = "execute_id_site";
 
             if (extras != null) {
                 if (extras.keySet().contains(EXECUTE_LOVE_ID)) {
                     // Love
                     post(mediaUri, propertyMap, PostType.LOVE);
-                }  if (extras.keySet().contains(EXECUTE_UNLOVE_ID)) {
+                } else if (extras.keySet().contains(EXECUTE_UNLOVE_ID)) {
                     // UnLove
                     post(mediaUri, propertyMap, PostType.UNLOVE);
+                } else if (extras.keySet().contains(EXECUTE_BAN_ID)) {
+                    // Ban
+                    post(mediaUri, propertyMap, PostType.BAN);
+                } else if (extras.keySet().contains(EXECUTE_UNBAN_ID)) {
+                    // UnBan
+                    post(mediaUri, propertyMap, PostType.UNBAN);
                 } else if (extras.keySet().contains(EXECUTE_SITE_ID)) {
                     // Last.fm
                     String username = sharedPreferences.getString(context.getString(R.string.prefkey_auth_username), "");
@@ -255,6 +267,10 @@ public class PluginReceiver extends BroadcastReceiver {
                     return love(session, propertyMap);
                 } else if (postType == PostType.UNLOVE) {
                     return unlove(session, propertyMap);
+                } else if (postType == PostType.BAN) {
+                    return ban(session, propertyMap);
+                } else if (postType == PostType.UNBAN) {
+                    return unban(session, propertyMap);
                 } else {
                     return PostResult.IGNORE;
                 }
@@ -302,6 +318,20 @@ public class PluginReceiver extends BroadcastReceiver {
                     AppUtils.showToast(context, context.getString(R.string.message_unlove_success,  propertyMap.get(MediaProperty.TITLE.getKeyName()))); // Succeed
                 } else {
                     AppUtils.showToast(context, R.string.message_unlove_failure); // Failed
+                }
+            } else if (postType == PostType.BAN) {
+                // Love
+                if (result == PostResult.SUCCEEDED) {
+                    AppUtils.showToast(context, context.getString(R.string.message_ban_success,  propertyMap.get(MediaProperty.TITLE.getKeyName()))); // Succeed
+                } else {
+                    AppUtils.showToast(context, R.string.message_ban_failure); // Failed
+                }
+            } else if (postType == PostType.UNBAN) {
+                // UnLove
+                if (result == PostResult.SUCCEEDED) {
+                    AppUtils.showToast(context, context.getString(R.string.message_unban_success,  propertyMap.get(MediaProperty.TITLE.getKeyName()))); // Succeed
+                } else {
+                    AppUtils.showToast(context, R.string.message_unban_failure); // Failed
                 }
             }
 
@@ -407,7 +437,7 @@ public class PluginReceiver extends BroadcastReceiver {
 
             // 上限以上を削除
             if (unsentMax > 0 && dataList.size() > unsentMax) {
-                dataList = dataList.subList(dataList.size() - unsentMax, unsentMax);
+                dataList = dataList.subList(dataList.size() - unsentMax, dataList.size());
             }
 
             // 未送信データを保存
@@ -427,9 +457,9 @@ public class PluginReceiver extends BroadcastReceiver {
 
     /**
      * Love.
-     * @param session セッション。
-     * @param propertyMap プロパティマップ。
-     * @return 投稿結果。
+     * @param session Session.
+     * @param propertyMap PropertyMap.
+     * @return PostResult.
      */
     private PostResult love(Session session, Map<String, String> propertyMap) {
         if (session == null || propertyMap == null)
@@ -455,9 +485,9 @@ public class PluginReceiver extends BroadcastReceiver {
 
     /**
      * UnLove.
-     * @param session セッション。
-     * @param propertyMap プロパティマップ。
-     * @return 投稿結果。
+     * @param session Session.
+     * @param propertyMap PropertyMap.
+     * @return PostResult.
      */
     private PostResult unlove(Session session, Map<String, String> propertyMap) {
         if (session == null || propertyMap == null)
@@ -481,5 +511,61 @@ public class PluginReceiver extends BroadcastReceiver {
         }
     }
 
+    /**
+     * Ban.
+     * @param session Session.
+     * @param propertyMap PropertyMap.
+     * @return PostResult.
+     */
+    private PostResult ban(Session session, Map<String, String> propertyMap) {
+        if (session == null || propertyMap == null)
+            return PostResult.FAILED;
+
+        try {
+            // 無効データを無視
+            String track  = propertyMap.get(MediaProperty.TITLE.getKeyName());
+            String artist  = propertyMap.get(MediaProperty.ARTIST.getKeyName());
+            if (TextUtils.isEmpty(track) || TextUtils.isEmpty(artist))
+                return PostResult.IGNORE;
+
+            Result res = Track.ban(artist, track, session);
+            if (res.isSuccessful())
+                return PostResult.SUCCEEDED;
+            else
+                return PostResult.FAILED;
+        } catch (Exception e) {
+            Logger.e(e);
+            return PostResult.FAILED;
+        }
+    }
+
+
+    /**
+     * Unban.
+     * @param session Session.
+     * @param propertyMap PropertyMap.
+     * @return PostResult.
+     */
+    private PostResult unban(Session session, Map<String, String> propertyMap) {
+        if (session == null || propertyMap == null)
+            return PostResult.FAILED;
+
+        try {
+            // 無効データを無視
+            String track  = propertyMap.get(MediaProperty.TITLE.getKeyName());
+            String artist = propertyMap.get(MediaProperty.ARTIST.getKeyName());
+            if (TextUtils.isEmpty(track) || TextUtils.isEmpty(artist))
+                return PostResult.IGNORE;
+
+            Result res = Track.unban(artist, track, session);
+            if (res.isSuccessful())
+                return PostResult.SUCCEEDED;
+            else
+                return PostResult.FAILED;
+        } catch (Exception e) {
+            Logger.e(e);
+            return PostResult.FAILED;
+        }
+    }
 
 }
