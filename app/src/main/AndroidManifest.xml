@@ -48,7 +48,6 @@
             <meta-data
                 android:name="execute_icon_love"
                 android:resource="@drawable/ic_action_love" />
-
             <meta-data
                 android:name="execute_id_unlove"
                 android:value="1" />
@@ -59,7 +58,8 @@
                 android:name="execute_icon_unlove"
                 android:resource="@drawable/ic_action_unlove" />
 
-            <!-- 実行不可のため封印
+            <!--
+            実行不可のため封印
             <meta-data
                 android:name="execute_id_ban"
                 android:value="2" />
@@ -94,6 +94,11 @@
 
         <activity android:name=".UnsentListActivity" >
         </activity>
+
+        <service
+            android:name=".PostIntentService"
+            android:exported="false" >
+        </service>
     </application>
 
 </manifest>

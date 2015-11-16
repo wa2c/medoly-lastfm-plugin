@@ -37,8 +37,6 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-
         // Account Auth
         findViewById(R.id.twitterOAuthButton).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -47,7 +45,7 @@ public class MainActivity extends Activity {
                 dialogFragment.setClickListener(new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        SharedPreferences preference = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+                        SharedPreferences preference = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                         if (which == DialogInterface.BUTTON_POSITIVE) {
                             try {
                                 // 認証
@@ -59,13 +57,13 @@ public class MainActivity extends Activity {
                                 // 失敗
                                 preference.edit().remove(getString(R.string.prefkey_auth_username)).apply();
                                 preference.edit().remove(getString(R.string.prefkey_auth_password)).apply();
-                                AppUtils.showToast(MainActivity.this, R.string.message_auth_failure);
+                                AppUtils.showToast(getApplicationContext(), R.string.message_auth_failure);
                             }
                         } else if (which == DialogInterface.BUTTON_NEUTRAL) {
                             // クリア
                             preference.edit().remove(getString(R.string.prefkey_auth_username)).apply();
                             preference.edit().remove(getString(R.string.prefkey_auth_password)).apply();
-                            AppUtils.showToast(MainActivity.this, R.string.message_account_clear);
+                            AppUtils.showToast(getApplicationContext(), R.string.message_account_clear);
                         }
 
                         updateAuthMessage();
@@ -88,8 +86,8 @@ public class MainActivity extends Activity {
 
             @Override
             public void onClick(View v) {
-
-                String username = sharedPreferences.getString(getString(R.string.prefkey_auth_username), "");
+                SharedPreferences preference = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                String username = preference.getString(getString(R.string.prefkey_auth_username), "");
                 Uri uri;
                 if (TextUtils.isEmpty(username)) {
                     // ユーザ未認証
@@ -141,8 +139,8 @@ public class MainActivity extends Activity {
         private String password;
 
         public AsyncAuthTask(String username, String password) {
-            this.preferences = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
-            this.context = MainActivity.this;
+            this.preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+            this.context = getApplicationContext();
             this.username = username;
             this.password = StringUtilities.md5(password); // パスワードはMD5で処理;
         }
@@ -171,7 +169,7 @@ public class MainActivity extends Activity {
             } else {
                 preferences.edit().remove(getString(R.string.prefkey_auth_username)).apply();
                 preferences.edit().remove(getString(R.string.prefkey_auth_password)).apply();
-                AppUtils.showToast(MainActivity.this, R.string.message_auth_failure); // Failed
+                AppUtils.showToast(context, R.string.message_auth_failure); // Failed
             }
 
             updateAuthMessage();
@@ -183,7 +181,7 @@ public class MainActivity extends Activity {
      * 認証状態のメッセージを更新する。
      */
     private void updateAuthMessage() {
-        SharedPreferences preference = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+        SharedPreferences preference = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         String username = preference.getString(getString(R.string.prefkey_auth_username), "");
         String password = preference.getString(getString(R.string.prefkey_auth_password), "");
 

@@ -90,100 +90,105 @@ public class PluginReceiver extends BroadcastReceiver {
      */
     @Override
     public void onReceive(Context context, Intent intent) {
-        this.context = context;
-        this.sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        Intent serviceIntent = new Intent(intent);
+        serviceIntent.setClass(context, PostIntentService.class);
+        context.startService(serviceIntent);
 
-        Bundle extras = intent.getExtras();
 
-        // URIを取得
-        Uri mediaUri = null;
-        Object extraStream;
-        if (extras != null && (extraStream = intent.getExtras().get(Intent.EXTRA_STREAM)) != null && extraStream instanceof Uri) {
-            mediaUri = (Uri)extraStream;
-        } else if (intent.getData() != null) {
-            // Old version
-            mediaUri = intent.getData();
-        }
-
-        // 値を取得
-        HashMap<String, String> propertyMap = null;
-        boolean isEvent = false;
-        try {
-            if (intent.hasExtra(MedolyParam.PLUGIN_VALUE_KEY)) {
-                Serializable serializable = intent.getSerializableExtra(MedolyParam.PLUGIN_VALUE_KEY);
-                if (serializable != null) {
-                    propertyMap = (HashMap<String, String>) serializable;
-                }
-            }
-            if (propertyMap == null || propertyMap.isEmpty()) { return; }
-
-            if (intent.hasExtra(MedolyParam.PLUGIN_EVENT_KEY))
-                isEvent = intent.getBooleanExtra(MedolyParam.PLUGIN_EVENT_KEY, false);
-        } catch (ClassCastException | NullPointerException e) {
-            Logger.e(e);
-            return;
-        }
-
-        // カテゴリ取得
-        Set<String> categories = intent.getCategories();
-        if (categories == null || categories.size() == 0) {
-            return;
-        }
-
-        // 各アクション実行
-        if (categories.contains(PluginOperationCategory.OPERATION_PLAY_START.getCategoryValue())) {
-            // Play Start
-            if (!isEvent || this.sharedPreferences.getBoolean(context.getString(R.string.prefkey_operation_play_start_enabled), false)) {
-                post(mediaUri, propertyMap, PostType.SCROBBLE);
-            }
-        } else if (categories.contains(PluginOperationCategory.OPERATION_PLAY_NOW.getCategoryValue())) {
-            // Play Now
-            if (!isEvent || this.sharedPreferences.getBoolean(context.getString(R.string.prefkey_operation_play_now_enabled), true)) {
-                post(mediaUri, propertyMap, PostType.SCROBBLE);
-            }
-        } else if (categories.contains(PluginOperationCategory.OPERATION_EXECUTE.getCategoryValue())) {
-            // Execute
-            final String EXECUTE_LOVE_ID = "execute_id_love";
-            final String EXECUTE_UNLOVE_ID = "execute_id_unlove";
-            final String EXECUTE_BAN_ID = "execute_id_ban";
-            final String EXECUTE_UNBAN_ID = "execute_id_unban";
-            final String EXECUTE_SITE_ID = "execute_id_site";
-
-            if (extras != null) {
-                if (extras.keySet().contains(EXECUTE_LOVE_ID)) {
-                    // Love
-                    post(mediaUri, propertyMap, PostType.LOVE);
-                } else if (extras.keySet().contains(EXECUTE_UNLOVE_ID)) {
-                    // UnLove
-                    post(mediaUri, propertyMap, PostType.UNLOVE);
-                } else if (extras.keySet().contains(EXECUTE_BAN_ID)) {
-                    // Ban
-                    post(mediaUri, propertyMap, PostType.BAN);
-                } else if (extras.keySet().contains(EXECUTE_UNBAN_ID)) {
-                    // UnBan
-                    post(mediaUri, propertyMap, PostType.UNBAN);
-                } else if (extras.keySet().contains(EXECUTE_SITE_ID)) {
-                    // Last.fm
-                    String username = sharedPreferences.getString(context.getString(R.string.prefkey_auth_username), "");
-                    Uri siteUri;
-                    if (TextUtils.isEmpty(username)) {
-                        // ユーザ未認証
-                        siteUri = Uri.parse(context.getString(R.string.lastfm_url));
-                    } else {
-                        // ユーザ認証済
-                        siteUri = Uri.parse(context.getString(R.string.lastfm_url_user, username));
-                    }
-
-                    Intent launchIntent = new Intent(Intent.ACTION_VIEW, siteUri);
-                    try {
-                        launchIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        context.startActivity(launchIntent);
-                    } catch (android.content.ActivityNotFoundException e) {
-                        Logger.d(e);
-                    }
-                }
-            }
-        }
+//        this.context = context;
+//        this.sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+//
+//        Bundle extras = intent.getExtras();
+//
+//        // URIを取得
+//        Uri mediaUri = null;
+//        Object extraStream;
+//        if (extras != null && (extraStream = intent.getExtras().get(Intent.EXTRA_STREAM)) != null && extraStream instanceof Uri) {
+//            mediaUri = (Uri)extraStream;
+//        } else if (intent.getData() != null) {
+//            // Old version
+//            mediaUri = intent.getData();
+//        }
+//
+//        // 値を取得
+//        HashMap<String, String> propertyMap = null;
+//        boolean isEvent = false;
+//        try {
+//            if (intent.hasExtra(MedolyParam.PLUGIN_VALUE_KEY)) {
+//                Serializable serializable = intent.getSerializableExtra(MedolyParam.PLUGIN_VALUE_KEY);
+//                if (serializable != null) {
+//                    propertyMap = (HashMap<String, String>) serializable;
+//                }
+//            }
+//            if (propertyMap == null || propertyMap.isEmpty()) { return; }
+//
+//            if (intent.hasExtra(MedolyParam.PLUGIN_EVENT_KEY))
+//                isEvent = intent.getBooleanExtra(MedolyParam.PLUGIN_EVENT_KEY, false);
+//        } catch (ClassCastException | NullPointerException e) {
+//            Logger.e(e);
+//            return;
+//        }
+//
+//        // カテゴリ取得
+//        Set<String> categories = intent.getCategories();
+//        if (categories == null || categories.size() == 0) {
+//            return;
+//        }
+//
+//        // 各アクション実行
+//        if (categories.contains(PluginOperationCategory.OPERATION_PLAY_START.getCategoryValue())) {
+//            // Play Start
+//            if (!isEvent || this.sharedPreferences.getBoolean(context.getString(R.string.prefkey_operation_play_start_enabled), false)) {
+//                post(mediaUri, propertyMap, PostType.SCROBBLE);
+//            }
+//        } else if (categories.contains(PluginOperationCategory.OPERATION_PLAY_NOW.getCategoryValue())) {
+//            // Play Now
+//            if (!isEvent || this.sharedPreferences.getBoolean(context.getString(R.string.prefkey_operation_play_now_enabled), true)) {
+//                post(mediaUri, propertyMap, PostType.SCROBBLE);
+//            }
+//        } else if (categories.contains(PluginOperationCategory.OPERATION_EXECUTE.getCategoryValue())) {
+//            // Execute
+//            final String EXECUTE_LOVE_ID = "execute_id_love";
+//            final String EXECUTE_UNLOVE_ID = "execute_id_unlove";
+//            final String EXECUTE_BAN_ID = "execute_id_ban";
+//            final String EXECUTE_UNBAN_ID = "execute_id_unban";
+//            final String EXECUTE_SITE_ID = "execute_id_site";
+//
+//            if (extras != null) {
+//                if (extras.keySet().contains(EXECUTE_LOVE_ID)) {
+//                    // Love
+//                    post(mediaUri, propertyMap, PostType.LOVE);
+//                } else if (extras.keySet().contains(EXECUTE_UNLOVE_ID)) {
+//                    // UnLove
+//                    post(mediaUri, propertyMap, PostType.UNLOVE);
+//                } else if (extras.keySet().contains(EXECUTE_BAN_ID)) {
+//                    // Ban
+//                    post(mediaUri, propertyMap, PostType.BAN);
+//                } else if (extras.keySet().contains(EXECUTE_UNBAN_ID)) {
+//                    // UnBan
+//                    post(mediaUri, propertyMap, PostType.UNBAN);
+//                } else if (extras.keySet().contains(EXECUTE_SITE_ID)) {
+//                    // Last.fm
+//                    String username = sharedPreferences.getString(context.getString(R.string.prefkey_auth_username), "");
+//                    Uri siteUri;
+//                    if (TextUtils.isEmpty(username)) {
+//                        // ユーザ未認証
+//                        siteUri = Uri.parse(context.getString(R.string.lastfm_url));
+//                    } else {
+//                        // ユーザ認証済
+//                        siteUri = Uri.parse(context.getString(R.string.lastfm_url_user, username));
+//                    }
+//
+//                    Intent launchIntent = new Intent(Intent.ACTION_VIEW, siteUri);
+//                    try {
+//                        launchIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                        context.startActivity(launchIntent);
+//                    } catch (android.content.ActivityNotFoundException e) {
+//                        Logger.d(e);
+//                    }
+//                }
+//            }
+//        }
     }
 
 

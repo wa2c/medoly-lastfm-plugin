@@ -52,7 +52,7 @@ public class UnsentListActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_unsent_list);
-        preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
         checkedSet = new TreeSet<>();
 
@@ -115,7 +115,7 @@ public class UnsentListActivity extends Activity {
             @Override
             public void onClick(View v) {
                 if (checkedSet.isEmpty()) {
-                    AppUtils.showToast(UnsentListActivity.this, R.string.message_unsent_check_data);
+                    AppUtils.showToast(getApplicationContext(), R.string.message_unsent_check_data);
                 } else {
                     ConfirmDialogFragment dialogFragment = ConfirmDialogFragment.newInstance(getString(R.string.message_dialog_unsent_delete_confirm), getString(R.string.title_dialog_unsent_delete_confirm));
                     dialogFragment.setClickListener(new DialogInterface.OnClickListener() {
@@ -134,7 +134,7 @@ public class UnsentListActivity extends Activity {
 
                                 // 削除した結果を保存
                                 ScrobbleData[] dataArray = itemList.toArray(new ScrobbleData[itemList.size()]);
-                                if (AppUtils.saveObject(UnsentListActivity.this, getString(R.string.prefkey_unsent_scrobble_data), dataArray)) {
+                                if (AppUtils.saveObject(getApplicationContext(), getString(R.string.prefkey_unsent_scrobble_data), dataArray)) {
                                     items = dataArray;
                                     checkedSet.clear();
                                 } else {
@@ -142,7 +142,7 @@ public class UnsentListActivity extends Activity {
                                 }
                             } catch (Exception e) {
                                 Logger.e(e);
-                                AppUtils.showToast(UnsentListActivity.this, R.string.message_unsent_delete_failure);
+                                AppUtils.showToast(getApplicationContext(), R.string.message_unsent_delete_failure);
                             }
 
                             initializeListView();
@@ -155,7 +155,7 @@ public class UnsentListActivity extends Activity {
         });
 
         // 項目
-        items = AppUtils.loadObject(this, getString(R.string.prefkey_unsent_scrobble_data), ScrobbleData[].class);
+        items = AppUtils.loadObject(getApplicationContext(), getString(R.string.prefkey_unsent_scrobble_data), ScrobbleData[].class);
         initializeListView();
     }
 
@@ -179,7 +179,7 @@ public class UnsentListActivity extends Activity {
             unsentCheckAllButton.setEnabled(true);
             unsentDeleteButton.setEnabled(true);
         }
-        adapter = new UnsentListAdapter(this, items);
+        adapter = new UnsentListAdapter(this, items, checkedSet);
         unsentListView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
     }
@@ -189,10 +189,14 @@ public class UnsentListActivity extends Activity {
     /**
      * リストアダプタ。
      */
-    private class UnsentListAdapter extends ArrayAdapter<ScrobbleData> {
+    private static class UnsentListAdapter extends ArrayAdapter<ScrobbleData> {
+
+        private TreeSet<Integer> checkedSet;
+
         /** コンストラクタ。 */
-        public UnsentListAdapter(Context context, ScrobbleData[] itemList) {
+        public UnsentListAdapter(Context context, ScrobbleData[] itemList, TreeSet<Integer> checkedSet) {
             super(context, R.layout.layout_unsent_list_item, itemList);
+            this.checkedSet = checkedSet;
         }
 
         @Override
@@ -243,7 +247,7 @@ public class UnsentListActivity extends Activity {
                 if (!TextUtils.isEmpty(item.getArtist()))
                     holder.ArtistTextView.setText(item.getArtist());
                 if (item.getTimestamp() > 0)
-                    holder.TimeTextView.setText(getString(R.string.label_unsent_played_time, DateUtils.formatDateTime(getContext(), Long.valueOf(item.getTimestamp()) * 1000, DateUtils.FORMAT_SHOW_TIME | DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_YEAR | DateUtils.FORMAT_ABBREV_ALL)));
+                    holder.TimeTextView.setText(getContext().getString(R.string.label_unsent_played_time, DateUtils.formatDateTime(getContext(), Long.valueOf(item.getTimestamp()) * 1000, DateUtils.FORMAT_SHOW_TIME | DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_YEAR | DateUtils.FORMAT_ABBREV_ALL)));
                 convertView.setClickable(true);
             } else {
                 holder.TitleTextView.setText(item.getTrack());
@@ -257,7 +261,7 @@ public class UnsentListActivity extends Activity {
         }
 
         /** リスト項目のビュー情報を保持するHolder。 */
-        class ListItemViewHolder {
+        static class ListItemViewHolder {
             public CheckBox SelectedCheckBox;
             public TextView TitleTextView;
             public TextView ArtistTextView;
