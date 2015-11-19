@@ -92,6 +92,10 @@
                 android:resource="@drawable/ic_action_lastfm" />
         </receiver>
 
+        <receiver
+            android:name=".ToastReceiver"
+            android:exported="false" />
+
         <activity android:name=".UnsentListActivity" >
         </activity>
 

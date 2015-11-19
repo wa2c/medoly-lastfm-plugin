@@ -2,6 +2,7 @@ package com.wa2c.android.medoly.plugin.action.lastfm;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.widget.Toast;
 
@@ -14,13 +15,24 @@ import com.wa2c.android.medoly.utils.Logger;
  */
 public class AppUtils {
 
+    /**
+     * トーストを表示。
+     * @param context コンテキスト。
+     * @param text メッセージ。
+     */
     public static void showToast(Context context, String text) {
-        Toast.makeText(context, text, Toast.LENGTH_SHORT).show();
+        ToastReceiver.showToast(context, text);
     }
 
-    public static void showToast(Context context, int stringId) {
-        Toast.makeText(context, stringId, Toast.LENGTH_SHORT).show();
+    /**
+     * トーストを表示。
+     * @param context コンテキスト。
+     * @param stringId メッセージ。
+     */
+    public static void showToast(final Context context, final int stringId) {
+        showToast(context, context.getString(stringId));
     }
+
 
 
     /**

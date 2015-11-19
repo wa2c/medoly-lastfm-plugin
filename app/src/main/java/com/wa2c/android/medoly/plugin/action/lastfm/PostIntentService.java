@@ -31,6 +31,8 @@ import de.umass.lastfm.cache.FileSystemCache;
 import de.umass.lastfm.scrobble.ScrobbleData;
 import de.umass.lastfm.scrobble.ScrobbleResult;
 
+
+
 /**
  * 投稿サービス。
  */
@@ -232,7 +234,7 @@ public class PostIntentService extends IntentService {
         }
 
         PostResult result = post(postType);
-        onPostExecute(result,  postType);
+        showResult(result, postType);
     }
 
 
@@ -509,7 +511,7 @@ public class PostIntentService extends IntentService {
      * @param result 投稿結果。
      * @param postType 投稿種別。
      */
-    protected void onPostExecute(PostResult result, PostType postType) {
+    protected void showResult(PostResult result, PostType postType) {
         if (result == PostResult.IGNORE || result == PostResult.SAVED) {
             return;
         } else if (result == PostResult.AUTH_FAILED) {
