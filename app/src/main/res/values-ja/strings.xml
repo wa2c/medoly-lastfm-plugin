@@ -7,6 +7,8 @@
     <string name="label_execute_unlove">Unlove</string>
     <string name="label_execute_ban">Ban</string>
     <string name="label_execute_unban">Unban</string>
+    <string name="label_execute_page_track">トラックページ</string>
+    <string name="label_execute_page_artist">アーティストページ</string>
     <string name="label_execute_site">Last.fmを開く</string>
 
     <!-- Activity -->
@@ -25,6 +27,10 @@
     <string name="message_ban_failure">禁止トラックへの追加に失敗しました。</string>
     <string name="message_unban_success">\"%1$s\" を禁止トラックから削除しました。</string>
     <string name="message_unban_failure">禁止トラックの削除に失敗しました。</string>
+    <string name="message_page_track_success">トラックのページを開きます。</string>
+    <string name="message_page_track_failure">トラックページが開けません。</string>
+    <string name="message_page_artist_success">アーティストページを開きます。</string>
+    <string name="message_page_artist_failure">アーティストページが開けません。</string>
 
     <string name="message_auth_success">認証が完了しました。</string>
     <string name="message_auth_failure">認証に失敗しました。</string>

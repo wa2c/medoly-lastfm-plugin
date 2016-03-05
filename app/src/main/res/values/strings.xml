@@ -7,6 +7,8 @@
     <string name="label_execute_unlove">Unlove</string>
     <string name="label_execute_ban">Ban</string>
     <string name="label_execute_unban">Unban</string>
+    <string name="label_execute_page_track">Track Page</string>
+    <string name="label_execute_page_artist">Artist Page</string>
     <string name="label_execute_site">Last.fm</string>
 
     <!-- Activity -->

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.wa2c.android.medoly.plugin.action.lastfm" >
+    package="com.wa2c.android.medoly.plugin.action.lastfm">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -11,10 +11,11 @@
         android:description="@string/app_description"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme">
+
         <activity
             android:name=".MainActivity"
-            android:launchMode="singleTask" >
+            android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -22,14 +23,21 @@
                 <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
             </intent-filter>
         </activity>
+
+        <activity android:name=".UnsentListActivity" />
+
         <activity
             android:name=".SettingsActivity"
             android:label="@string/title_activity_settings"
             android:launchMode="singleTask" />
 
+        <service
+            android:name=".PostIntentService"
+            android:exported="false" />
+
         <receiver
             android:name=".PluginReceiver"
-            android:label="@string/class_receiver_label" >
+            android:label="@string/class_receiver_label">
             <intent-filter>
                 <action android:name="com.wa2c.android.medoly.plugin.action.ACTION_MEDIA" />
 
@@ -39,6 +47,7 @@
                 <category android:name="com.wa2c.android.medoly.plugin.category.OPERATION_PLAY_START" />
             </intent-filter>
 
+            <!-- Love -->
             <meta-data
                 android:name="execute_id_love"
                 android:value="0" />
@@ -48,6 +57,8 @@
             <meta-data
                 android:name="execute_icon_love"
                 android:resource="@drawable/ic_action_love" />
+
+            <!-- UnLove -->
             <meta-data
                 android:name="execute_id_unlove"
                 android:value="1" />
@@ -81,6 +92,30 @@
                 android:resource="@drawable/ic_action_unban" />
             -->
 
+
+            <!-- Track Page -->
+            <meta-data
+                android:name="execute_id_page_track"
+                android:value="2" />
+            <meta-data
+                android:name="execute_label_page_track"
+                android:resource="@string/label_execute_page_track" />
+            <meta-data
+                android:name="execute_icon_page_track"
+                android:resource="@drawable/ic_action_page_track" />
+
+            <!-- Artist Page -->
+            <meta-data
+                android:name="execute_id_page_artist"
+                android:value="2" />
+            <meta-data
+                android:name="execute_label_page_artist"
+                android:resource="@string/label_execute_page_artist" />
+            <meta-data
+                android:name="execute_icon_page_artist"
+                android:resource="@drawable/ic_action_page_artist" />
+
+            <!-- Site -->
             <meta-data
                 android:name="execute_id_site"
                 android:value="4" />
@@ -96,13 +131,6 @@
             android:name=".ToastReceiver"
             android:exported="false" />
 
-        <activity android:name=".UnsentListActivity" >
-        </activity>
-
-        <service
-            android:name=".PostIntentService"
-            android:exported="false" >
-        </service>
     </application>
 
 </manifest>
