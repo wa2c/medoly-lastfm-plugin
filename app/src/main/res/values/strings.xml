@@ -28,6 +28,11 @@
     <string name="message_ban_failure">Failed to add to ban tracks.</string>
     <string name="message_unban_success">\"%1$s\" was removed from ban tracks.</string>
     <string name="message_unban_failure">Failed to remove from ban tracks.</string>
+    <string name="message_page_track_success">The track page opened.</string>
+    <string name="message_page_track_failure">Failed to open the track page.</string>
+    <string name="message_page_artist_success">The artist page was opened.</string>
+    <string name="message_page_artist_failure">Failed to open the artist page.</string>
+
     <string name="message_auth_success">Auth succeeded.</string>
     <string name="message_auth_failure">Auth failed.</string>
 

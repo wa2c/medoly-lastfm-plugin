@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.wa2c.android.medoly.plugin.action.lastfm">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -53,10 +54,12 @@
                 android:value="0" />
             <meta-data
                 android:name="execute_label_love"
-                android:resource="@string/label_execute_love" />
+                android:resource="@string/label_execute_love"
+                tools:ignore="ManifestResource"/>
             <meta-data
                 android:name="execute_icon_love"
-                android:resource="@drawable/ic_action_love" />
+                android:resource="@drawable/ic_action_love"
+                tools:ignore="ManifestResource"/>
 
             <!-- UnLove -->
             <meta-data
@@ -64,10 +67,12 @@
                 android:value="1" />
             <meta-data
                 android:name="execute_label_unlove"
-                android:resource="@string/label_execute_unlove" />
+                android:resource="@string/label_execute_unlove"
+                tools:ignore="ManifestResource"/>
             <meta-data
                 android:name="execute_icon_unlove"
-                android:resource="@drawable/ic_action_unlove" />
+                android:resource="@drawable/ic_action_unlove"
+                tools:ignore="ManifestResource"/>
 
             <!--
             実行不可のため封印
@@ -76,20 +81,24 @@
                 android:value="2" />
             <meta-data
                 android:name="execute_label_ban"
-                android:resource="@string/label_execute_ban" />
+                android:resource="@string/label_execute_ban"
+                 tools:ignore="ManifestResource"/>
             <meta-data
                 android:name="execute_icon_ban"
-                android:resource="@drawable/ic_action_ban" />
+                android:resource="@drawable/ic_action_ban"
+                 tools:ignore="ManifestResource"/>
 
             <meta-data
                 android:name="execute_id_unban"
                 android:value="3" />
             <meta-data
                 android:name="execute_label_unban"
-                android:resource="@string/label_execute_unban" />
+                android:resource="@string/label_execute_unban"
+                 tools:ignore="ManifestResource"/>
             <meta-data
                 android:name="execute_icon_unban"
-                android:resource="@drawable/ic_action_unban" />
+                android:resource="@drawable/ic_action_unban"
+                 tools:ignore="ManifestResource"/>
             -->
 
 
@@ -99,21 +108,27 @@
                 android:value="2" />
             <meta-data
                 android:name="execute_label_page_track"
-                android:resource="@string/label_execute_page_track" />
+                android:resource="@string/label_execute_page_track"
+                tools:ignore="ManifestResource"/>
             <meta-data
                 android:name="execute_icon_page_track"
-                android:resource="@drawable/ic_action_page_track" />
+                android:resource="@drawable/ic_action_page_track"
+                tools:ignore="ManifestResource"/>
 
             <!-- Artist Page -->
+            <!--
             <meta-data
                 android:name="execute_id_page_artist"
                 android:value="2" />
             <meta-data
                 android:name="execute_label_page_artist"
-                android:resource="@string/label_execute_page_artist" />
+                android:resource="@string/label_execute_page_artist"
+                 tools:ignore="ManifestResource"/>
             <meta-data
                 android:name="execute_icon_page_artist"
-                android:resource="@drawable/ic_action_page_artist" />
+                android:resource="@drawable/ic_action_page_artist"
+                 tools:ignore="ManifestResource"/>
+            -->
 
             <!-- Site -->
             <meta-data
@@ -121,10 +136,12 @@
                 android:value="4" />
             <meta-data
                 android:name="execute_label_site"
-                android:resource="@string/label_execute_site" />
+                android:resource="@string/label_execute_site"
+                tools:ignore="ManifestResource"/>
             <meta-data
                 android:name="execute_icon_site"
-                android:resource="@drawable/ic_action_lastfm" />
+                android:resource="@drawable/ic_action_lastfm"
+                tools:ignore="ManifestResource"/>
         </receiver>
 
         <receiver
