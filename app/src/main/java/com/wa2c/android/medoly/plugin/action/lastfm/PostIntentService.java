@@ -1,8 +1,8 @@
 package com.wa2c.android.medoly.plugin.action.lastfm;
 
 import android.app.IntentService;
-import android.content.Intent;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
@@ -10,15 +10,14 @@ import android.preference.PreferenceManager;
 import android.text.TextUtils;
 
 import com.wa2c.android.medoly.library.MediaProperty;
-import com.wa2c.android.medoly.library.MedolyParam;
+import com.wa2c.android.medoly.library.MedolyEnvironment;
 import com.wa2c.android.medoly.library.PluginOperationCategory;
+import com.wa2c.android.medoly.library.PropertyData;
 import com.wa2c.android.medoly.utils.Logger;
 
 import java.io.File;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
@@ -87,7 +86,7 @@ public class PostIntentService extends IntentService {
     /** 設定。 */
     private SharedPreferences sharedPreferences = null;
     /** 受信データ。 */
-    private HashMap<String, String> propertyMap = null;
+    private PropertyData propertyData = null;
     /** メディアURI。 */
     private Uri mediaUri = null;
 
@@ -111,33 +110,15 @@ public class PostIntentService extends IntentService {
 
             Bundle extras = intent.getExtras();
 
+            // プロパティ情報を取得
+            propertyData = PropertyData.getFromIntent(intent);
+            if (propertyData == null || propertyData.isEmpty())
+                return;
+
             // URIを取得
             Object extraStream;
             if (extras != null && (extraStream = intent.getExtras().get(Intent.EXTRA_STREAM)) != null && extraStream instanceof Uri) {
                 mediaUri = (Uri) extraStream;
-            } else if (intent.getData() != null) {
-                // Old version
-                mediaUri = intent.getData();
-            }
-
-            // 値を取得
-            boolean isEvent = false;
-            try {
-                if (intent.hasExtra(MedolyParam.PLUGIN_VALUE_KEY)) {
-                    Serializable serializable = intent.getSerializableExtra(MedolyParam.PLUGIN_VALUE_KEY);
-                    if (serializable != null) {
-                        propertyMap = (HashMap<String, String>) serializable;
-                    }
-                }
-                if (propertyMap == null || propertyMap.isEmpty()) {
-                    return;
-                }
-
-                if (intent.hasExtra(MedolyParam.PLUGIN_EVENT_KEY))
-                    isEvent = intent.getBooleanExtra(MedolyParam.PLUGIN_EVENT_KEY, false);
-            } catch (ClassCastException | NullPointerException e) {
-                Logger.e(e);
-                return;
             }
 
             // カテゴリを取得
@@ -145,6 +126,11 @@ public class PostIntentService extends IntentService {
             if (categories == null || categories.size() == 0) {
                 return;
             }
+
+            // イベントを取得
+            boolean isEvent = false;
+            if (intent.hasExtra(MedolyEnvironment.PLUGIN_EVENT_KEY))
+                isEvent = intent.getBooleanExtra(MedolyEnvironment.PLUGIN_EVENT_KEY, false);
 
             // 各アクション実行
             if (categories.contains(PluginOperationCategory.OPERATION_PLAY_START.getCategoryValue())) {
@@ -208,10 +194,12 @@ public class PostIntentService extends IntentService {
                     }
                 }
             }
+        } catch (Exception e) {
+            AppUtils.showToast(this, R.string.error_app);
         } finally {
             context = null;
             sharedPreferences = null;
-            propertyMap = null;
+            propertyData = null;
             mediaUri = null;
         }
     }
@@ -230,8 +218,8 @@ public class PostIntentService extends IntentService {
         }
 
         // 必須情報無し
-        if (TextUtils.isEmpty(propertyMap.get(MediaProperty.TITLE.getKeyName())) ||
-            TextUtils.isEmpty(propertyMap.get(MediaProperty.ARTIST.getKeyName()))) {
+        if (propertyData.isEmpty(MediaProperty.TITLE) ||
+            propertyData.isEmpty(MediaProperty.ARTIST)) {
             showResult(PostResult.IGNORE, postType);
             return;
         }
@@ -308,34 +296,26 @@ public class PostIntentService extends IntentService {
      * @return 投稿結果。
      */
     private PostResult scrobble(Session session) {
-        if (propertyMap == null)
+        if (propertyData == null)
             return PostResult.FAILED;
 
         try {
-            String key;
             ScrobbleData newData = new ScrobbleData();
 
-            key = MediaProperty.MUSICBRAINZ_RELEASEID.getKeyName();
-            if (propertyMap.containsKey(key)) newData.setMusicBrainzId(propertyMap.get(key));
-            key = MediaProperty.TITLE.getKeyName();
-            if (propertyMap.containsKey(key)) newData.setTrack(propertyMap.get(key));
-            key = MediaProperty.ARTIST.getKeyName();
-            if (propertyMap.containsKey(key)) newData.setArtist(propertyMap.get(key));
-            key = MediaProperty.ALBUM_ARTIST.getKeyName();
-            if (propertyMap.containsKey(key)) newData.setAlbumArtist(propertyMap.get(key));
-            key = MediaProperty.ALBUM.getKeyName();
-            if (propertyMap.containsKey(key)) newData.setAlbum(propertyMap.get(key));
+            newData.setMusicBrainzId(propertyData.getFirst(MediaProperty.MUSICBRAINZ_TRACK_ID));
+            newData.setTrack(propertyData.getFirst(MediaProperty.TITLE));
+            newData.setArtist(propertyData.getFirst(MediaProperty.ARTIST));
+            newData.setAlbumArtist(propertyData.getFirst(MediaProperty.ALBUM_ARTIST));
+            newData.setAlbum(propertyData.getFirst(MediaProperty.ALBUM));
 
             try {
-                key = MediaProperty.DURATION.getKeyName();
-                if (propertyMap.containsKey(key)) newData.setDuration(Integer.valueOf(key));
-            } catch (Exception e) {
+                newData.setDuration(Integer.valueOf(propertyData.getFirst(MediaProperty.DURATION)));
+            } catch (NumberFormatException | NullPointerException e) {
                 Logger.e(e);
             }
             try {
-                key = MediaProperty.TRACK.getKeyName();
-                if (propertyMap.containsKey(key)) newData.setTrackNumber(Integer.valueOf(key));
-            } catch (Exception e) {
+                newData.setTrackNumber(Integer.valueOf(propertyData.getFirst(MediaProperty.TRACK)));
+            } catch (NumberFormatException | NullPointerException e) {
                 Logger.e(e);
             }
             newData.setTimestamp((int) (System.currentTimeMillis() / 1000));
@@ -422,13 +402,13 @@ public class PostIntentService extends IntentService {
      * @return PostResult.
      */
     private PostResult love(Session session) {
-        if (session == null || propertyMap == null)
+        if (session == null || propertyData == null)
             return PostResult.FAILED;
 
         try {
             // 無効データを無視
-            String track  = propertyMap.get(MediaProperty.TITLE.getKeyName());
-            String artist  = propertyMap.get(MediaProperty.ARTIST.getKeyName());
+            String track  = propertyData.getFirst(MediaProperty.TITLE);
+            String artist  = propertyData.getFirst(MediaProperty.ARTIST);
             if (TextUtils.isEmpty(track) || TextUtils.isEmpty(artist))
                 return PostResult.IGNORE;
 
@@ -449,13 +429,13 @@ public class PostIntentService extends IntentService {
      * @return PostResult.
      */
     private PostResult unlove(Session session) {
-        if (session == null || propertyMap == null)
+        if (session == null || propertyData == null)
             return PostResult.FAILED;
 
         try {
             // 無効データを無視
-            String track  = propertyMap.get(MediaProperty.TITLE.getKeyName());
-            String artist  = propertyMap.get(MediaProperty.ARTIST.getKeyName());
+            String track  = propertyData.getFirst(MediaProperty.TITLE);
+            String artist  = propertyData.getFirst(MediaProperty.ARTIST);
             if (TextUtils.isEmpty(track) || TextUtils.isEmpty(artist))
                 return PostResult.IGNORE;
 
@@ -476,13 +456,13 @@ public class PostIntentService extends IntentService {
      * @return PostResult.
      */
     private PostResult ban(Session session) {
-        if (session == null || propertyMap == null)
+        if (session == null || propertyData == null)
             return PostResult.FAILED;
 
         try {
             // 無効データを無視
-            String track  = propertyMap.get(MediaProperty.TITLE.getKeyName());
-            String artist  = propertyMap.get(MediaProperty.ARTIST.getKeyName());
+            String track  = propertyData.getFirst(MediaProperty.TITLE);
+            String artist  = propertyData.getFirst(MediaProperty.ARTIST);
             if (TextUtils.isEmpty(track) || TextUtils.isEmpty(artist))
                 return PostResult.IGNORE;
 
@@ -504,13 +484,13 @@ public class PostIntentService extends IntentService {
      * @return PostResult.
      */
     private PostResult unban(Session session) {
-        if (session == null || propertyMap == null)
+        if (session == null || propertyData == null)
             return PostResult.FAILED;
 
         try {
             // 無効データを無視
-            String track  = propertyMap.get(MediaProperty.TITLE.getKeyName());
-            String artist = propertyMap.get(MediaProperty.ARTIST.getKeyName());
+            String track  = propertyData.getFirst(MediaProperty.TITLE);
+            String artist  = propertyData.getFirst(MediaProperty.ARTIST);
             if (TextUtils.isEmpty(track) || TextUtils.isEmpty(artist))
                 return PostResult.IGNORE;
 
@@ -531,13 +511,13 @@ public class PostIntentService extends IntentService {
      * @return PostResult.
      */
     private PostResult trackPage(Session session) {
-        if (session == null || propertyMap == null)
+        if (session == null || propertyData == null)
             return PostResult.FAILED;
 
         try {
             // 無効データを無視
-            String track  = propertyMap.get(MediaProperty.TITLE.getKeyName());
-            String artist  = propertyMap.get(MediaProperty.ARTIST.getKeyName());
+            String track  = propertyData.getFirst(MediaProperty.TITLE);
+            String artist  = propertyData.getFirst(MediaProperty.ARTIST);
             if (TextUtils.isEmpty(track) || TextUtils.isEmpty(artist))
                 return PostResult.IGNORE;
 
@@ -560,12 +540,12 @@ public class PostIntentService extends IntentService {
      * @return PostResult.
      */
     private PostResult artistPage(Session session) {
-        if (session == null || propertyMap == null)
+        if (session == null || propertyData == null)
             return PostResult.FAILED;
 
         try {
             // 無効データを無視
-            String artist  = propertyMap.get(MediaProperty.ARTIST.getKeyName());
+            String artist  = propertyData.getFirst(MediaProperty.ARTIST);
             if (TextUtils.isEmpty(artist))
                 return PostResult.IGNORE;
 
@@ -612,28 +592,28 @@ public class PostIntentService extends IntentService {
                 break;
             case LOVE:
                 if (result == PostResult.SUCCEEDED) {
-                    AppUtils.showToast(context, context.getString(R.string.message_love_success,  propertyMap.get(MediaProperty.TITLE.getKeyName()))); // Succeed
+                    AppUtils.showToast(context, context.getString(R.string.message_love_success,  propertyData.get(MediaProperty.TITLE.getKeyName()))); // Succeed
                 } else {
                     AppUtils.showToast(context, R.string.message_love_failure); // Failed
                 }
                 break;
             case UNLOVE:
                 if (result == PostResult.SUCCEEDED) {
-                    AppUtils.showToast(context, context.getString(R.string.message_unlove_success,  propertyMap.get(MediaProperty.TITLE.getKeyName()))); // Succeed
+                    AppUtils.showToast(context, context.getString(R.string.message_unlove_success,  propertyData.get(MediaProperty.TITLE.getKeyName()))); // Succeed
                 } else {
                     AppUtils.showToast(context, R.string.message_unlove_failure); // Failed
                 }
                 break;
             case BAN:
                 if (result == PostResult.SUCCEEDED) {
-                    AppUtils.showToast(context, context.getString(R.string.message_ban_success,  propertyMap.get(MediaProperty.TITLE.getKeyName()))); // Succeed
+                    AppUtils.showToast(context, context.getString(R.string.message_ban_success,  propertyData.get(MediaProperty.TITLE.getKeyName()))); // Succeed
                 } else {
                     AppUtils.showToast(context, R.string.message_ban_failure); // Failed
                 }
                 break;
             case UNBAN:
                 if (result == PostResult.SUCCEEDED) {
-                    AppUtils.showToast(context, context.getString(R.string.message_unban_success,  propertyMap.get(MediaProperty.TITLE.getKeyName()))); // Succeed
+                    AppUtils.showToast(context, context.getString(R.string.message_unban_success,  propertyData.get(MediaProperty.TITLE.getKeyName()))); // Succeed
                 } else {
                     AppUtils.showToast(context, R.string.message_unban_failure); // Failed
                 }

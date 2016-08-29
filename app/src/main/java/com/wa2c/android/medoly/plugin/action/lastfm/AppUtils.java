@@ -2,12 +2,12 @@ package com.wa2c.android.medoly.plugin.action.lastfm;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.Handler;
 import android.preference.PreferenceManager;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.wa2c.android.medoly.utils.Logger;
+
+import java.lang.reflect.Type;
 
 
 /**
@@ -76,4 +76,5 @@ public class AppUtils {
             return null;
         }
     }
+
 }
