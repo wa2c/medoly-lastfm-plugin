@@ -159,6 +159,7 @@ public class PostIntentService extends IntentService {
         } finally {
             context = null;
             sharedPreferences = null;
+            param = null;
         }
     }
 

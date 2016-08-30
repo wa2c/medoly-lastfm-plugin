@@ -7,8 +7,6 @@ import android.preference.PreferenceManager;
 import com.google.gson.Gson;
 import com.wa2c.android.medoly.utils.Logger;
 
-import java.lang.reflect.Type;
-
 
 /**
  * アプリユーティリティ。
