@@ -5,21 +5,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
-import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 
 import com.wa2c.android.medoly.library.MediaProperty;
-import com.wa2c.android.medoly.library.MedolyEnvironment;
+import com.wa2c.android.medoly.library.MedolyIntentParam;
 import com.wa2c.android.medoly.library.PluginOperationCategory;
-import com.wa2c.android.medoly.library.PropertyData;
 import com.wa2c.android.medoly.utils.Logger;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 
 import de.umass.lastfm.Artist;
 import de.umass.lastfm.Authenticator;
@@ -85,12 +82,8 @@ public class PostIntentService extends IntentService {
     private Context context = null;
     /** 設定。 */
     private SharedPreferences sharedPreferences = null;
-    /** 受信データ。 */
-    private PropertyData propertyData = null;
-    /** メディアURI。 */
-    private Uri mediaUri = null;
-
-
+    /** Intentパラメータ。 */
+    private MedolyIntentParam param;
 
     /**
      * コンストラクタ。
@@ -107,90 +100,57 @@ public class PostIntentService extends IntentService {
         try {
             context = getApplicationContext();
             sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-
-            Bundle extras = intent.getExtras();
-
-            // プロパティ情報を取得
-            propertyData = PropertyData.getFromIntent(intent);
-            if (propertyData == null || propertyData.isEmpty())
-                return;
-
-            // URIを取得
-            Object extraStream;
-            if (extras != null && (extraStream = intent.getExtras().get(Intent.EXTRA_STREAM)) != null && extraStream instanceof Uri) {
-                mediaUri = (Uri) extraStream;
-            }
-
-            // カテゴリを取得
-            Set<String> categories = intent.getCategories();
-            if (categories == null || categories.size() == 0) {
-                return;
-            }
-
-            // イベントを取得
-            boolean isEvent = false;
-            if (intent.hasExtra(MedolyEnvironment.PLUGIN_EVENT_KEY))
-                isEvent = intent.getBooleanExtra(MedolyEnvironment.PLUGIN_EVENT_KEY, false);
+            param = new MedolyIntentParam(intent);
 
             // 各アクション実行
-            if (categories.contains(PluginOperationCategory.OPERATION_PLAY_START.getCategoryValue())) {
+            if (param.hasCategories(PluginOperationCategory.OPERATION_PLAY_START)) {
                 // Play Start
-                if (!isEvent || sharedPreferences.getBoolean(context.getString(R.string.prefkey_operation_play_start_enabled), false)) {
+                if (!param.isEvent() || sharedPreferences.getBoolean(context.getString(R.string.prefkey_operation_play_start_enabled), false)) {
                     post(PostType.SCROBBLE);
                 }
-            } else if (categories.contains(PluginOperationCategory.OPERATION_PLAY_NOW.getCategoryValue())) {
+            } else if (param.hasCategories(PluginOperationCategory.OPERATION_PLAY_NOW)) {
                 // Play Now
-                if (!isEvent || sharedPreferences.getBoolean(context.getString(R.string.prefkey_operation_play_now_enabled), true)) {
+                if (!param.isEvent() || sharedPreferences.getBoolean(context.getString(R.string.prefkey_operation_play_now_enabled), true)) {
                     post(PostType.SCROBBLE);
                 }
-            } else if (categories.contains(PluginOperationCategory.OPERATION_EXECUTE.getCategoryValue())) {
+            } else if (param.hasCategories(PluginOperationCategory.OPERATION_EXECUTE)) {
                 // Execute
-                final String EXECUTE_LOVE_ID = "execute_id_love";
-                final String EXECUTE_UNLOVE_ID = "execute_id_unlove";
-                final String EXECUTE_BAN_ID = "execute_id_ban";
-                final String EXECUTE_UNBAN_ID = "execute_id_unban";
-                final String EXECUTE_PAGE_TRACK = "execute_id_page_track";
-                final String EXECUTE_PAGE_ARTIST = "execute_id_page_artist";
-                final String EXECUTE_SITE_ID = "execute_id_site";
+                if (param.hasExecuteId("execute_id_love")) {
+                    // Love
+                    post(PostType.LOVE);
+                } else if (param.hasExecuteId("execute_id_unlove")) {
+                    // UnLove
+                    post(PostType.UNLOVE);
+                } else if (param.hasExecuteId("execute_id_ban")) {
+                    // Ban
+                    post(PostType.BAN);
+                } else if (param.hasExecuteId("execute_id_unban")) {
+                    // UnBan
+                    post(PostType.UNBAN);
+                } else if (param.hasExecuteId("execute_id_page_track")) {
+                    // Page Track
+                    post(PostType.PAGE_TRACK);
+                } else if (param.hasExecuteId("execute_id_page_artist")) {
+                    // Page Artist
+                    post(PostType.PAGE_ARTIST);
+                } else if (param.hasExecuteId( "execute_id_site")) {
+                    // Last.fm
+                    String username = sharedPreferences.getString(context.getString(R.string.prefkey_auth_username), "");
+                    Uri siteUri;
+                    if (TextUtils.isEmpty(username)) {
+                        // ユーザ未認証
+                        siteUri = Uri.parse(context.getString(R.string.lastfm_url));
+                    } else {
+                        // ユーザ認証済
+                        siteUri = Uri.parse(context.getString(R.string.lastfm_url_user, username));
+                    }
 
-                if (extras != null) {
-                    if (extras.keySet().contains(EXECUTE_LOVE_ID)) {
-                        // Love
-                        post(PostType.LOVE);
-                    } else if (extras.keySet().contains(EXECUTE_UNLOVE_ID)) {
-                        // UnLove
-                        post(PostType.UNLOVE);
-                    } else if (extras.keySet().contains(EXECUTE_BAN_ID)) {
-                        // Ban
-                        post(PostType.BAN);
-                    } else if (extras.keySet().contains(EXECUTE_UNBAN_ID)) {
-                        // UnBan
-                        post(PostType.UNBAN);
-                    } else if (extras.keySet().contains(EXECUTE_PAGE_TRACK)) {
-                        // Page Track
-                        post(PostType.PAGE_TRACK);
-                    } else if (extras.keySet().contains(EXECUTE_PAGE_ARTIST)) {
-                        // Page Artist
-                        post(PostType.PAGE_ARTIST);
-                    } else if (extras.keySet().contains(EXECUTE_SITE_ID)) {
-                        // Last.fm
-                        String username = sharedPreferences.getString(context.getString(R.string.prefkey_auth_username), "");
-                        Uri siteUri;
-                        if (TextUtils.isEmpty(username)) {
-                            // ユーザ未認証
-                            siteUri = Uri.parse(context.getString(R.string.lastfm_url));
-                        } else {
-                            // ユーザ認証済
-                            siteUri = Uri.parse(context.getString(R.string.lastfm_url_user, username));
-                        }
-
-                        Intent launchIntent = new Intent(Intent.ACTION_VIEW, siteUri);
-                        try {
-                            launchIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            context.startActivity(launchIntent);
-                        } catch (android.content.ActivityNotFoundException e) {
-                            Logger.d(e);
-                        }
+                    Intent launchIntent = new Intent(Intent.ACTION_VIEW, siteUri);
+                    try {
+                        launchIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        context.startActivity(launchIntent);
+                    } catch (android.content.ActivityNotFoundException e) {
+                        Logger.d(e);
                     }
                 }
             }
@@ -199,8 +159,6 @@ public class PostIntentService extends IntentService {
         } finally {
             context = null;
             sharedPreferences = null;
-            propertyData = null;
-            mediaUri = null;
         }
     }
 
@@ -211,15 +169,16 @@ public class PostIntentService extends IntentService {
      */
     private void post(PostType postType) {
         // 音楽データ無し
-        if (mediaUri == null) {
+        if (param.getMediaUri() == null) {
             AppUtils.showToast(getApplicationContext(), R.string.message_no_media);
             showResult(PostResult.IGNORE, postType);
             return;
         }
 
         // 必須情報無し
-        if (propertyData.isEmpty(MediaProperty.TITLE) ||
-            propertyData.isEmpty(MediaProperty.ARTIST)) {
+        if (param.getPropertyData() == null ||
+            param.getPropertyData().isEmpty(MediaProperty.TITLE) ||
+            param.getPropertyData().isEmpty(MediaProperty.ARTIST)) {
             showResult(PostResult.IGNORE, postType);
             return;
         }
@@ -234,7 +193,7 @@ public class PostIntentService extends IntentService {
 
         // 前回メディア確認
         if (postType == PostType.SCROBBLE) {
-            String mediaUriText = mediaUri.toString();
+            String mediaUriText = param.getMediaUri().toString();
             String previousMediaUri = sharedPreferences.getString(PREFKEY_PREVIOUS_MEDIA_URI, "");
             boolean previousMediaEnabled = sharedPreferences.getBoolean(context.getString(R.string.prefkey_previous_media_enabled), false);
             if (!previousMediaEnabled && !TextUtils.isEmpty(mediaUriText) && !TextUtils.isEmpty(previousMediaUri) && mediaUriText.equals(previousMediaUri)) {
@@ -296,25 +255,22 @@ public class PostIntentService extends IntentService {
      * @return 投稿結果。
      */
     private PostResult scrobble(Session session) {
-        if (propertyData == null)
-            return PostResult.FAILED;
-
         try {
             ScrobbleData newData = new ScrobbleData();
 
-            newData.setMusicBrainzId(propertyData.getFirst(MediaProperty.MUSICBRAINZ_TRACK_ID));
-            newData.setTrack(propertyData.getFirst(MediaProperty.TITLE));
-            newData.setArtist(propertyData.getFirst(MediaProperty.ARTIST));
-            newData.setAlbumArtist(propertyData.getFirst(MediaProperty.ALBUM_ARTIST));
-            newData.setAlbum(propertyData.getFirst(MediaProperty.ALBUM));
+            newData.setMusicBrainzId(param.getPropertyData().getFirst(MediaProperty.MUSICBRAINZ_TRACK_ID));
+            newData.setTrack(param.getPropertyData().getFirst(MediaProperty.TITLE));
+            newData.setArtist(param.getPropertyData().getFirst(MediaProperty.ARTIST));
+            newData.setAlbumArtist(param.getPropertyData().getFirst(MediaProperty.ALBUM_ARTIST));
+            newData.setAlbum(param.getPropertyData().getFirst(MediaProperty.ALBUM));
 
             try {
-                newData.setDuration(Integer.valueOf(propertyData.getFirst(MediaProperty.DURATION)));
+                newData.setDuration(Integer.valueOf(param.getPropertyData().getFirst(MediaProperty.DURATION)));
             } catch (NumberFormatException | NullPointerException e) {
                 Logger.e(e);
             }
             try {
-                newData.setTrackNumber(Integer.valueOf(propertyData.getFirst(MediaProperty.TRACK)));
+                newData.setTrackNumber(Integer.valueOf(param.getPropertyData().getFirst(MediaProperty.TRACK)));
             } catch (NumberFormatException | NullPointerException e) {
                 Logger.e(e);
             }
@@ -402,13 +358,10 @@ public class PostIntentService extends IntentService {
      * @return PostResult.
      */
     private PostResult love(Session session) {
-        if (session == null || propertyData == null)
-            return PostResult.FAILED;
-
-        try {
+         try {
             // 無効データを無視
-            String track  = propertyData.getFirst(MediaProperty.TITLE);
-            String artist  = propertyData.getFirst(MediaProperty.ARTIST);
+            String track  = param.getPropertyData().getFirst(MediaProperty.TITLE);
+            String artist  = param.getPropertyData().getFirst(MediaProperty.ARTIST);
             if (TextUtils.isEmpty(track) || TextUtils.isEmpty(artist))
                 return PostResult.IGNORE;
 
@@ -429,13 +382,10 @@ public class PostIntentService extends IntentService {
      * @return PostResult.
      */
     private PostResult unlove(Session session) {
-        if (session == null || propertyData == null)
-            return PostResult.FAILED;
-
         try {
             // 無効データを無視
-            String track  = propertyData.getFirst(MediaProperty.TITLE);
-            String artist  = propertyData.getFirst(MediaProperty.ARTIST);
+            String track  = param.getPropertyData().getFirst(MediaProperty.TITLE);
+            String artist  = param.getPropertyData().getFirst(MediaProperty.ARTIST);
             if (TextUtils.isEmpty(track) || TextUtils.isEmpty(artist))
                 return PostResult.IGNORE;
 
@@ -456,13 +406,10 @@ public class PostIntentService extends IntentService {
      * @return PostResult.
      */
     private PostResult ban(Session session) {
-        if (session == null || propertyData == null)
-            return PostResult.FAILED;
-
         try {
             // 無効データを無視
-            String track  = propertyData.getFirst(MediaProperty.TITLE);
-            String artist  = propertyData.getFirst(MediaProperty.ARTIST);
+            String track  = param.getPropertyData().getFirst(MediaProperty.TITLE);
+            String artist  = param.getPropertyData().getFirst(MediaProperty.ARTIST);
             if (TextUtils.isEmpty(track) || TextUtils.isEmpty(artist))
                 return PostResult.IGNORE;
 
@@ -484,13 +431,10 @@ public class PostIntentService extends IntentService {
      * @return PostResult.
      */
     private PostResult unban(Session session) {
-        if (session == null || propertyData == null)
-            return PostResult.FAILED;
-
-        try {
+       try {
             // 無効データを無視
-            String track  = propertyData.getFirst(MediaProperty.TITLE);
-            String artist  = propertyData.getFirst(MediaProperty.ARTIST);
+            String track  = param.getPropertyData().getFirst(MediaProperty.TITLE);
+            String artist  = param.getPropertyData().getFirst(MediaProperty.ARTIST);
             if (TextUtils.isEmpty(track) || TextUtils.isEmpty(artist))
                 return PostResult.IGNORE;
 
@@ -511,13 +455,10 @@ public class PostIntentService extends IntentService {
      * @return PostResult.
      */
     private PostResult trackPage(Session session) {
-        if (session == null || propertyData == null)
-            return PostResult.FAILED;
-
         try {
             // 無効データを無視
-            String track  = propertyData.getFirst(MediaProperty.TITLE);
-            String artist  = propertyData.getFirst(MediaProperty.ARTIST);
+            String track  = param.getPropertyData().getFirst(MediaProperty.TITLE);
+            String artist  = param.getPropertyData().getFirst(MediaProperty.ARTIST);
             if (TextUtils.isEmpty(track) || TextUtils.isEmpty(artist))
                 return PostResult.IGNORE;
 
@@ -540,12 +481,9 @@ public class PostIntentService extends IntentService {
      * @return PostResult.
      */
     private PostResult artistPage(Session session) {
-        if (session == null || propertyData == null)
-            return PostResult.FAILED;
-
         try {
             // 無効データを無視
-            String artist  = propertyData.getFirst(MediaProperty.ARTIST);
+            String artist  = param.getPropertyData().getFirst(MediaProperty.ARTIST);
             if (TextUtils.isEmpty(artist))
                 return PostResult.IGNORE;
 
@@ -592,28 +530,28 @@ public class PostIntentService extends IntentService {
                 break;
             case LOVE:
                 if (result == PostResult.SUCCEEDED) {
-                    AppUtils.showToast(context, context.getString(R.string.message_love_success,  propertyData.get(MediaProperty.TITLE.getKeyName()))); // Succeed
+                    AppUtils.showToast(context, context.getString(R.string.message_love_success,  param.getPropertyData().getFirst(MediaProperty.TITLE.getKeyName()))); // Succeed
                 } else {
                     AppUtils.showToast(context, R.string.message_love_failure); // Failed
                 }
                 break;
             case UNLOVE:
                 if (result == PostResult.SUCCEEDED) {
-                    AppUtils.showToast(context, context.getString(R.string.message_unlove_success,  propertyData.get(MediaProperty.TITLE.getKeyName()))); // Succeed
+                    AppUtils.showToast(context, context.getString(R.string.message_unlove_success,  param.getPropertyData().getFirst(MediaProperty.TITLE.getKeyName()))); // Succeed
                 } else {
                     AppUtils.showToast(context, R.string.message_unlove_failure); // Failed
                 }
                 break;
             case BAN:
                 if (result == PostResult.SUCCEEDED) {
-                    AppUtils.showToast(context, context.getString(R.string.message_ban_success,  propertyData.get(MediaProperty.TITLE.getKeyName()))); // Succeed
+                    AppUtils.showToast(context, context.getString(R.string.message_ban_success,  param.getPropertyData().getFirst(MediaProperty.TITLE.getKeyName()))); // Succeed
                 } else {
                     AppUtils.showToast(context, R.string.message_ban_failure); // Failed
                 }
                 break;
             case UNBAN:
                 if (result == PostResult.SUCCEEDED) {
-                    AppUtils.showToast(context, context.getString(R.string.message_unban_success,  propertyData.get(MediaProperty.TITLE.getKeyName()))); // Succeed
+                    AppUtils.showToast(context, context.getString(R.string.message_unban_success,  param.getPropertyData().getFirst(MediaProperty.TITLE.getKeyName()))); // Succeed
                 } else {
                     AppUtils.showToast(context, R.string.message_unban_failure); // Failed
                 }
