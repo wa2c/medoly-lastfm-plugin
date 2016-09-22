@@ -212,7 +212,7 @@ public class PostIntentService extends IntentService {
             // 認証
             // フォルダ設定 (getMobileSessionの前に入れる必要あり)
             Caller.getInstance().setCache(new FileSystemCache(new File(context.getExternalCacheDir().getPath() + File.separator + "last.fm")));
-            session = Authenticator.getMobileSession(username, password, Token.getKey1(context), Token.getKey2(context));
+            session = Authenticator.getMobileSession(username, password, Token.getConsumerKey(context), Token.getConsumerSecret(context));
         } catch (Exception e) {
             // 認証失敗してもエラーとしない
             Logger.e(e);

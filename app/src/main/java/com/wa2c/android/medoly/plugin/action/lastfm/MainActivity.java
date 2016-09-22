@@ -153,7 +153,7 @@ public class MainActivity extends Activity {
                 Caller.getInstance().setCache(new FileSystemCache(new File(context.getExternalCacheDir().getPath() + File.separator + "last.fm")));
 
                 // 認証
-                Session session = Authenticator.getMobileSession(username, password, Token.getKey1(context), Token.getKey2(context));
+                Session session = Authenticator.getMobileSession(username, password, Token.getConsumerKey(context), Token.getConsumerSecret(context));
                 return (session != null);
             } catch (Exception e) {
                 Logger.e(e);
