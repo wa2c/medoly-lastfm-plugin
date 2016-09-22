@@ -30,7 +30,6 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-
 import com.wa2c.android.medoly.plugin.action.lastfm.util.Logger;
 
 import java.util.HashMap;
