@@ -15,7 +15,8 @@ import android.widget.TextView;
 
 import com.wa2c.android.medoly.library.MedolyEnvironment;
 import com.wa2c.android.medoly.plugin.action.lastfm.dialog.AuthDialogFragment;
-import com.wa2c.android.medoly.utils.Logger;
+import com.wa2c.android.medoly.plugin.action.lastfm.util.AppUtils;
+import com.wa2c.android.medoly.plugin.action.lastfm.util.Logger;
 
 import java.io.File;
 

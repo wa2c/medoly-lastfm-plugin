@@ -11,7 +11,8 @@ import android.text.TextUtils;
 import com.wa2c.android.medoly.library.MediaProperty;
 import com.wa2c.android.medoly.library.MedolyIntentParam;
 import com.wa2c.android.medoly.library.PluginOperationCategory;
-import com.wa2c.android.medoly.utils.Logger;
+import com.wa2c.android.medoly.plugin.action.lastfm.util.AppUtils;
+import com.wa2c.android.medoly.plugin.action.lastfm.util.Logger;
 
 import java.io.File;
 import java.util.ArrayList;

@@ -22,7 +22,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.wa2c.android.medoly.plugin.action.lastfm.dialog.ConfirmDialogFragment;
-import com.wa2c.android.medoly.utils.Logger;
+import com.wa2c.android.medoly.plugin.action.lastfm.util.AppUtils;
+import com.wa2c.android.medoly.plugin.action.lastfm.util.Logger;
 
 import java.util.ArrayList;
 import java.util.Arrays;

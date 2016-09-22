@@ -31,7 +31,9 @@ android {
 
 
 dependencies {
-    compile 'de.u-mass:lastfm-java:0.1.2'
-    compile 'com.google.code.gson:gson:2.4'
     compile project(':medolylibrary')
+    // https://mvnrepository.com/artifact/de.u-mass/lastfm-java
+    compile group: 'de.u-mass', name: 'lastfm-java', version: '0.1.2'
+    // https://mvnrepository.com/artifact/com.google.code.gson/gson
+    compile group: 'com.google.code.gson', name: 'gson', version: '2.7'
 }

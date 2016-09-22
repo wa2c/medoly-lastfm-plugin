@@ -1,4 +1,4 @@
-package com.wa2c.android.medoly.plugin.action.lastfm;
+package com.wa2c.android.medoly.plugin.action.lastfm.util;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
