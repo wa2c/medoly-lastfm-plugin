@@ -16,6 +16,7 @@ public class PluginReceiver extends BroadcastReceiver {
      */
     @Override
     public void onReceive(Context context, Intent intent) {
+        // IntentService起動
         Intent serviceIntent = new Intent(intent);
         serviceIntent.setClass(context, PostIntentService.class);
         context.startService(serviceIntent);
