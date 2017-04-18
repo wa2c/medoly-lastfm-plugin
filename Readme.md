@@ -32,7 +32,7 @@ Medoly Last.fm Scrobbler Plugin は、[Medoly](https://play.google.com/store/app
 
 ## Licence
 
-[MIT](https://github.com/tcnksm/tool/blob/master/LICENCE)
+[MIT](https://opensource.org/licenses/MIT)
 
 ## Author
 

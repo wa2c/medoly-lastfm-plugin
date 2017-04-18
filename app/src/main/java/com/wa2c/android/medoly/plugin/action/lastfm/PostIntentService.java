@@ -9,8 +9,10 @@ import android.preference.PreferenceManager;
 import android.text.TextUtils;
 
 import com.wa2c.android.medoly.library.MediaProperty;
+import com.wa2c.android.medoly.library.MedolyEnvironment;
 import com.wa2c.android.medoly.library.MedolyIntentParam;
 import com.wa2c.android.medoly.library.PluginOperationCategory;
+import com.wa2c.android.medoly.library.PluginTypeCategory;
 import com.wa2c.android.medoly.plugin.action.lastfm.util.AppUtils;
 import com.wa2c.android.medoly.plugin.action.lastfm.util.Logger;
 
@@ -18,6 +20,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 import de.umass.lastfm.Artist;
 import de.umass.lastfm.Authenticator;
@@ -25,6 +28,7 @@ import de.umass.lastfm.Caller;
 import de.umass.lastfm.Result;
 import de.umass.lastfm.Session;
 import de.umass.lastfm.Track;
+import de.umass.lastfm.User;
 import de.umass.lastfm.cache.FileSystemCache;
 import de.umass.lastfm.scrobble.ScrobbleData;
 import de.umass.lastfm.scrobble.ScrobbleResult;
@@ -57,6 +61,11 @@ public class PostIntentService extends IntentService {
         BAN,
         /** Unban */
         UNBAN,
+        /** Site */
+        SITE,
+
+        /** Get Property */
+        GET_PROPERTY
     }
 
 
@@ -103,6 +112,70 @@ public class PostIntentService extends IntentService {
             sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
             param = new MedolyIntentParam(intent);
 
+            // メッセージ通知
+            if (param.hasCategories(PluginTypeCategory.TYPE_POST_MESSAGE)) {
+                // Play Start
+                if (param.hasCategories(PluginOperationCategory.OPERATION_PLAY_START)) {
+                    if (!param.isEvent() || sharedPreferences.getBoolean(context.getString(R.string.prefkey_operation_play_start_enabled), false)) {
+                        post(PostType.SCROBBLE);
+                    }
+                }
+                // Play Now
+                if (param.hasCategories(PluginOperationCategory.OPERATION_PLAY_NOW)) {
+                    if (!param.isEvent() || sharedPreferences.getBoolean(context.getString(R.string.prefkey_operation_play_now_enabled), true)) {
+                        post(PostType.SCROBBLE);
+                    }
+                }
+            }
+            // プロパティ要求
+            if (param.hasCategories(PluginTypeCategory.TYPE_GET_PROPERTY)) {
+
+            }
+            // その他
+            {
+                // Execute
+                if (param.hasCategories(PluginOperationCategory.OPERATION_EXECUTE)) {
+                    if (param.hasExecuteId("execute_id_love")) {
+                        // Love
+                        post(PostType.LOVE);
+                    } else if (param.hasExecuteId("execute_id_unlove")) {
+                        // UnLove
+                        post(PostType.UNLOVE);
+                    } else if (param.hasExecuteId("execute_id_ban")) {
+                        // Ban
+                        post(PostType.BAN);
+                    } else if (param.hasExecuteId("execute_id_unban")) {
+                        // UnBan
+                        post(PostType.UNBAN);
+                    } else if (param.hasExecuteId("execute_id_page_track")) {
+                        // Page Track
+                        post(PostType.PAGE_TRACK);
+                    } else if (param.hasExecuteId("execute_id_page_artist")) {
+                        // Page Artist
+                        post(PostType.PAGE_ARTIST);
+                    } else if (param.hasExecuteId("execute_id_site")) {
+                        // Last.fm
+                        String username = sharedPreferences.getString(context.getString(R.string.prefkey_auth_username), "");
+                        Uri siteUri;
+                        if (TextUtils.isEmpty(username)) {
+                            // ユーザ未認証
+                            siteUri = Uri.parse(context.getString(R.string.lastfm_url));
+                        } else {
+                            // ユーザ認証済
+                            siteUri = Uri.parse(context.getString(R.string.lastfm_url_user, username));
+                        }
+
+                        Intent launchIntent = new Intent(Intent.ACTION_VIEW, siteUri);
+                        try {
+                            launchIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            context.startActivity(launchIntent);
+                        } catch (android.content.ActivityNotFoundException e) {
+                            Logger.d(e);
+                        }
+                    }
+                }
+            }
+            /*
             // 各アクション実行
             if (param.hasCategories(PluginOperationCategory.OPERATION_PLAY_START)) {
                 // Play Start
@@ -155,6 +228,7 @@ public class PostIntentService extends IntentService {
                     }
                 }
             }
+            */
         } catch (Exception e) {
             AppUtils.showToast(this, R.string.error_app);
         } finally {
@@ -361,13 +435,22 @@ public class PostIntentService extends IntentService {
      */
     private PostResult love(Session session) {
          try {
+
+
+
             // 無効データを無視
             String track  = param.getPropertyData().getFirst(MediaProperty.TITLE);
             String artist  = param.getPropertyData().getFirst(MediaProperty.ARTIST);
             if (TextUtils.isEmpty(track) || TextUtils.isEmpty(artist))
                 return PostResult.IGNORE;
 
-            Result res = Track.love(artist, track, session);
+             Track t =  Track.getInfo(artist, track, Locale.getDefault(), session.getUsername(), session.getApiKey());
+            t.getUserPlaycount();
+
+
+
+
+             Result res = Track.love(artist, track, session);
             if (res.isSuccessful())
                 return PostResult.SUCCEEDED;
             else
@@ -502,6 +585,57 @@ public class PostIntentService extends IntentService {
         }
     }
 
+    private PostResult getProperty(Session session) {
+        try {
+            // 無効データを無視
+            String track  = param.getPropertyData().getFirst(MediaProperty.TITLE);
+            String artist  = param.getPropertyData().getFirst(MediaProperty.ARTIST);
+            if (TextUtils.isEmpty(track) || TextUtils.isEmpty(artist))
+                return PostResult.IGNORE;
+
+            Track trackInfo = Track.getInfo(artist, track, Locale.getDefault(), session.getUsername(), session.getApiKey());
+            int playcount = trackInfo.getUserPlaycount();
+
+            return PostResult.SUCCEEDED;
+//            if (res.isSuccessful())
+//                return PostResult.SUCCEEDED;
+//            else
+//                return PostResult.FAILED;
+        } catch (Exception e) {
+            Logger.e(e);
+            return PostResult.FAILED;
+        }
+
+    }
+
+    /**
+     * 歌詞を送り返す。
+     * @param playcount 再生回数。
+     */
+    private void sendResult(int playcount) {
+        if (param == null)
+            return;
+
+        Intent returnIntent = param.createReturnIntent();
+        returnIntent.addCategory(PluginTypeCategory.TYPE_PUT_PROPERTY.getCategoryValue()); // カテゴリ
+        //returnIntent.putExtra(MedolyEnvironment.PLUGIN_EXTRA_KEY, null);
+        returnIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+        sendBroadcast(returnIntent);
+
+//        // Message
+//        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+//        if (lyricsUri != null) {
+//            if (lyricsUri == Uri.EMPTY)
+//                return; // EMPTYは無視
+//            if (pref.getBoolean(getString(R.string.prefkey_success_message_show), false)) {
+//                AppUtils.showToast(this, R.string.message_lyrics_success);
+//            }
+//        } else {
+//            if (pref.getBoolean(getString(R.string.prefkey_failure_message_show), false)) {
+//                AppUtils.showToast(this, R.string.message_lyrics_failure);
+//            }
+//        }
+    }
 
 
 

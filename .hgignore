@@ -34,5 +34,8 @@ proguard/
 # App
 Token.java
 syntax: glob
-captures/
+*.iml
+.idea/libraries
 .idea/misc.xml
+.idea\modules.xml
+captures/
