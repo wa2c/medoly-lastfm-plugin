@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Package -->
-    <string name="app_description">Send the media information of playing to Last.fm in Medoly.</string>
-    <string name="class_receiver_label">Last.fm actions.</string>
+    <string name="app_description">Add functions to Medoly  such as Scrobble, Love, Unlove, Site Access, etc for Last.fm.</string>
     <string name="label_execute_love">Love</string>
     <string name="label_execute_unlove">Unlove</string>
     <string name="label_execute_ban">Ban</string>
@@ -10,6 +9,8 @@
     <string name="label_execute_page_track">Track Page</string>
     <string name="label_execute_page_artist">Artist Page</string>
     <string name="label_execute_site">Last.fm</string>
+
+    <string name="label_receiver_property">Get Properties</string>
 
     <!-- Activity -->
     <string name="title_activity_unsent_list">Unsent List</string>
@@ -39,6 +40,8 @@
 
 
     <!-- Main Activity -->
+    <string name="label_spinner_event">Event</string>
+    <string name="label_spinner_event_none">Invalidate event</string>
     <string name="label_button_account_auth">Account Auth</string>
     <string name="label_button_lastfm_site">Last.fm Site</string>
     <string name="label_button_settings">Settings</string>
@@ -72,19 +75,25 @@
     <string name="label_dialog_auth_username">Username</string>
     <string name="label_dialog_auth_password">Password</string>
 
+    <!-- About Dialog -->
+    <string name="label_dialog_about_ver">Ver. %1$s</string>
+    <string name="label_dialog_about_developer">Developer</string>
+    <string name="label_dialog_about_email">Email</string>
+    <string name="label_dialog_about_license">License</string>
+    <string name="label_dialog_about_privacy_policy">Privacy Policy</string>
+    <string name="label_dialog_about_google_play">Google Play</string>
+    <string name="label_dialog_about_link">Link</string>
+    <string name="label_dialog_about_library">[Library]</string>
+
     <!-- Preferences -->
-    <string name="pref_title_operation_play_now_enabled">Run At Media Playing</string>
-    <string name="pref_summary_operation_play_now_enabled">Enable the action at the time of media playing.</string>
-    <string name="pref_title_operation_play_start_enabled">Run At Media Start</string>
-    <string name="pref_summary_operation_play_start_enabled">Enable the action at the time of media start.</string>
     <string name="pref_title_previous_media_enabled">Run Previous Media</string>
     <string name="pref_summary_previous_media_enabled">Enable to run the event for the same media that has run the event already last time.</string>
+    <string name="pref_title_unsent_max">Unsent Max</string>
+    <string name="pref_summary_unsent_max">Set the max count of unsent data. Unlimited in the case of 0.</string>
     <string name="pref_title_post_success_message_show">Show Success Message</string>
     <string name="pref_summary_post_success_message_show">Show the message when send succeeded.</string>
     <string name="pref_title_post_failure_message_show">Show Failure Message</string>
     <string name="pref_summary_post_failure_message_show">Show the message when send failed. </string>
-    <string name="pref_title_unsent_max">Unsent Max</string>
-    <string name="pref_summary_unsent_max">Set the max count of unsent data. Unlimited in the case of 0.</string>
     <string name="pref_title_application_details">App Info</string>
     <string name="pref_summary_application_details">Show application information.</string>
     <string name="pref_title_about">About</string>

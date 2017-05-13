@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Package -->
-    <string name="app_description">Medolyで再生中のメディア情報をLast.fmに送信します。</string>
-    <string name="class_receiver_label">Last.fm アクション</string>
+    <string name="app_description">Medolyに、Last.fmに対するScrobble、Love、Unlove、サイトアクセス等の機能を提供します。</string>
     <string name="label_execute_love">Love</string>
     <string name="label_execute_unlove">Unlove</string>
     <string name="label_execute_ban">Ban</string>
@@ -10,6 +9,8 @@
     <string name="label_execute_page_track">トラックページ</string>
     <string name="label_execute_page_artist">アーティストページ</string>
     <string name="label_execute_site">Last.fmを開く</string>
+
+    <string name="label_receiver_property">プロパティ取得</string>
 
     <!-- Activity -->
     <string name="title_activity_unsent_list">未送信リスト</string>
@@ -38,6 +39,8 @@
 
 
     <!-- Main Activity -->
+    <string name="label_spinner_event">実行イベント</string>
+    <string name="label_spinner_event_none">イベント無効</string>
     <string name="label_button_account_auth">アカウント認証</string>
     <string name="label_button_lastfm_site">Last.fm サイト</string>
     <string name="label_button_settings">設定</string>
@@ -71,20 +74,25 @@
     <string name="label_dialog_auth_username">ユーザ名</string>
     <string name="label_dialog_auth_password">パスワード</string>
 
+    <!-- About Dialog -->
+    <string name="label_dialog_about_ver">Ver. %1$s</string>
+    <string name="label_dialog_about_developer">Developer</string>
+    <string name="label_dialog_about_email">Email</string>
+    <string name="label_dialog_about_license">License</string>
+    <string name="label_dialog_about_privacy_policy">Privacy Policy</string>
+    <string name="label_dialog_about_google_play">Google Play</string>
+    <string name="label_dialog_about_link">Link</string>
+    <string name="label_dialog_about_library">[Library]</string>
 
     <!-- Preferences -->
-    <string name="pref_title_operation_play_now_enabled">再生中イベント</string>
-    <string name="pref_summary_operation_play_now_enabled">メディア再生中のイベントを実行します。</string>
-    <string name="pref_title_operation_play_start_enabled">再生開始イベント</string>
-    <string name="pref_summary_operation_play_start_enabled">メディア再生開始のイベントを実行します。</string>
     <string name="pref_title_previous_media_enabled">前回メディア実行</string>
     <string name="pref_summary_previous_media_enabled">前回イベント実行済みの同一メディアに対しても、イベントを実行します。</string>
+    <string name="pref_title_unsent_max">未送信データ上限</string>
+    <string name="pref_summary_unsent_max">未送信データ保存件数の上限を設定します。0の場合は無制限となります。</string>
     <string name="pref_title_post_success_message_show">成功メッセージ表示</string>
     <string name="pref_summary_post_success_message_show">送信に成功した際にメッセージを表示します。</string>
     <string name="pref_title_post_failure_message_show">失敗メッセージ表示</string>
     <string name="pref_summary_post_failure_message_show">送信に失敗した際にメッセージを表示します。</string>
-    <string name="pref_title_unsent_max">未送信データ上限</string>
-    <string name="pref_summary_unsent_max">未送信データ保存件数の上限を設定します。0の場合は無制限となります。</string>
     <string name="pref_title_application_details">アプリ情報</string>
     <string name="pref_summary_application_details">アプリ情報を表示します。</string>
     <string name="pref_title_about">About</string>

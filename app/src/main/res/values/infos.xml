@@ -2,18 +2,20 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
 
     <!-- App Infos -->
-    <string name="app_name">Medoly Last.fm Scrobbler Plugin</string>
+    <string name="app_name">Medoly Last.fm Plugin</string>
     <string name="base_app_name">Medoly</string>
+    <string name="package_name">com.wa2c.android.medoly.plugin.action.lastfm</string>
     <string name="domain_name">wa2c.com</string>
     <string name="app_mail_name">medoly</string>
     <string name="app_mail_domain">wa2c.com</string>
     <string name="app_author">wa2c</string>
+    <string name="app_license">MIT License</string>
+    <string name="app_license_url">https://bitbucket.org/wa2c/medoly-lrc-lyrics-plugin/raw/9429df6f0e2721cdc6075cfbf628615c207545f5/LICENSE.txt</string>
+    <string name="app_privacy_policy_url">https://wa2c.sakura.ne.jp/wa2c.com/documents/dokuwiki/doku.php?id=medoly_last.fm_plugin:privacy_policy</string>
     <string name="app_market">market://details?id=com.wa2c.android.medoly.plugin.action.lastfm</string>
     <string name="app_market_web">https://play.google.com/store/apps/details?id=com.wa2c.android.medoly.plugin.action.lastfm</string>
 
-    <!-- Last.fm info -->
-    <string name="lastfm_url">http://www.last.fm/</string>
-    <string name="lastfm_url_user">http://www.last.fm/user/%1$s</string>
+    <string name="label_header_separator">:</string>
 
     <!-- Library  -->
     <string-array name="about_library_names">
@@ -23,6 +25,10 @@
         <item>https://code.google.com/p/lastfm-java/</item>
     </string-array>
 
+    <!-- Last.fm info -->
+    <string name="lastfm_url">http://www.last.fm/</string>
+    <string name="lastfm_url_user">http://www.last.fm/user/%1$s</string>
+
     <!-- Preferences -->
     <string name="prefkey_auth_username">auth_username</string>
     <string name="prefkey_auth_password">auth_password</string>
@@ -30,12 +36,11 @@
     <string name="prefkey_unsent_scrobble_data">unsent_scrobble_data</string>
     <string name="prefkey_unsent_scrobble_not_save">unsent_scrobble_not_save</string>
 
-    <string name="prefkey_operation_play_now_enabled">operation_play_now_enabled</string>
-    <string name="prefkey_operation_play_start_enabled">operation_play_start_enabled</string>
+    <string name="pref_plugin_event">pref_plugin_event</string>
     <string name="prefkey_previous_media_enabled">previous_media_enabled</string>
+    <string name="prefkey_unsent_max">unsent_max</string>
     <string name="prefkey_post_success_message_show">post_success_message_show</string>
     <string name="prefkey_post_failure_message_show">post_failure_message_show</string>
-    <string name="prefkey_unsent_max">unsent_max</string>
     <string name="prefkey_application_details">application_details</string>
     <string name="prefkey_about">about</string>
 

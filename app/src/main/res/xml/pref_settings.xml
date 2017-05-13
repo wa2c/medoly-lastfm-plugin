@@ -1,22 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <CheckBoxPreference
-        android:defaultValue="true"
-        android:key="@string/prefkey_operation_play_now_enabled"
-        android:summary="@string/pref_summary_operation_play_now_enabled"
-        android:title="@string/pref_title_operation_play_now_enabled" />
-    <CheckBoxPreference
-        android:defaultValue="false"
-        android:key="@string/prefkey_operation_play_start_enabled"
-        android:summary="@string/pref_summary_operation_play_start_enabled"
-        android:title="@string/pref_title_operation_play_start_enabled" />
 
     <CheckBoxPreference
         android:defaultValue="true"
         android:key="@string/prefkey_previous_media_enabled"
         android:summary="@string/pref_summary_previous_media_enabled"
         android:title="@string/pref_title_previous_media_enabled" />
+
+    <EditTextPreference
+        android:defaultValue="@integer/pref_default_unsent_max"
+        android:digits="0123456789"
+        android:inputType="number"
+        android:key="@string/prefkey_unsent_max"
+        android:maxLength="5"
+        android:summary="@string/pref_summary_unsent_max"
+        android:title="@string/pref_title_unsent_max" />
 
     <CheckBoxPreference
         android:defaultValue="false"
@@ -29,15 +28,6 @@
         android:key="@string/prefkey_post_failure_message_show"
         android:summary="@string/pref_summary_post_failure_message_show"
         android:title="@string/pref_title_post_failure_message_show" />
-
-    <EditTextPreference
-        android:defaultValue="@integer/pref_default_unsent_max"
-        android:digits="0123456789"
-        android:inputType="number"
-        android:key="@string/prefkey_unsent_max"
-        android:maxLength="5"
-        android:summary="@string/pref_summary_unsent_max"
-        android:title="@string/pref_title_unsent_max" />
 
     <Preference
         android:key="@string/prefkey_application_details"

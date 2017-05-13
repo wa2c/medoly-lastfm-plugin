@@ -11,6 +11,9 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.wa2c.android.medoly.library.MedolyEnvironment;
@@ -38,8 +41,15 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // ActionBar
+        android.app.ActionBar actionBar = getActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayShowHomeEnabled(true);
+            actionBar.setDisplayShowTitleEnabled(true);
+        }
+
         // Account Auth
-        findViewById(R.id.twitterOAuthButton).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.accountAuthButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 final AuthDialogFragment dialogFragment = AuthDialogFragment.newInstance();
@@ -111,23 +121,59 @@ public class MainActivity extends Activity {
         });
 
         // Launch Medoly
-        final Intent launchIntent = getPackageManager().getLaunchIntentForPackage(MedolyEnvironment.MEDOLY_PACKAGE);
         findViewById(R.id.launchMedolyButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (launchIntent != null) startActivity(launchIntent);
+                Intent intent = getPackageManager().getLaunchIntentForPackage(MedolyEnvironment.MEDOLY_PACKAGE);
+                if (intent == null) {
+                    AppUtils.showToast(MainActivity.this, R.string.message_no_medoly);
+                    return;
+                }
+                startActivity(intent);
             }
         });
-        if (launchIntent == null) {
-            findViewById(R.id.launchMedolyButton).setVisibility(View.GONE);
-            findViewById(R.id.noMedolyTextView).setVisibility(View.VISIBLE);
-        } else {
-            findViewById(R.id.launchMedolyButton).setVisibility(View.VISIBLE);
-            findViewById(R.id.noMedolyTextView).setVisibility(View.GONE);
-        }
 
+        setSpinner();
 
         updateAuthMessage();
+    }
+
+    /**
+     * Set spinner.
+     */
+    private void setSpinner() {
+        final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        final Spinner executeEventSpinner = (Spinner)findViewById(R.id.executeEventSpinner);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item);
+        adapter.add(getString(R.string.label_spinner_event_none));          // 0
+        adapter.add(getString(R.string.label_plugin_operation_play_start)); // 1
+        adapter.add(getString(R.string.label_plugin_operation_play_now));   // 2
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        executeEventSpinner.setAdapter(adapter);
+        executeEventSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                preferences.edit().putInt(getString(R.string.pref_plugin_event), position).apply();
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                executeEventSpinner.setSelection(2);
+            }
+        });
+
+        executeEventSpinner.setSelection(preferences.getInt(getString(R.string.pref_plugin_event), PostIntentService.PLUGIN_EVENT_PLAY_NOW));
+
+        // old data convert
+        if (preferences.getBoolean("operation_play_now_enabled", true)) {
+            executeEventSpinner.setSelection(PostIntentService.PLUGIN_EVENT_PLAY_NOW);
+        } else if  (preferences.getBoolean("operation_play_start_enabled", true)) {
+            executeEventSpinner.setSelection(PostIntentService.PLUGIN_EVENT_PLAY_START);
+        } else {
+            executeEventSpinner.setSelection(PostIntentService.PLUGIN_EVENT_NONE);
+        }
+        preferences.edit().remove("operation_play_now_enabled").apply();
+        preferences.edit().remove("operation_play_start_enabled").apply();
     }
 
     /**
@@ -139,7 +185,7 @@ public class MainActivity extends Activity {
         private String username;
         private String password;
 
-        public AsyncAuthTask(String username, String password) {
+        AsyncAuthTask(String username, String password) {
             this.preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
             this.context = getApplicationContext();
             this.username = username;
@@ -179,7 +225,7 @@ public class MainActivity extends Activity {
 
 
     /**
-     * 認証状態のメッセージを更新する。
+     * Update auth message.
      */
     private void updateAuthMessage() {
         SharedPreferences preference = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());

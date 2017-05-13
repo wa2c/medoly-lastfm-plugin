@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "com.wa2c.android.medoly.plugin.action.lastfm"
-        minSdkVersion 13
+        minSdkVersion 16
         targetSdkVersion 24
         versionCode 9
         versionName "1.5.0"
@@ -29,13 +29,12 @@ android {
 }
 
 repositories {
-    //maven { url 'http://raw.github.com/wa2c/medoly-library/master/repository/' }
     maven { url 'https://api.bitbucket.org/1.0/repositories/wa2c/medoly-library/raw/master/repository/' }
 }
 
 dependencies {
     // Medoly
-    compile 'com.wa2c.android:medolylibrary:1.0.4'
+    compile 'com.wa2c.android:medolylibrary:1.0.4e'
     // https://mvnrepository.com/artifact/de.u-mass/lastfm-java
     compile group: 'de.u-mass', name: 'lastfm-java', version: '0.1.2'
     // https://mvnrepository.com/artifact/com.google.code.gson/gson
