@@ -12,12 +12,20 @@
 
     <string name="label_receiver_property">Get Properties</string>
 
+    <!-- Extra Data -->
+    <string name="label_extra_data_user_play_count">User Scrobble Count</string>
+    <string name="label_extra_data_play_count">Total Scrobble Count</string>
+    <string name="label_extra_data_listener_count">Listener Count</string>
+    <string name="label_extra_data_lastfm_track_url">Track URL</string>
+
+
+
     <!-- Activity -->
     <string name="title_activity_unsent_list">Unsent List</string>
     <string name="title_activity_settings">Setting</string>
 
 
-    <!-- Twitter -->
+    <!-- Post -->
     <string name="message_no_media">The media is not selected.</string>
     <string name="message_post_success">The playback information was sent to Last.fm..</string>
     <string name="message_post_failure">Failed to send to Last.fm.</string>
@@ -86,6 +94,8 @@
     <string name="label_dialog_about_library">[Library]</string>
 
     <!-- Preferences -->
+    <string name="pref_title_update_now_playing">Notify playback start</string>
+    <string name="pref_summary_update_now_playing">Notify playback start. To be "now playing" state on  Last.fm site.</string>
     <string name="pref_title_previous_media_enabled">Run Previous Media</string>
     <string name="pref_summary_previous_media_enabled">Enable to run the event for the same media that has run the event already last time.</string>
     <string name="pref_title_unsent_max">Unsent Max</string>

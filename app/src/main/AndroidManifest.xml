@@ -157,13 +157,16 @@
                 android:name="execute_id_get_property"
                 android:value="10" />
             <meta-data
-                android:name="execute_label_property"
+                android:name="execute_label_get_property"
                 android:resource="@string/label_receiver_property"
                 tools:ignore="ManifestResource"/>
             <meta-data
-                android:name="execute_icon_property"
+                android:name="execute_icon_get_property"
                 android:resource="@drawable/ic_action_lastfm"
                 tools:ignore="ManifestResource"/>
+            <meta-data
+                android:name="execute_type_get_property"
+                android:value="TYPE_GET_PROPERTY" />
         </receiver>
 
         <receiver

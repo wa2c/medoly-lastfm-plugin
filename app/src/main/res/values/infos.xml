@@ -29,14 +29,15 @@
     <string name="lastfm_url">http://www.last.fm/</string>
     <string name="lastfm_url_user">http://www.last.fm/user/%1$s</string>
 
-    <!-- Preferences -->
     <string name="prefkey_auth_username">auth_username</string>
     <string name="prefkey_auth_password">auth_password</string>
-
+    <string name="pref_plugin_event">pref_plugin_event</string>
     <string name="prefkey_unsent_scrobble_data">unsent_scrobble_data</string>
     <string name="prefkey_unsent_scrobble_not_save">unsent_scrobble_not_save</string>
 
-    <string name="pref_plugin_event">pref_plugin_event</string>
+    <!-- Preferences -->
+
+    <string name="prefkey_update_now_playing">update_now_playing</string>
     <string name="prefkey_previous_media_enabled">previous_media_enabled</string>
     <string name="prefkey_unsent_max">unsent_max</string>
     <string name="prefkey_post_success_message_show">post_success_message_show</string>

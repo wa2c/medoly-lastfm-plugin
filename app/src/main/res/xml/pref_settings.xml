@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="@string/prefkey_update_now_playing"
+        android:summary="@string/pref_summary_update_now_playing"
+        android:title="@string/pref_title_update_now_playing" />
 
     <CheckBoxPreference
         android:defaultValue="true"

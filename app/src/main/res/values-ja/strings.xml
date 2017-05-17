@@ -12,6 +12,13 @@
 
     <string name="label_receiver_property">プロパティ取得</string>
 
+    <!-- Extra Data -->
+    <string name="label_extra_data_user_play_count">ユーザ Scrobble 回数</string>
+    <string name="label_extra_data_play_count">合計 Scrobble 回数</string>
+    <string name="label_extra_data_listener_count">リスナー</string>
+    <string name="label_extra_data_lastfm_track_url">トラックURL</string>
+
+
     <!-- Activity -->
     <string name="title_activity_unsent_list">未送信リスト</string>
     <string name="title_activity_settings">設定</string>
@@ -85,6 +92,8 @@
     <string name="label_dialog_about_library">[Library]</string>
 
     <!-- Preferences -->
+    <string name="pref_title_update_now_playing">再生開始を通知</string>
+    <string name="pref_summary_update_now_playing">再生開始を通知します。Last.fmサイト上で再生中状態を表示します。</string>
     <string name="pref_title_previous_media_enabled">前回メディア実行</string>
     <string name="pref_summary_previous_media_enabled">前回イベント実行済みの同一メディアに対しても、イベントを実行します。</string>
     <string name="pref_title_unsent_max">未送信データ上限</string>

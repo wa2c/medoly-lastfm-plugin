@@ -4,6 +4,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
+import com.wa2c.android.medoly.library.MediaPluginIntent;
+
 
 /**
  * メッセージプラグイン受信レシーバ。
@@ -20,6 +22,10 @@ public class PluginReceiver extends BroadcastReceiver {
         Intent serviceIntent = new Intent(intent);
         serviceIntent.setClass(context, PostIntentService.class);
         context.startService(serviceIntent);
+
+        MediaPluginIntent pluginIntent = new MediaPluginIntent(intent);
+        MediaPluginIntent returnIntent = pluginIntent.createReturnIntent(null, null);
+        context.sendBroadcast(returnIntent);
     }
 
 }
