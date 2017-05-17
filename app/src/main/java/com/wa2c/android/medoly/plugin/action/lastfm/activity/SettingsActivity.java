@@ -1,4 +1,4 @@
-package com.wa2c.android.medoly.plugin.action.lastfm;
+package com.wa2c.android.medoly.plugin.action.lastfm.activity;
 
 import android.app.ActionBar;
 import android.content.Intent;
@@ -18,6 +18,7 @@ import android.text.InputType;
 import android.text.TextUtils;
 import android.view.MenuItem;
 
+import com.wa2c.android.medoly.plugin.action.lastfm.R;
 import com.wa2c.android.medoly.plugin.action.lastfm.dialog.AboutDialogFragment;
 
 import java.util.HashMap;

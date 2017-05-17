@@ -13,7 +13,7 @@
         android:theme="@style/AppTheme">
 
         <activity
-            android:name=".MainActivity"
+            android:name=".activity.MainActivity"
             android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -23,19 +23,19 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".UnsentListActivity" />
+        <activity android:name=".activity.UnsentListActivity" />
 
         <activity
-            android:name=".SettingsActivity"
+            android:name=".activity.SettingsActivity"
             android:label="@string/title_activity_settings"
             android:launchMode="singleTask" />
 
         <service
-            android:name=".PostIntentService"
+            android:name=".service.PostIntentService"
             android:exported="false" />
 
         <receiver
-            android:name=".PluginReceiver"
+            android:name=".receiver.PluginReceiver"
             android:exported="true" >
 
             <!-- Post -->
@@ -170,7 +170,7 @@
         </receiver>
 
         <receiver
-            android:name=".util.ToastReceiver"
+            android:name=".receiver.ToastReceiver"
             android:exported="false" />
 
     </application>

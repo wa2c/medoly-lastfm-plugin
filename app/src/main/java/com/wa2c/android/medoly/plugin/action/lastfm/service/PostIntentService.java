@@ -1,4 +1,4 @@
-package com.wa2c.android.medoly.plugin.action.lastfm;
+package com.wa2c.android.medoly.plugin.action.lastfm.service;
 
 import android.app.IntentService;
 import android.content.Context;
@@ -14,17 +14,17 @@ import com.wa2c.android.medoly.library.MediaProperty;
 import com.wa2c.android.medoly.library.PluginOperationCategory;
 import com.wa2c.android.medoly.library.PluginTypeCategory;
 import com.wa2c.android.medoly.library.PropertyData;
+import com.wa2c.android.medoly.plugin.action.lastfm.R;
+import com.wa2c.android.medoly.plugin.action.lastfm.Token;
 import com.wa2c.android.medoly.plugin.action.lastfm.util.AppUtils;
 import com.wa2c.android.medoly.plugin.action.lastfm.util.Logger;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
-import de.umass.lastfm.Album;
 import de.umass.lastfm.Artist;
 import de.umass.lastfm.Authenticator;
 import de.umass.lastfm.Caller;
@@ -682,6 +682,9 @@ public class PostIntentService extends IntentService {
             AppUtils.showToast(context, R.string.message_account_not_auth);
             return;
         }
+
+        if (postType == null)
+            return;
 
         switch (postType) {
             case SCROBBLE:

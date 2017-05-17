@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import com.google.gson.Gson;
+import com.wa2c.android.medoly.plugin.action.lastfm.receiver.ToastReceiver;
 
 
 /**

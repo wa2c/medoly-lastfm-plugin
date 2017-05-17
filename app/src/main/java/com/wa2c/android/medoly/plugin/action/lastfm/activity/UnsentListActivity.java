@@ -1,4 +1,4 @@
-package com.wa2c.android.medoly.plugin.action.lastfm;
+package com.wa2c.android.medoly.plugin.action.lastfm.activity;
 
 import android.app.ActionBar;
 import android.app.Activity;
@@ -21,6 +21,7 @@ import android.widget.CompoundButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.wa2c.android.medoly.plugin.action.lastfm.R;
 import com.wa2c.android.medoly.plugin.action.lastfm.dialog.ConfirmDialogFragment;
 import com.wa2c.android.medoly.plugin.action.lastfm.util.AppUtils;
 import com.wa2c.android.medoly.plugin.action.lastfm.util.Logger;
