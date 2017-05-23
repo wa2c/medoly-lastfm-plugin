@@ -690,7 +690,7 @@ public class PostIntentService extends IntentService {
             case SCROBBLE:
                 if (result == PostResult.SUCCEEDED) {
                     if (sharedPreferences.getBoolean(context.getString(R.string.prefkey_post_success_message_show), false)) {
-                        AppUtils.showToast(context, R.string.message_post_success); // Succeed
+                        AppUtils.showToast(context, context.getString(R.string.message_post_success, pluginIntent.getPropertyData().getFirst(MediaProperty.TITLE))); // Succeed
                     }
                 } else {
                     if (sharedPreferences.getBoolean(context.getString(R.string.prefkey_post_failure_message_show), true)) {
@@ -700,28 +700,28 @@ public class PostIntentService extends IntentService {
                 break;
             case LOVE:
                 if (result == PostResult.SUCCEEDED) {
-                    AppUtils.showToast(context, context.getString(R.string.message_love_success,  pluginIntent.getPropertyData().getFirst(MediaProperty.TITLE.getKeyName()))); // Succeed
+                    AppUtils.showToast(context, context.getString(R.string.message_love_success,  pluginIntent.getPropertyData().getFirst(MediaProperty.TITLE))); // Succeed
                 } else {
                     AppUtils.showToast(context, R.string.message_love_failure); // Failed
                 }
                 break;
             case UNLOVE:
                 if (result == PostResult.SUCCEEDED) {
-                    AppUtils.showToast(context, context.getString(R.string.message_unlove_success,  pluginIntent.getPropertyData().getFirst(MediaProperty.TITLE.getKeyName()))); // Succeed
+                    AppUtils.showToast(context, context.getString(R.string.message_unlove_success,  pluginIntent.getPropertyData().getFirst(MediaProperty.TITLE))); // Succeed
                 } else {
                     AppUtils.showToast(context, R.string.message_unlove_failure); // Failed
                 }
                 break;
             case BAN:
                 if (result == PostResult.SUCCEEDED) {
-                    AppUtils.showToast(context, context.getString(R.string.message_ban_success,  pluginIntent.getPropertyData().getFirst(MediaProperty.TITLE.getKeyName()))); // Succeed
+                    AppUtils.showToast(context, context.getString(R.string.message_ban_success,  pluginIntent.getPropertyData().getFirst(MediaProperty.TITLE))); // Succeed
                 } else {
                     AppUtils.showToast(context, R.string.message_ban_failure); // Failed
                 }
                 break;
             case UNBAN:
                 if (result == PostResult.SUCCEEDED) {
-                    AppUtils.showToast(context, context.getString(R.string.message_unban_success,  pluginIntent.getPropertyData().getFirst(MediaProperty.TITLE.getKeyName()))); // Succeed
+                    AppUtils.showToast(context, context.getString(R.string.message_unban_success,  pluginIntent.getPropertyData().getFirst(MediaProperty.TITLE))); // Succeed
                 } else {
                     AppUtils.showToast(context, R.string.message_unban_failure); // Failed
                 }

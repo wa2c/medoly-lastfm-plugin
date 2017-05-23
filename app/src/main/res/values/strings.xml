@@ -13,6 +13,8 @@
     <string name="label_receiver_property">Get Properties</string>
 
     <!-- Extra Data -->
+    <string name="label_property_title">Last.fm Property</string>
+    <string name="label_extra_title">Last.fm Information</string>
     <string name="label_extra_data_user_play_count">User Scrobble Count</string>
     <string name="label_extra_data_play_count">Total Scrobble Count</string>
     <string name="label_extra_data_listener_count">Listener Count</string>
@@ -27,8 +29,8 @@
 
     <!-- Post -->
     <string name="message_no_media">The media is not selected.</string>
-    <string name="message_post_success">The playback information was sent to Last.fm..</string>
-    <string name="message_post_failure">Failed to send to Last.fm.</string>
+    <string name="message_post_success">\"%1$s\" was scrobbled to Last.fm.</string>
+    <string name="message_post_failure">Failed to scrobble to Last.fm.</string>
     <string name="message_love_success">\"%1$s\" was added to love tracks.</string>
     <string name="message_love_failure">Failed to add to love tracks.</string>
     <string name="message_unlove_success">\"%1$s\" was removed from love tracks.</string>

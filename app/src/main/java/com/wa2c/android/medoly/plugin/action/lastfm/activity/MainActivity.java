@@ -17,10 +17,10 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.wa2c.android.medoly.library.MedolyEnvironment;
-import com.wa2c.android.medoly.plugin.action.lastfm.service.PostIntentService;
 import com.wa2c.android.medoly.plugin.action.lastfm.R;
 import com.wa2c.android.medoly.plugin.action.lastfm.Token;
 import com.wa2c.android.medoly.plugin.action.lastfm.dialog.AuthDialogFragment;
+import com.wa2c.android.medoly.plugin.action.lastfm.service.PostIntentService;
 import com.wa2c.android.medoly.plugin.action.lastfm.util.AppUtils;
 import com.wa2c.android.medoly.plugin.action.lastfm.util.Logger;
 

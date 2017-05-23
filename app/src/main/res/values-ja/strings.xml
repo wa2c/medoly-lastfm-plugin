@@ -13,6 +13,8 @@
     <string name="label_receiver_property">プロパティ取得</string>
 
     <!-- Extra Data -->
+    <string name="label_property_title">Last.fm プロパティ</string>
+    <string name="label_extra_title">Last.fm 情報</string>
     <string name="label_extra_data_user_play_count">ユーザ Scrobble 回数</string>
     <string name="label_extra_data_play_count">合計 Scrobble 回数</string>
     <string name="label_extra_data_listener_count">リスナー</string>
