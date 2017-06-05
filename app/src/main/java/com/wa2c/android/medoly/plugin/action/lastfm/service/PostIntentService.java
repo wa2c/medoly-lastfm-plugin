@@ -8,7 +8,9 @@ import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 
+import com.wa2c.android.medoly.library.AlbumArtProperty;
 import com.wa2c.android.medoly.library.ExtraData;
+import com.wa2c.android.medoly.library.LyricsProperty;
 import com.wa2c.android.medoly.library.MediaPluginIntent;
 import com.wa2c.android.medoly.library.MediaProperty;
 import com.wa2c.android.medoly.library.PluginOperationCategory;
@@ -17,17 +19,21 @@ import com.wa2c.android.medoly.library.PropertyData;
 import com.wa2c.android.medoly.plugin.action.lastfm.R;
 import com.wa2c.android.medoly.plugin.action.lastfm.Token;
 import com.wa2c.android.medoly.plugin.action.lastfm.util.AppUtils;
+import com.wa2c.android.medoly.plugin.action.lastfm.util.LastfmUtils;
 import com.wa2c.android.medoly.plugin.action.lastfm.util.Logger;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
+import de.umass.lastfm.Album;
 import de.umass.lastfm.Artist;
 import de.umass.lastfm.Authenticator;
 import de.umass.lastfm.Caller;
+import de.umass.lastfm.ImageSize;
 import de.umass.lastfm.Result;
 import de.umass.lastfm.Session;
 import de.umass.lastfm.Track;
@@ -53,7 +59,7 @@ public class PostIntentService extends IntentService {
     /**
      * Post type.
      */
-    private enum PostType {
+    private enum Command {
         /** Now Playing */
         NOW_PLAYING,
         /** Scrobble */
@@ -78,7 +84,7 @@ public class PostIntentService extends IntentService {
     /**
      * Post result.
      */
-    private enum PostResult {
+    private enum CommandResult {
         /** Succeeded. */
         SUCCEEDED,
         /** Failed. */
@@ -126,40 +132,45 @@ public class PostIntentService extends IntentService {
             // Start playing
             if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_PLAY_START)) {
                 if (sharedPreferences.getBoolean(getString(R.string.prefkey_update_now_playing), true))
-                    post(PostType.NOW_PLAYING);
+                    post(Command.NOW_PLAYING);
             }
 
-            // Get Property
+            // Get the property
             if (pluginIntent.hasCategory(PluginTypeCategory.TYPE_GET_PROPERTY)) {
 //                int event = sharedPreferences.getInt(context.getString(R.string.pref_plugin_event), PLUGIN_EVENT_PLAY_NOW);
 //                if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_PLAY_START)) {
 //                    // Play Start
 //                    if (!pluginIntent.isAutomatically() || event == PLUGIN_EVENT_PLAY_START) {
-//                        post(PostType.SCROBBLE);
+//                        post(Command.SCROBBLE);
 //                    }
 //                }
 //                if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_PLAY_NOW)) {
 //                    // Play Now
 //                    if (!pluginIntent.isAutomatically() || event == PLUGIN_EVENT_PLAY_NOW) {
-//                        post(PostType.SCROBBLE);
+//                        post(Command.SCROBBLE);
 //                    }
 //                }
                 getProperties();
             }
 
-            // Post Message
+            // Get the lyrics
+            if (pluginIntent.hasCategory(PluginTypeCategory.TYPE_GET_ALBUM_ART)) {
+                getAlbumArt();
+            }
+
+            // Post the message
             if (pluginIntent.hasCategory(PluginTypeCategory.TYPE_POST_MESSAGE)) {
                 int event = sharedPreferences.getInt(context.getString(R.string.pref_plugin_event), PLUGIN_EVENT_PLAY_NOW);
                 if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_PLAY_START)) {
                     // Play Start
                     if (!pluginIntent.isAutomatically() || event == PLUGIN_EVENT_PLAY_START) {
-                        post(PostType.SCROBBLE);
+                        post(Command.SCROBBLE);
                     }
                 }
                 if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_PLAY_NOW)) {
                     // Play Now
                     if (!pluginIntent.isAutomatically() || event == PLUGIN_EVENT_PLAY_NOW) {
-                        post(PostType.SCROBBLE);
+                        post(Command.SCROBBLE);
                     }
                 }
             }
@@ -168,22 +179,22 @@ public class PostIntentService extends IntentService {
             if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_EXECUTE)) {
                 if (pluginIntent.hasExecuteId("execute_id_love")) {
                     // Love
-                    post(PostType.LOVE);
+                    post(Command.LOVE);
                 } else if (pluginIntent.hasExecuteId("execute_id_unlove")) {
                     // UnLove
-                    post(PostType.UNLOVE);
+                    post(Command.UNLOVE);
                 } else if (pluginIntent.hasExecuteId("execute_id_ban")) {
                     // Ban
-                    post(PostType.BAN);
+                    post(Command.BAN);
                 } else if (pluginIntent.hasExecuteId("execute_id_unban")) {
                     // UnBan
-                    post(PostType.UNBAN);
+                    post(Command.UNBAN);
                 } else if (pluginIntent.hasExecuteId("execute_id_page_track")) {
                     // Page Track
-                    post(PostType.PAGE_TRACK);
+                    post(Command.PAGE_TRACK);
                 } else if (pluginIntent.hasExecuteId("execute_id_page_artist")) {
                     // Page Artist
-                    post(PostType.PAGE_ARTIST);
+                    post(Command.PAGE_ARTIST);
                 } else if (pluginIntent.hasExecuteId("execute_id_site")) {
                     // Last.fm
                     String username = sharedPreferences.getString(context.getString(R.string.prefkey_auth_username), "");
@@ -214,61 +225,48 @@ public class PostIntentService extends IntentService {
         }
     }
 
-
-    private PostResult checkMediaAvailable() {
-        // 音楽データ無し
-        if (pluginIntent.getMediaUri() == null) {
-            return PostResult.NO_MEDIA;
-        }
-
-        // 必須情報無し
-        if (propertyData == null ||
-            propertyData.isEmpty(MediaProperty.TITLE) ||
-            propertyData.isEmpty(MediaProperty.ARTIST)) {
-            return PostResult.IGNORE;
-        }
-
-        // 認証確認
-        String username = sharedPreferences.getString(context.getString(R.string.prefkey_auth_username), "");
-        if (TextUtils.isEmpty(username)) {
-            return PostResult.AUTH_FAILED;
-        }
-
-        return null;
+    /**
+     * Send lyrics info.
+     * @param propertyData The property data.
+     */
+    private void sendPropertyResult(CommandResult postResult, PropertyData propertyData, ExtraData extraData) {
+        MediaPluginIntent returnIntent = pluginIntent.createReturnIntent(propertyData, extraData);
+        sendBroadcast(returnIntent);
+        showResult(postResult, null);
     }
 
+    /**
+     * Get properties.
+     */
     private void getProperties() {
         try {
-            // Check data
-            PostResult checkResult = checkMediaAvailable();
-            if (checkResult != null) {
-                sendPropertyResult(checkResult, null, null);
-                return;
+            // No media data
+            if (propertyData == null || propertyData.isMediaEmpty()) {
+                sendPropertyResult(CommandResult.NO_MEDIA, null, null);
             }
 
-            // 無効データを無視
+            // No property info
             String titleText = propertyData.getFirst(MediaProperty.TITLE);
             String artistText = propertyData.getFirst(MediaProperty.ARTIST);
             if (TextUtils.isEmpty(titleText) || TextUtils.isEmpty(artistText)) {
-                sendPropertyResult(PostResult.IGNORE, null, null);
+                sendPropertyResult(CommandResult.IGNORE, null, null);
                 return;
             }
 
-            // セッション
+            // Authentication
             String username = sharedPreferences.getString(context.getString(R.string.prefkey_auth_username), "");
             String password = sharedPreferences.getString(context.getString(R.string.prefkey_auth_password), "");
             Session session = null;
             try {
-                // 認証
-                // フォルダ設定 (getMobileSessionの前に入れる必要あり)
+                // Set cache folder (Needs before getMobileSession method)
                 Caller.getInstance().setCache(new FileSystemCache(new File(context.getExternalCacheDir().getPath() + File.separator + "last.fm")));
                 session = Authenticator.getMobileSession(username, password, Token.getConsumerKey(context), Token.getConsumerSecret(context));
             } catch (Exception e) {
-                // 認証失敗してもエラーとしない
+                // Not error if authentication was failed.
                 Logger.e(e);
             }
             if (session == null) {
-                sendPropertyResult(PostResult.FAILED, null, null);
+                sendPropertyResult(CommandResult.FAILED, null, null);
                 return;
             }
 
@@ -297,22 +295,89 @@ public class PostIntentService extends IntentService {
                 extra.put(getString(R.string.label_extra_data_listener_count), String.valueOf(track.getListeners()));
             extra.put(getString(R.string.label_extra_data_lastfm_track_url), track.getUrl());
 
-            sendPropertyResult(PostResult.SUCCEEDED, property, extra);
+            sendPropertyResult(CommandResult.SUCCEEDED, property, extra);
+            return;
         } catch (Exception e) {
-            sendPropertyResult(PostResult.FAILED, null, null);
             Logger.e(e);
         }
+        sendPropertyResult(CommandResult.FAILED, null, null);
     }
 
-
     /**
-     * Send lyrics info.
-     * @param propertyData The property data.
+     * Get album art.
      */
-    private void sendPropertyResult(PostResult postResult,  PropertyData propertyData, ExtraData extraData) {
-        MediaPluginIntent returnIntent = pluginIntent.createReturnIntent(propertyData, extraData);
-        sendBroadcast(returnIntent);
-        showResult(postResult, null);
+    private void getAlbumArt() {
+        try {
+            // No media data
+            if (propertyData == null || propertyData.isMediaEmpty()) {
+                sendPropertyResult(CommandResult.NO_MEDIA, null, null);
+            }
+
+            // No property info
+            String titleText = propertyData.getFirst(MediaProperty.TITLE);
+            String artistText = propertyData.getFirst(MediaProperty.ARTIST);
+            if (TextUtils.isEmpty(titleText) || TextUtils.isEmpty(artistText)) {
+                sendPropertyResult(CommandResult.IGNORE, null, null);
+                return;
+            }
+
+            // Authentication
+            String username = sharedPreferences.getString(context.getString(R.string.prefkey_auth_username), "");
+            String password = sharedPreferences.getString(context.getString(R.string.prefkey_auth_password), "");
+            Session session = null;
+            try {
+                // Set cache folder (Needs before getMobileSession method)
+                Caller.getInstance().setCache(new FileSystemCache(new File(context.getExternalCacheDir().getPath() + File.separator + "last.fm")));
+                session = Authenticator.getMobileSession(username, password, Token.getConsumerKey(context), Token.getConsumerSecret(context));
+            } catch (Exception e) {
+                // Not error if authentication was failed.
+                Logger.e(e);
+            }
+            if (session == null) {
+                sendPropertyResult(CommandResult.FAILED, null, null);
+                return;
+            }
+
+//            // Track image
+//            Track track;
+//            if (TextUtils.isEmpty(session.getUsername()))
+//                track = Track.getInfo(artistText, titleText, session.getApiKey());
+//            else
+//                track = Track.getInfo(artistText, titleText, Locale.getDefault(), session.getUsername(), session.getApiKey());
+//            String imageUrl = track.getImageURL(ImageSize.EXTRALARGE);
+//            Uri downloadUri = LastfmUtils.downloadUrl(context, imageUrl, "test");
+
+            // Album image
+            Album album;
+            if (TextUtils.isEmpty(session.getUsername()))
+                album = Album.getInfo(artistText, titleText, session.getApiKey());
+            else
+                album = Album.getInfo(artistText, titleText, session.getUsername(), session.getApiKey());
+            String imageUrl = album.getImageURL(ImageSize.MEDIUM);
+            Uri downloadUri = LastfmUtils.downloadUrl(context, imageUrl, "test");
+
+//            // Artist image
+//            Artist artist;
+//            if (TextUtils.isEmpty(session.getUsername()))
+//                artist = Artist.getInfo(artistText, session.getApiKey());
+//            else
+//                artist = Artist.getInfo(artistText, session.getUsername(), session.getApiKey());
+//            String artistUrl = artist.getImageURL(ImageSize.ORIGINAL);
+
+            // Property data
+            if (downloadUri != null) {
+                PropertyData property = new PropertyData();
+                property.put(AlbumArtProperty.DATA_URI, downloadUri.toString());
+                property.put(AlbumArtProperty.SOURCE_TITLE, getString(R.string.lastfm));
+                property.put(AlbumArtProperty.SOURCE_URI, downloadUri.toString());
+                getApplicationContext().grantUriPermission(pluginIntent.getSrcPackage(), downloadUri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                sendPropertyResult(CommandResult.SUCCEEDED, property, null);
+                return;
+            }
+        } catch (Exception e) {
+            Logger.e(e);
+        }
+        sendPropertyResult(CommandResult.FAILED, null, null);
     }
 
 
@@ -321,43 +386,58 @@ public class PostIntentService extends IntentService {
      * 投稿を開始。
      * @param postType 投稿種別。
      */
-    private void post(PostType postType) {
-        // Check data
-        PostResult checkResult = checkMediaAvailable();
-        if (checkResult != null) {
-            showResult(checkResult, null);
+    private void post(Command postType) {
+        // No media data
+        if (propertyData == null || propertyData.isMediaEmpty()) {
+            sendPropertyResult(CommandResult.NO_MEDIA, null, null);
+        }
+
+        // No property info
+        String titleText = propertyData.getFirst(MediaProperty.TITLE);
+        String artistText = propertyData.getFirst(MediaProperty.ARTIST);
+        if (TextUtils.isEmpty(titleText) || TextUtils.isEmpty(artistText)) {
+            sendPropertyResult(CommandResult.IGNORE, null, null);
             return;
         }
 
         // 前回メディア確認
-        if (postType == PostType.SCROBBLE) {
-            String mediaUriText = pluginIntent.getMediaUri().toString();
+        if (postType == Command.SCROBBLE) {
+            String mediaUriText = propertyData.getMediaUri().toString();
             String previousMediaUri = sharedPreferences.getString(PREFKEY_PREVIOUS_MEDIA_URI, "");
             boolean previousMediaEnabled = sharedPreferences.getBoolean(context.getString(R.string.prefkey_previous_media_enabled), false);
             if (!previousMediaEnabled && !TextUtils.isEmpty(mediaUriText) && !TextUtils.isEmpty(previousMediaUri) && mediaUriText.equals(previousMediaUri)) {
                 // 前回と同じメディアは無視
-                showResult(PostResult.IGNORE, postType);
+                sendPropertyResult(CommandResult.IGNORE, null, null);
                 return;
             }
             sharedPreferences.edit().putString(PREFKEY_PREVIOUS_MEDIA_URI, mediaUriText).apply();
         }
 
-        // セッション
+        // Session
         String username = sharedPreferences.getString(context.getString(R.string.prefkey_auth_username), "");
         String password = sharedPreferences.getString(context.getString(R.string.prefkey_auth_password), "");
+        if (TextUtils.isEmpty(username)) {
+            sendPropertyResult(CommandResult.FAILED, null, null);
+            return;
+        }
+
+        // Authenticate
         Session session = null;
         try {
-            // 認証
-            // フォルダ設定 (getMobileSessionの前に入れる必要あり)
+            // Set cache folder (Needs before getMobileSession method)
             Caller.getInstance().setCache(new FileSystemCache(new File(context.getExternalCacheDir().getPath() + File.separator + "last.fm")));
             session = Authenticator.getMobileSession(username, password, Token.getConsumerKey(context), Token.getConsumerSecret(context));
         } catch (Exception e) {
-            // 認証失敗してもエラーとしない
+            // Not error if authentication was failed.
             Logger.e(e);
         }
+        if (session == null) {
+            sendPropertyResult(CommandResult.FAILED, null, null);
+            return;
+        }
 
-        // 投稿
-        PostResult result = PostResult.IGNORE;
+        // Post
+        CommandResult result = CommandResult.IGNORE;
         try {
             switch (postType) {
                 case NOW_PLAYING:
@@ -387,7 +467,7 @@ public class PostIntentService extends IntentService {
             }
         } catch (Exception e) {
             Logger.e(e);
-            result = PostResult.FAILED;
+            result = CommandResult.FAILED;
         }
         showResult(result, postType);
     }
@@ -423,20 +503,20 @@ public class PostIntentService extends IntentService {
      * @param session The session.
      * @return The result.
      */
-    private PostResult updateNowPlaying(Session session) {
+    private CommandResult updateNowPlaying(Session session) {
         try {
             ScrobbleData scrobbleData = createScrobbleData();
             if (TextUtils.isEmpty(scrobbleData.getTrack()) || TextUtils.isEmpty(scrobbleData.getArtist()))
-                return PostResult.IGNORE; // ignore invalid data
+                return CommandResult.IGNORE; // ignore invalid data
 
             ScrobbleResult result = Track.updateNowPlaying(scrobbleData, session);
             if (result.isSuccessful())
-                return PostResult.SUCCEEDED;
+                return CommandResult.SUCCEEDED;
             else
-                return PostResult.FAILED;
+                return CommandResult.FAILED;
         } catch (Exception e) {
             Logger.e(e);
-            return PostResult.FAILED;
+            return CommandResult.FAILED;
         }
     }
 
@@ -445,11 +525,11 @@ public class PostIntentService extends IntentService {
      * @param session The session.
      * @return The result.
      */
-    private PostResult scrobble(Session session) {
+    private CommandResult scrobble(Session session) {
         try {
             ScrobbleData scrobbleData = createScrobbleData();
             if (TextUtils.isEmpty(scrobbleData.getTrack()) || TextUtils.isEmpty(scrobbleData.getArtist()))
-                return PostResult.IGNORE; // ignore invalid data
+                return CommandResult.IGNORE; // ignore invalid data
 
             // 送信データ作成
             List<ScrobbleData> dataList = new ArrayList<>();
@@ -512,14 +592,14 @@ public class PostIntentService extends IntentService {
             AppUtils.saveObject(context, context.getString(R.string.prefkey_unsent_scrobble_data), dataList.toArray());
 
             if (session == null && !notSave)
-                return PostResult.SAVED;
+                return CommandResult.SAVED;
             else if (dataList.size() == 0)
-                return PostResult.SUCCEEDED;
+                return CommandResult.SUCCEEDED;
             else
-                return PostResult.FAILED;
+                return CommandResult.FAILED;
         } catch (Exception e) {
             Logger.e(e);
-            return PostResult.FAILED;
+            return CommandResult.FAILED;
         }
     }
 
@@ -528,21 +608,21 @@ public class PostIntentService extends IntentService {
      * @param session The session.
      * @return The result.
      */
-    private PostResult love(Session session) {
+    private CommandResult love(Session session) {
          try {
             String track  = pluginIntent.getPropertyData().getFirst(MediaProperty.TITLE);
             String artist  = pluginIntent.getPropertyData().getFirst(MediaProperty.ARTIST);
             if (TextUtils.isEmpty(track) || TextUtils.isEmpty(artist))
-                return PostResult.IGNORE;
+                return CommandResult.IGNORE;
 
              Result res = Track.love(artist, track, session);
             if (res.isSuccessful())
-                return PostResult.SUCCEEDED;
+                return CommandResult.SUCCEEDED;
             else
-                return PostResult.FAILED;
+                return CommandResult.FAILED;
         } catch (Exception e) {
             Logger.e(e);
-            return PostResult.FAILED;
+            return CommandResult.FAILED;
         }
     }
 
@@ -551,21 +631,21 @@ public class PostIntentService extends IntentService {
      * @param session The session.
      * @return The result.
      */
-    private PostResult unlove(Session session) {
+    private CommandResult unlove(Session session) {
         try {
             String track  = pluginIntent.getPropertyData().getFirst(MediaProperty.TITLE);
             String artist  = pluginIntent.getPropertyData().getFirst(MediaProperty.ARTIST);
             if (TextUtils.isEmpty(track) || TextUtils.isEmpty(artist))
-                return PostResult.IGNORE;
+                return CommandResult.IGNORE;
 
             Result res = Track.unlove(artist, track, session);
             if (res.isSuccessful())
-                return PostResult.SUCCEEDED;
+                return CommandResult.SUCCEEDED;
             else
-                return PostResult.FAILED;
+                return CommandResult.FAILED;
         } catch (Exception e) {
             Logger.e(e);
-            return PostResult.FAILED;
+            return CommandResult.FAILED;
         }
     }
 
@@ -574,21 +654,21 @@ public class PostIntentService extends IntentService {
      * @param session The session.
      * @return The result.
      */
-    private PostResult ban(Session session) {
+    private CommandResult ban(Session session) {
         try {
             String track  = pluginIntent.getPropertyData().getFirst(MediaProperty.TITLE);
             String artist  = pluginIntent.getPropertyData().getFirst(MediaProperty.ARTIST);
             if (TextUtils.isEmpty(track) || TextUtils.isEmpty(artist))
-                return PostResult.IGNORE;
+                return CommandResult.IGNORE;
 
             Result res = Track.ban(artist, track, session);
             if (res.isSuccessful())
-                return PostResult.SUCCEEDED;
+                return CommandResult.SUCCEEDED;
             else
-                return PostResult.FAILED;
+                return CommandResult.FAILED;
         } catch (Exception e) {
             Logger.e(e);
-            return PostResult.FAILED;
+            return CommandResult.FAILED;
         }
     }
 
@@ -598,21 +678,21 @@ public class PostIntentService extends IntentService {
      * @param session The session.
      * @return The result.
      */
-    private PostResult unban(Session session) {
+    private CommandResult unban(Session session) {
        try {
             String track  = pluginIntent.getPropertyData().getFirst(MediaProperty.TITLE);
             String artist  = pluginIntent.getPropertyData().getFirst(MediaProperty.ARTIST);
             if (TextUtils.isEmpty(track) || TextUtils.isEmpty(artist))
-                return PostResult.IGNORE;
+                return CommandResult.IGNORE;
 
             Result res = Track.unban(artist, track, session);
             if (res.isSuccessful())
-                return PostResult.SUCCEEDED;
+                return CommandResult.SUCCEEDED;
             else
-                return PostResult.FAILED;
+                return CommandResult.FAILED;
         } catch (Exception e) {
             Logger.e(e);
-            return PostResult.FAILED;
+            return CommandResult.FAILED;
         }
     }
 
@@ -621,12 +701,12 @@ public class PostIntentService extends IntentService {
      * @param session The session.
      * @return The result.
      */
-    private PostResult trackPage(Session session) {
+    private CommandResult trackPage(Session session) {
         try {
             String track  = pluginIntent.getPropertyData().getFirst(MediaProperty.TITLE);
             String artist  = pluginIntent.getPropertyData().getFirst(MediaProperty.ARTIST);
             if (TextUtils.isEmpty(track) || TextUtils.isEmpty(artist))
-                return PostResult.IGNORE;
+                return CommandResult.IGNORE;
 
             Track trackInfo = Track.getInfo(artist, track, session.getApiKey());
             Uri uri = Uri.parse(trackInfo.getUrl());
@@ -634,10 +714,10 @@ public class PostIntentService extends IntentService {
             Intent launchIntent = new Intent(Intent.ACTION_VIEW, uri);
             launchIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(launchIntent);
-            return PostResult.SUCCEEDED;
+            return CommandResult.SUCCEEDED;
         } catch (Exception e) {
             Logger.e(e);
-            return PostResult.FAILED;
+            return CommandResult.FAILED;
         }
     }
 
@@ -646,11 +726,11 @@ public class PostIntentService extends IntentService {
      * @param session The session.
      * @return The result.
      */
-    private PostResult artistPage(Session session) {
+    private CommandResult artistPage(Session session) {
         try {
             String artist  = pluginIntent.getPropertyData().getFirst(MediaProperty.ARTIST);
             if (TextUtils.isEmpty(artist))
-                return PostResult.IGNORE;
+                return CommandResult.IGNORE;
 
             Artist artistInfo = Artist.getInfo(artist, session.getApiKey());
             Uri uri = Uri.parse(artistInfo.getUrl());
@@ -658,10 +738,10 @@ public class PostIntentService extends IntentService {
             Intent launchIntent = new Intent(Intent.ACTION_VIEW, uri);
             launchIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(launchIntent);
-            return PostResult.SUCCEEDED;
+            return CommandResult.SUCCEEDED;
         } catch (Exception e) {
             Logger.e(e);
-            return PostResult.FAILED;
+            return CommandResult.FAILED;
         }
     }
 
@@ -672,13 +752,13 @@ public class PostIntentService extends IntentService {
      * @param result 投稿結果。
      * @param postType 投稿種別。
      */
-    private void showResult(PostResult result, PostType postType) {
-        if (result == PostResult.IGNORE || result == PostResult.SAVED) {
+    private void showResult(CommandResult result, Command postType) {
+        if (result == CommandResult.IGNORE || result == CommandResult.SAVED) {
             return;
-        } else if (result == PostResult.NO_MEDIA) {
+        } else if (result == CommandResult.NO_MEDIA) {
             AppUtils.showToast(context, R.string.message_no_media);
             return;
-        } else if (result == PostResult.AUTH_FAILED) {
+        } else if (result == CommandResult.AUTH_FAILED) {
             AppUtils.showToast(context, R.string.message_account_not_auth);
             return;
         }
@@ -688,7 +768,7 @@ public class PostIntentService extends IntentService {
 
         switch (postType) {
             case SCROBBLE:
-                if (result == PostResult.SUCCEEDED) {
+                if (result == CommandResult.SUCCEEDED) {
                     if (sharedPreferences.getBoolean(context.getString(R.string.prefkey_post_success_message_show), false)) {
                         AppUtils.showToast(context, context.getString(R.string.message_post_success, pluginIntent.getPropertyData().getFirst(MediaProperty.TITLE))); // Succeed
                     }
@@ -699,42 +779,42 @@ public class PostIntentService extends IntentService {
                 }
                 break;
             case LOVE:
-                if (result == PostResult.SUCCEEDED) {
+                if (result == CommandResult.SUCCEEDED) {
                     AppUtils.showToast(context, context.getString(R.string.message_love_success,  pluginIntent.getPropertyData().getFirst(MediaProperty.TITLE))); // Succeed
                 } else {
                     AppUtils.showToast(context, R.string.message_love_failure); // Failed
                 }
                 break;
             case UNLOVE:
-                if (result == PostResult.SUCCEEDED) {
+                if (result == CommandResult.SUCCEEDED) {
                     AppUtils.showToast(context, context.getString(R.string.message_unlove_success,  pluginIntent.getPropertyData().getFirst(MediaProperty.TITLE))); // Succeed
                 } else {
                     AppUtils.showToast(context, R.string.message_unlove_failure); // Failed
                 }
                 break;
             case BAN:
-                if (result == PostResult.SUCCEEDED) {
+                if (result == CommandResult.SUCCEEDED) {
                     AppUtils.showToast(context, context.getString(R.string.message_ban_success,  pluginIntent.getPropertyData().getFirst(MediaProperty.TITLE))); // Succeed
                 } else {
                     AppUtils.showToast(context, R.string.message_ban_failure); // Failed
                 }
                 break;
             case UNBAN:
-                if (result == PostResult.SUCCEEDED) {
+                if (result == CommandResult.SUCCEEDED) {
                     AppUtils.showToast(context, context.getString(R.string.message_unban_success,  pluginIntent.getPropertyData().getFirst(MediaProperty.TITLE))); // Succeed
                 } else {
                     AppUtils.showToast(context, R.string.message_unban_failure); // Failed
                 }
                 break;
             case PAGE_TRACK:
-                if (result == PostResult.SUCCEEDED) {
+                if (result == CommandResult.SUCCEEDED) {
                     Logger.d(R.string.message_page_track_success); // Succeed
                 } else {
                     AppUtils.showToast(context, R.string.message_page_track_failure); // Failed
                 }
                 break;
             case PAGE_ARTIST:
-                if (result == PostResult.SUCCEEDED) {
+                if (result == CommandResult.SUCCEEDED) {
                     Logger.d(R.string.message_page_artist_success); // Succeed
                 } else {
                     AppUtils.showToast(context, R.string.message_page_artist_failure); // Failed

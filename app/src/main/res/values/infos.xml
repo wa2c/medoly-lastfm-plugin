@@ -26,6 +26,7 @@
     </string-array>
 
     <!-- Last.fm info -->
+    <string name="lastfm">Last.fm</string>
     <string name="lastfm_url">http://www.last.fm/</string>
     <string name="lastfm_url_user">http://www.last.fm/user/%1$s</string>
 

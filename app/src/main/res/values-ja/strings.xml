@@ -9,8 +9,8 @@
     <string name="label_execute_page_track">トラックページ</string>
     <string name="label_execute_page_artist">アーティストページ</string>
     <string name="label_execute_site">Last.fmを開く</string>
-
-    <string name="label_receiver_property">プロパティ取得</string>
+    <string name="label_execute_get_property">プロパティ取得</string>
+    <string name="label_execute_get_album_art">アルバムアート取得</string>
 
     <!-- Extra Data -->
     <string name="label_property_title">Last.fm プロパティ</string>
@@ -19,6 +19,7 @@
     <string name="label_extra_data_play_count">合計 Scrobble 回数</string>
     <string name="label_extra_data_listener_count">リスナー</string>
     <string name="label_extra_data_lastfm_track_url">トラックURL</string>
+
 
 
     <!-- Activity -->

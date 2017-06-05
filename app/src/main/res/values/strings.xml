@@ -9,9 +9,8 @@
     <string name="label_execute_page_track">Track Page</string>
     <string name="label_execute_page_artist">Artist Page</string>
     <string name="label_execute_site">Last.fm</string>
-
-    <string name="label_receiver_property">Get Properties</string>
-
+    <string name="label_execute_get_property">Get Properties</string>
+    <string name="label_execute_get_album_art">Get Album Art</string>
     <!-- Extra Data -->
     <string name="label_property_title">Last.fm Property</string>
     <string name="label_extra_title">Last.fm Information</string>

@@ -158,7 +158,7 @@
                 android:value="10" />
             <meta-data
                 android:name="execute_label_get_property"
-                android:resource="@string/label_receiver_property"
+                android:resource="@string/label_execute_get_property"
                 tools:ignore="ManifestResource"/>
             <meta-data
                 android:name="execute_icon_get_property"
@@ -167,12 +167,37 @@
             <meta-data
                 android:name="execute_type_get_property"
                 android:value="TYPE_GET_PROPERTY" />
+
+            <!-- Get album art -->
+            <meta-data
+                android:name="execute_id_get_album_art"
+                android:value="20" />
+            <meta-data
+                android:name="execute_label_get_album_art"
+                android:resource="@string/label_execute_get_album_art"
+                tools:ignore="ManifestResource"/>
+            <meta-data
+                android:name="execute_icon_get_album_art"
+                android:resource="@drawable/ic_action_lastfm"
+                tools:ignore="ManifestResource"/>
+            <meta-data
+                android:name="execute_type_get_album_art"
+                android:value="TYPE_GET_ALBUM_ART" />
         </receiver>
 
         <receiver
             android:name=".receiver.ToastReceiver"
             android:exported="false" />
 
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:grantUriPermissions="true"
+            android:exported="false">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/filepaths" />
+        </provider>
     </application>
 
 </manifest>
