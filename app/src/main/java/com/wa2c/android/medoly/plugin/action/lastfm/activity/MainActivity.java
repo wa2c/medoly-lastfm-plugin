@@ -1,5 +1,6 @@
 package com.wa2c.android.medoly.plugin.action.lastfm.activity;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -45,7 +46,7 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
 
         // ActionBar
-        android.app.ActionBar actionBar = getActionBar();
+        ActionBar actionBar = getActionBar();
         if (actionBar != null) {
             actionBar.setDisplayShowHomeEnabled(true);
             actionBar.setDisplayShowTitleEnabled(true);

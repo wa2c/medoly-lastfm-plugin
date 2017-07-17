@@ -10,7 +10,6 @@ import android.text.TextUtils;
 
 import com.wa2c.android.medoly.library.AlbumArtProperty;
 import com.wa2c.android.medoly.library.ExtraData;
-import com.wa2c.android.medoly.library.LyricsProperty;
 import com.wa2c.android.medoly.library.MediaPluginIntent;
 import com.wa2c.android.medoly.library.MediaProperty;
 import com.wa2c.android.medoly.library.PluginOperationCategory;
@@ -19,11 +18,9 @@ import com.wa2c.android.medoly.library.PropertyData;
 import com.wa2c.android.medoly.plugin.action.lastfm.R;
 import com.wa2c.android.medoly.plugin.action.lastfm.Token;
 import com.wa2c.android.medoly.plugin.action.lastfm.util.AppUtils;
-import com.wa2c.android.medoly.plugin.action.lastfm.util.LastfmUtils;
 import com.wa2c.android.medoly.plugin.action.lastfm.util.Logger;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -44,7 +41,7 @@ import de.umass.lastfm.scrobble.ScrobbleResult;
 
 
 /**
- * 投稿サービス。
+ * Intent service.
  */
 public class PostIntentService extends IntentService {
 
@@ -52,6 +49,9 @@ public class PostIntentService extends IntentService {
     public static int PLUGIN_EVENT_PLAY_START = 1;
     public static int PLUGIN_EVENT_PLAY_NOW = 2;
     public static int PLUGIN_EVENT_MEDIA_OPEN = 2;
+
+    // Last.fm API Root URL
+    private static final String LAST_FM_API_ROOT_URL = "https://ws.audioscrobbler.com/2.0/";
 
     /** 前回のファイルパス設定キー。 */
     private static final String PREFKEY_PREVIOUS_MEDIA_URI = "previous_media_uri";
@@ -129,10 +129,16 @@ public class PostIntentService extends IntentService {
             pluginIntent = new MediaPluginIntent(intent);
             propertyData = pluginIntent.getPropertyData();
 
+            // Initialize last.fm library
+            Caller.getInstance().setApiRootUrl(LAST_FM_API_ROOT_URL);
+            Caller.getInstance().setCache(new FileSystemCache(new File(context.getExternalCacheDir().getPath() + File.separator + "last.fm")));
+
             // Start playing
             if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_PLAY_START)) {
-                if (sharedPreferences.getBoolean(getString(R.string.prefkey_update_now_playing), true))
+                if (sharedPreferences.getBoolean(getString(R.string.prefkey_update_now_playing), true)) {
                     post(Command.NOW_PLAYING);
+                    return;
+                }
             }
 
             // Get the property
@@ -151,11 +157,13 @@ public class PostIntentService extends IntentService {
 //                    }
 //                }
                 getProperties();
+                return;
             }
 
             // Get the lyrics
             if (pluginIntent.hasCategory(PluginTypeCategory.TYPE_GET_ALBUM_ART)) {
                 getAlbumArt();
+                return;
             }
 
             // Post the message
@@ -165,12 +173,14 @@ public class PostIntentService extends IntentService {
                     // Play Start
                     if (!pluginIntent.isAutomatically() || event == PLUGIN_EVENT_PLAY_START) {
                         post(Command.SCROBBLE);
+                        return;
                     }
                 }
                 if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_PLAY_NOW)) {
                     // Play Now
                     if (!pluginIntent.isAutomatically() || event == PLUGIN_EVENT_PLAY_NOW) {
                         post(Command.SCROBBLE);
+                        return;
                     }
                 }
             }
@@ -230,7 +240,7 @@ public class PostIntentService extends IntentService {
      * @param propertyData The property data.
      */
     private void sendPropertyResult(CommandResult postResult, PropertyData propertyData, ExtraData extraData) {
-        MediaPluginIntent returnIntent = pluginIntent.createReturnIntent(propertyData, extraData);
+        MediaPluginIntent returnIntent = pluginIntent.createResultIntent(propertyData, extraData);
         sendBroadcast(returnIntent);
         showResult(postResult, null);
     }
@@ -258,8 +268,6 @@ public class PostIntentService extends IntentService {
             String password = sharedPreferences.getString(context.getString(R.string.prefkey_auth_password), "");
             Session session = null;
             try {
-                // Set cache folder (Needs before getMobileSession method)
-                Caller.getInstance().setCache(new FileSystemCache(new File(context.getExternalCacheDir().getPath() + File.separator + "last.fm")));
                 session = Authenticator.getMobileSession(username, password, Token.getConsumerKey(context), Token.getConsumerSecret(context));
             } catch (Exception e) {
                 // Not error if authentication was failed.
@@ -327,7 +335,6 @@ public class PostIntentService extends IntentService {
             Session session = null;
             try {
                 // Set cache folder (Needs before getMobileSession method)
-                Caller.getInstance().setCache(new FileSystemCache(new File(context.getExternalCacheDir().getPath() + File.separator + "last.fm")));
                 session = Authenticator.getMobileSession(username, password, Token.getConsumerKey(context), Token.getConsumerSecret(context));
             } catch (Exception e) {
                 // Not error if authentication was failed.
@@ -353,8 +360,8 @@ public class PostIntentService extends IntentService {
                 album = Album.getInfo(artistText, titleText, session.getApiKey());
             else
                 album = Album.getInfo(artistText, titleText, session.getUsername(), session.getApiKey());
-            String imageUrl = album.getImageURL(ImageSize.MEDIUM);
-            Uri downloadUri = LastfmUtils.downloadUrl(context, imageUrl, "test");
+            String remoteUri = album.getImageURL(ImageSize.MEGA);
+            Uri localUri = AppUtils.downloadUrl(context, remoteUri);
 
 //            // Artist image
 //            Artist artist;
@@ -365,12 +372,12 @@ public class PostIntentService extends IntentService {
 //            String artistUrl = artist.getImageURL(ImageSize.ORIGINAL);
 
             // Property data
-            if (downloadUri != null) {
+            if (localUri != null) {
                 PropertyData property = new PropertyData();
-                property.put(AlbumArtProperty.DATA_URI, downloadUri.toString());
+                property.put(AlbumArtProperty.DATA_URI, localUri.toString());
                 property.put(AlbumArtProperty.SOURCE_TITLE, getString(R.string.lastfm));
-                property.put(AlbumArtProperty.SOURCE_URI, downloadUri.toString());
-                getApplicationContext().grantUriPermission(pluginIntent.getSrcPackage(), downloadUri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                property.put(AlbumArtProperty.SOURCE_URI, remoteUri);
+                getApplicationContext().grantUriPermission(pluginIntent.getSrcPackage(), localUri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 sendPropertyResult(CommandResult.SUCCEEDED, property, null);
                 return;
             }
@@ -424,8 +431,6 @@ public class PostIntentService extends IntentService {
         // Authenticate
         Session session = null;
         try {
-            // Set cache folder (Needs before getMobileSession method)
-            Caller.getInstance().setCache(new FileSystemCache(new File(context.getExternalCacheDir().getPath() + File.separator + "last.fm")));
             session = Authenticator.getMobileSession(username, password, Token.getConsumerKey(context), Token.getConsumerSecret(context));
         } catch (Exception e) {
             // Not error if authentication was failed.
@@ -615,7 +620,7 @@ public class PostIntentService extends IntentService {
             if (TextUtils.isEmpty(track) || TextUtils.isEmpty(artist))
                 return CommandResult.IGNORE;
 
-             Result res = Track.love(artist, track, session);
+            Result res = Track.love(artist, track, session);
             if (res.isSuccessful())
                 return CommandResult.SUCCEEDED;
             else
@@ -748,9 +753,9 @@ public class PostIntentService extends IntentService {
 
 
     /**
-     * 投稿結果を出力。
-     * @param result 投稿結果。
-     * @param postType 投稿種別。
+     * Show result message.
+     * @param result Result.
+     * @param postType Post type.
      */
     private void showResult(CommandResult result, Command postType) {
         if (result == CommandResult.IGNORE || result == CommandResult.SAVED) {
