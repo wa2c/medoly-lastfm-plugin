@@ -50,9 +50,6 @@ public class PostIntentService extends IntentService {
     public static int PLUGIN_EVENT_PLAY_NOW = 2;
     public static int PLUGIN_EVENT_MEDIA_OPEN = 2;
 
-    // Last.fm API Root URL
-    private static final String LAST_FM_API_ROOT_URL = "https://ws.audioscrobbler.com/2.0/";
-
     /** 前回のファイルパス設定キー。 */
     private static final String PREFKEY_PREVIOUS_MEDIA_URI = "previous_media_uri";
 
@@ -130,60 +127,8 @@ public class PostIntentService extends IntentService {
             propertyData = pluginIntent.getPropertyData();
 
             // Initialize last.fm library
-            Caller.getInstance().setApiRootUrl(LAST_FM_API_ROOT_URL);
+            //Caller.getInstance().setApiRootUrl(LAST_FM_API_ROOT_URL);
             Caller.getInstance().setCache(new FileSystemCache(new File(context.getExternalCacheDir().getPath() + File.separator + "last.fm")));
-
-            // Start playing
-            if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_PLAY_START)) {
-                if (sharedPreferences.getBoolean(getString(R.string.prefkey_update_now_playing), true)) {
-                    post(Command.NOW_PLAYING);
-                    return;
-                }
-            }
-
-            // Get the property
-            if (pluginIntent.hasCategory(PluginTypeCategory.TYPE_GET_PROPERTY)) {
-//                int event = sharedPreferences.getInt(context.getString(R.string.pref_plugin_event), PLUGIN_EVENT_PLAY_NOW);
-//                if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_PLAY_START)) {
-//                    // Play Start
-//                    if (!pluginIntent.isAutomatically() || event == PLUGIN_EVENT_PLAY_START) {
-//                        post(Command.SCROBBLE);
-//                    }
-//                }
-//                if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_PLAY_NOW)) {
-//                    // Play Now
-//                    if (!pluginIntent.isAutomatically() || event == PLUGIN_EVENT_PLAY_NOW) {
-//                        post(Command.SCROBBLE);
-//                    }
-//                }
-                getProperties();
-                return;
-            }
-
-            // Get the lyrics
-            if (pluginIntent.hasCategory(PluginTypeCategory.TYPE_GET_ALBUM_ART)) {
-                getAlbumArt();
-                return;
-            }
-
-            // Post the message
-            if (pluginIntent.hasCategory(PluginTypeCategory.TYPE_POST_MESSAGE)) {
-                int event = sharedPreferences.getInt(context.getString(R.string.pref_plugin_event), PLUGIN_EVENT_PLAY_NOW);
-                if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_PLAY_START)) {
-                    // Play Start
-                    if (!pluginIntent.isAutomatically() || event == PLUGIN_EVENT_PLAY_START) {
-                        post(Command.SCROBBLE);
-                        return;
-                    }
-                }
-                if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_PLAY_NOW)) {
-                    // Play Now
-                    if (!pluginIntent.isAutomatically() || event == PLUGIN_EVENT_PLAY_NOW) {
-                        post(Command.SCROBBLE);
-                        return;
-                    }
-                }
-            }
 
             // Execute
             if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_EXECUTE)) {
@@ -224,7 +169,71 @@ public class PostIntentService extends IntentService {
                     } catch (android.content.ActivityNotFoundException e) {
                         Logger.d(e);
                     }
+                } else if (pluginIntent.hasExecuteId("execute_id_get_property")) {
+                    // Get property
+                    getProperties();
+                } else if (pluginIntent.hasExecuteId("execute_id_get_album_art")) {
+                    // Get album art
+                    getAlbumArt();
                 }
+                return;
+            }
+
+            // Get property
+            if (pluginIntent.hasCategory(PluginTypeCategory.TYPE_GET_PROPERTY)) {
+                String operation = sharedPreferences.getString(getString(R.string.prefkey_event_get_property_operation), "");
+                if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_MEDIA_OPEN) && PluginOperationCategory.OPERATION_MEDIA_OPEN.name().equals(operation)) {
+                    getProperties(); // media open
+                } else if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_PLAY_START) && PluginOperationCategory.OPERATION_PLAY_START.name().equals(operation)) {
+                    getProperties(); // play start
+                }
+                return;
+            }
+
+            // Get album art
+            if (pluginIntent.hasCategory(PluginTypeCategory.TYPE_GET_ALBUM_ART)) {
+                String operation = sharedPreferences.getString(getString(R.string.prefkey_event_get_album_art_operation), "");
+                if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_MEDIA_OPEN) && PluginOperationCategory.OPERATION_MEDIA_OPEN.name().equals(operation)) {
+                    getAlbumArt();
+                } else if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_PLAY_START) && PluginOperationCategory.OPERATION_PLAY_START.name().equals(operation)) {
+                    getAlbumArt();
+                }
+                return;
+            }
+
+            if (pluginIntent.hasCategory(PluginTypeCategory.TYPE_POST_MESSAGE)) {
+                // Start playing
+                if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_PLAY_START)) {
+                    if (sharedPreferences.getBoolean(getString(R.string.prefkey_now_playing_enabled), true)) {
+                        post(Command.NOW_PLAYING);
+                    }
+                }
+
+                // Scrobble
+                if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_PLAY_NOW)) {
+                    if (sharedPreferences.getBoolean(getString(R.string.prefkey_scrobble_enabled), true)) {
+                        post(Command.SCROBBLE);
+                    }
+                }
+//
+//                // Post the message
+//                if (pluginIntent.hasCategory(PluginTypeCategory.TYPE_POST_MESSAGE)) {
+//                    int event = sharedPreferences.getInt(context.getString(R.string.pref_plugin_event), PLUGIN_EVENT_PLAY_NOW);
+//                    if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_PLAY_START)) {
+//                        // Play Start
+//                        if (!pluginIntent.isAutomatically() || event == PLUGIN_EVENT_PLAY_START) {
+//                            post(Command.SCROBBLE);
+//                            return;
+//                        }
+//                    }
+//                    if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_PLAY_NOW)) {
+//                        // Play Now
+//                        if (!pluginIntent.isAutomatically() || event == PLUGIN_EVENT_PLAY_NOW) {
+//                            post(Command.SCROBBLE);
+//                            return;
+//                        }
+//                    }
+//                }
             }
         } catch (Exception e) {
             AppUtils.showToast(this, R.string.error_app);

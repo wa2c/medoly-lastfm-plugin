@@ -137,48 +137,48 @@ public class MainActivity extends Activity {
             }
         });
 
-        setSpinner();
+        //setSpinner();
 
         updateAuthMessage();
     }
 
-    /**
-     * Set spinner.
-     */
-    private void setSpinner() {
-        final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-
-        final Spinner executeEventSpinner = (Spinner)findViewById(R.id.executeEventSpinner);
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item);
-        adapter.add(getString(R.string.label_spinner_event_none));          // 0
-        adapter.add(getString(R.string.label_plugin_operation_play_start)); // 1
-        adapter.add(getString(R.string.label_plugin_operation_play_now));   // 2
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        executeEventSpinner.setAdapter(adapter);
-        executeEventSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                preferences.edit().putInt(getString(R.string.pref_plugin_event), position).apply();
-            }
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                executeEventSpinner.setSelection(2);
-            }
-        });
-
-        executeEventSpinner.setSelection(preferences.getInt(getString(R.string.pref_plugin_event), PostIntentService.PLUGIN_EVENT_PLAY_NOW));
-
-        // old data convert
-        if (preferences.getBoolean("operation_play_now_enabled", true)) {
-            executeEventSpinner.setSelection(PostIntentService.PLUGIN_EVENT_PLAY_NOW);
-        } else if  (preferences.getBoolean("operation_play_start_enabled", true)) {
-            executeEventSpinner.setSelection(PostIntentService.PLUGIN_EVENT_PLAY_START);
-        } else {
-            executeEventSpinner.setSelection(PostIntentService.PLUGIN_EVENT_NONE);
-        }
-        preferences.edit().remove("operation_play_now_enabled").apply();
-        preferences.edit().remove("operation_play_start_enabled").apply();
-    }
+//    /**
+//     * Set spinner.
+//     */
+//    private void setSpinner() {
+//        final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+//
+//        final Spinner executeEventSpinner = (Spinner)findViewById(R.id.executeEventSpinner);
+//        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item);
+//        adapter.add(getString(R.string.label_spinner_event_none));          // 0
+//        adapter.add(getString(R.string.label_plugin_operation_play_start)); // 1
+//        adapter.add(getString(R.string.label_plugin_operation_play_now));   // 2
+//        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//        executeEventSpinner.setAdapter(adapter);
+//        executeEventSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//            @Override
+//            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+//                preferences.edit().putInt(getString(R.string.pref_plugin_event), position).apply();
+//            }
+//            @Override
+//            public void onNothingSelected(AdapterView<?> parent) {
+//                executeEventSpinner.setSelection(2);
+//            }
+//        });
+//
+//        executeEventSpinner.setSelection(preferences.getInt(getString(R.string.pref_plugin_event), PostIntentService.PLUGIN_EVENT_PLAY_NOW));
+//
+//        // old data convert
+//        if (preferences.getBoolean("operation_play_now_enabled", true)) {
+//            executeEventSpinner.setSelection(PostIntentService.PLUGIN_EVENT_PLAY_NOW);
+//        } else if  (preferences.getBoolean("operation_play_start_enabled", true)) {
+//            executeEventSpinner.setSelection(PostIntentService.PLUGIN_EVENT_PLAY_START);
+//        } else {
+//            executeEventSpinner.setSelection(PostIntentService.PLUGIN_EVENT_NONE);
+//        }
+//        preferences.edit().remove("operation_play_now_enabled").apply();
+//        preferences.edit().remove("operation_play_start_enabled").apply();
+//    }
 
     /**
      * 投稿タスク。

@@ -35,8 +35,11 @@ repositories {
 dependencies {
     // Medoly library
     compile 'com.wa2c.android:medolylibrary:1.0.4p'
+
     // https://mvnrepository.com/artifact/de.u-mass/lastfm-java
-    compile group: 'de.u-mass', name: 'lastfm-java', version: '0.1.2'
+    //compile group: 'de.u-mass', name: 'lastfm-java', version: '0.1.2'
+    compile files('libs/lastfm-java-0.1.2-fix.jar')
+
     // https://mvnrepository.com/artifact/com.google.code.gson/gson
-    compile group: 'com.google.code.gson', name: 'gson', version: '2.7'
+    compile 'com.google.code.gson:gson:2.7'
 }

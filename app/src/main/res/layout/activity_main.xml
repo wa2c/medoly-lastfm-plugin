@@ -17,6 +17,7 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
+            <!--
             <LinearLayout
                 android:id="@+id/executeEventLayout"
                 android:layout_width="match_parent"
@@ -40,6 +41,7 @@
                     android:layout_gravity="center"
                     android:padding="8dp" />
             </LinearLayout>
+            -->
 
             <Button
                 android:id="@+id/accountAuthButton"

@@ -95,8 +95,14 @@
     <string name="label_dialog_about_library">[Library]</string>
 
     <!-- Preferences -->
-    <string name="pref_title_update_now_playing">Notify playback start</string>
-    <string name="pref_summary_update_now_playing">Notify playback start. To be "now playing" state on  Last.fm site.</string>
+    <string name="pref_title_now_playing_enabled">Notify Playing Enabled</string>
+    <string name="pref_summary_now_playing_enabled">Notify playback start to Last.fm.</string>
+    <string name="pref_title_scrobble_enabled">Scrobble Enabled</string>
+    <string name="pref_summary_scrobble_enabled">Scrobble to Last.fm.</string>
+    <string name="pref_title_event_get_property_operation">Property Get Event</string>
+    <string name="pref_summary_event_get_property_operation">Select the event to get property data.</string>
+    <string name="pref_title_event_get_album_art_operation">Album Art Get Event</string>
+    <string name="pref_summary_event_get_album_art_operation">Select the event to get album art.</string>
     <string name="pref_title_previous_media_enabled">Run Previous Media</string>
     <string name="pref_summary_previous_media_enabled">Enable to run the event for the same media that has run the event already last time.</string>
     <string name="pref_title_unsent_max">Unsent Max</string>
@@ -114,5 +120,23 @@
     <!-- System -->
     <string name="error_app">The operation failed due to an error.</string>
     <string name="error_dialog_dismissed">Open the dialog again.</string>
+
+
+
+    <!-- List -->
+
+    <!-- Get property event -->
+    <string-array name="event_get_property_operation_entries">
+        <item>Invalid</item>
+        <item>@string/label_plugin_operation_media_open</item>
+        <item>@string/label_plugin_operation_play_start</item>
+    </string-array>
+    <!-- Get album art event -->
+    <string-array name="event_get_album_art_operation_entries">
+        <item>Invalid</item>
+        <item>@string/label_plugin_operation_media_open</item>
+        <item>@string/label_plugin_operation_play_start</item>
+    </string-array>
+
 
 </resources>
