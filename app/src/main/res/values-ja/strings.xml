@@ -38,13 +38,11 @@
     <string name="message_ban_failure">禁止トラックへの追加に失敗しました。</string>
     <string name="message_unban_success">\"%1$s\" を禁止トラックから削除しました。</string>
     <string name="message_unban_failure">禁止トラックの削除に失敗しました。</string>
-    <string name="message_page_track_success">トラックのページを開きます。</string>
-    <string name="message_page_track_failure">トラックページが開けません。</string>
-    <string name="message_page_artist_success">アーティストページを開きます。</string>
-    <string name="message_page_artist_failure">アーティストページが開けません。</string>
-
-    <string name="message_auth_success">認証が完了しました。</string>
-    <string name="message_auth_failure">認証に失敗しました。</string>
+    <string name="message_page_failure">ページが開けません。</string>
+    <string name="message_get_data_success">データの取得に成功しました。</string>
+    <string name="message_get_data_failure">データの取得に失敗しました。</string>
+    <string name="message_auth_success">Last.fmの認証に成功しました。</string>
+    <string name="message_auth_failure">Last.fmの認証に失敗しました。</string>
 
 
 
@@ -56,9 +54,9 @@
     <string name="label_button_settings">設定</string>
     <string name="label_button_launch_medoly">Medoly 起動</string>
     <string name="message_no_medoly">Medolyをインストールしてください。</string>
-    <string name="message_account_auth">アカウントの認証が完了しています。</string>
-    <string name="message_account_not_auth">アカウントが認証されていません。</string>
-    <string name="message_account_clear">アカウント情報をクリアしました。</string>
+    <string name="message_account_auth">Last.fmアカウントの認証が完了しています。</string>
+    <string name="message_account_not_auth">Last.fmアカウントが認証されていません。</string>
+    <string name="message_account_clear">Last.fmアカウント認証をクリアしました。</string>
 
     <!-- Unsent List Activity -->
     <string name="label_unsent_played_time">再生日時: %1$s</string>

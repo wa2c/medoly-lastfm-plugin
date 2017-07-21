@@ -38,13 +38,11 @@
     <string name="message_ban_failure">Failed to add to ban tracks.</string>
     <string name="message_unban_success">\"%1$s\" was removed from ban tracks.</string>
     <string name="message_unban_failure">Failed to remove from ban tracks.</string>
-    <string name="message_page_track_success">The track page opened.</string>
-    <string name="message_page_track_failure">Failed to open the track page.</string>
-    <string name="message_page_artist_success">The artist page was opened.</string>
-    <string name="message_page_artist_failure">Failed to open the artist page.</string>
-
-    <string name="message_auth_success">Auth succeeded.</string>
-    <string name="message_auth_failure">Auth failed.</string>
+    <string name="message_page_failure">Failed to open the page.</string>
+    <string name="message_get_data_success">Succeeded to get the data.</string>
+    <string name="message_get_data_failure">Failed to get the data.</string>
+    <string name="message_auth_success">Succeeded to authenticate Last.fm.</string>
+    <string name="message_auth_failure">Failed to authenticate Last.fm.</string>
 
 
 
@@ -56,9 +54,9 @@
     <string name="label_button_settings">Settings</string>
     <string name="label_button_launch_medoly">Launch Medoly</string>
     <string name="message_no_medoly">Please install Medoly.</string>
-    <string name="message_account_auth">Account authentication completed.</string>
-    <string name="message_account_not_auth">Account is not been authenticated.</string>
-    <string name="message_account_clear">Account auth cleared.</string>
+    <string name="message_account_auth">Last.fm account authentication completed.</string>
+    <string name="message_account_not_auth">Last.fm account is not been authenticated.</string>
+    <string name="message_account_clear">Last.fm account auth cleared.</string>
 
     <!-- Unsent List Activity -->
     <string name="label_unsent_played_time">Played time: %1$s</string>

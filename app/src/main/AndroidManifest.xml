@@ -109,27 +109,10 @@
                  tools:ignore="ManifestResource"/>
             -->
 
-
-            <!-- Get property -->
-            <meta-data
-                android:name="execute_id_get_property"
-                android:value="2" />
-            <meta-data
-                android:name="execute_label_get_property"
-                android:resource="@string/label_execute_get_property"
-                tools:ignore="ManifestResource"/>
-            <meta-data
-                android:name="execute_icon_get_property"
-                android:resource="@drawable/ic_action_property"
-                tools:ignore="ManifestResource"/>
-            <meta-data
-                android:name="execute_type_get_property"
-                android:value="TYPE_GET_PROPERTY" />
-
             <!-- Get album art -->
             <meta-data
                 android:name="execute_id_get_album_art"
-                android:value="3" />
+                android:value="2" />
             <meta-data
                 android:name="execute_label_get_album_art"
                 android:resource="@string/label_execute_get_album_art"
@@ -141,6 +124,22 @@
             <meta-data
                 android:name="execute_type_get_album_art"
                 android:value="TYPE_GET_ALBUM_ART" />
+
+            <!-- Get property -->
+            <meta-data
+                android:name="execute_id_get_property"
+                android:value="3" />
+            <meta-data
+                android:name="execute_label_get_property"
+                android:resource="@string/label_execute_get_property"
+                tools:ignore="ManifestResource"/>
+            <meta-data
+                android:name="execute_icon_get_property"
+                android:resource="@drawable/ic_action_property"
+                tools:ignore="ManifestResource"/>
+            <meta-data
+                android:name="execute_type_get_property"
+                android:value="TYPE_GET_PROPERTY" />
 
             <!-- Track Page -->
             <meta-data
