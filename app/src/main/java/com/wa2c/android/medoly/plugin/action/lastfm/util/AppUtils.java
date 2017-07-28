@@ -2,12 +2,14 @@ package com.wa2c.android.medoly.plugin.action.lastfm.util;
 
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.support.v4.content.FileProvider;
 
 import com.google.gson.Gson;
+import com.wa2c.android.medoly.plugin.action.lastfm.service.PostIntentService;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -80,6 +82,24 @@ public class AppUtils {
             Logger.e(e);
             return null;
         }
+    }
+
+
+    /**
+     * Start service.
+     * @param context A context.
+     * @param intent A received intent.
+     */
+    public static void startService(Context context, Intent intent) {
+        // Stop exists service
+        Intent stopIntent = new Intent(context, PostIntentService.class);
+        context.stopService(stopIntent);
+
+        // Launch service
+        Intent serviceIntent = new Intent(intent);
+        serviceIntent.putExtra(PostIntentService.RECEIVED_CLASS_NAME, intent.getComponent().getClassName());
+        serviceIntent.setClass(context, PostIntentService.class);
+        context.startService(serviceIntent);
     }
 
 
