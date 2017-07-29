@@ -12,16 +12,12 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.wa2c.android.medoly.library.MedolyEnvironment;
 import com.wa2c.android.medoly.plugin.action.lastfm.R;
 import com.wa2c.android.medoly.plugin.action.lastfm.Token;
 import com.wa2c.android.medoly.plugin.action.lastfm.dialog.AuthDialogFragment;
-import com.wa2c.android.medoly.plugin.action.lastfm.service.PostIntentService;
 import com.wa2c.android.medoly.plugin.action.lastfm.util.AppUtils;
 import com.wa2c.android.medoly.plugin.action.lastfm.util.Logger;
 
@@ -166,15 +162,15 @@ public class MainActivity extends Activity {
 //            }
 //        });
 //
-//        executeEventSpinner.setSelection(preferences.getInt(getString(R.string.pref_plugin_event), PostIntentService.PLUGIN_EVENT_PLAY_NOW));
+//        executeEventSpinner.setSelection(preferences.getInt(getString(R.string.pref_plugin_event), ProcessService.PLUGIN_EVENT_PLAY_NOW));
 //
 //        // old data convert
 //        if (preferences.getBoolean("operation_play_now_enabled", true)) {
-//            executeEventSpinner.setSelection(PostIntentService.PLUGIN_EVENT_PLAY_NOW);
+//            executeEventSpinner.setSelection(ProcessService.PLUGIN_EVENT_PLAY_NOW);
 //        } else if  (preferences.getBoolean("operation_play_start_enabled", true)) {
-//            executeEventSpinner.setSelection(PostIntentService.PLUGIN_EVENT_PLAY_START);
+//            executeEventSpinner.setSelection(ProcessService.PLUGIN_EVENT_PLAY_START);
 //        } else {
-//            executeEventSpinner.setSelection(PostIntentService.PLUGIN_EVENT_NONE);
+//            executeEventSpinner.setSelection(ProcessService.PLUGIN_EVENT_NONE);
 //        }
 //        preferences.edit().remove("operation_play_now_enabled").apply();
 //        preferences.edit().remove("operation_play_start_enabled").apply();

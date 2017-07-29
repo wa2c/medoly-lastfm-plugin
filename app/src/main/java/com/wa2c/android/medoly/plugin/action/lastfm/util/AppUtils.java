@@ -9,7 +9,8 @@ import android.preference.PreferenceManager;
 import android.support.v4.content.FileProvider;
 
 import com.google.gson.Gson;
-import com.wa2c.android.medoly.plugin.action.lastfm.service.PostIntentService;
+import com.wa2c.android.medoly.plugin.action.lastfm.BuildConfig;
+import com.wa2c.android.medoly.plugin.action.lastfm.service.ProcessService;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -84,7 +85,6 @@ public class AppUtils {
         }
     }
 
-
     /**
      * Start service.
      * @param context A context.
@@ -92,20 +92,21 @@ public class AppUtils {
      */
     public static void startService(Context context, Intent intent) {
         // Stop exists service
-        Intent stopIntent = new Intent(context, PostIntentService.class);
+        Intent stopIntent = new Intent(context, ProcessService.class);
         context.stopService(stopIntent);
 
         // Launch service
         Intent serviceIntent = new Intent(intent);
-        serviceIntent.putExtra(PostIntentService.RECEIVED_CLASS_NAME, intent.getComponent().getClassName());
-        serviceIntent.setClass(context, PostIntentService.class);
+        serviceIntent.putExtra(ProcessService.RECEIVED_CLASS_NAME, intent.getComponent().getClassName());
+        serviceIntent.setClass(context, ProcessService.class);
         context.startService(serviceIntent);
     }
 
 
 
     private static final String SHARED_DIR_NAME = "download";
-    private static final String PROVIDER_AUTHORITIES = "com.wa2c.android.medoly.plugin.action.lastfm.fileprovider";
+    //private static final String PROVIDER_AUTHORITIES = "com.wa2c.android.medoly.plugin.action.lastfm.fileprovider";
+    private static final String PROVIDER_AUTHORITIES = BuildConfig.APPLICATION_ID + ".fileprovider";
 
     /**
      * Download URI data.

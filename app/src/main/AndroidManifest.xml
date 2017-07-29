@@ -31,7 +31,7 @@
             android:launchMode="singleTask" />
 
         <service
-            android:name=".service.PostIntentService"
+            android:name=".service.ProcessService"
             android:exported="false" />
 
 
@@ -39,7 +39,7 @@
         <!-- Plugin event action -->
 
         <receiver
-            android:name=".service.EventReceiver$EventAllReceiver"
+            android:name=".service.PluginReceiver$EventAllReceiver"
             android:exported="true">
 
             <!-- Scrobble / NowPlaying -->
@@ -66,7 +66,7 @@
 
         <!-- Love -->
         <receiver
-            android:name=".service.ExecuteReceiver$ExecuteLoveReceiver"
+            android:name=".service.PluginReceiver$ExecuteLoveReceiver"
             android:exported="true"
             android:icon="@drawable/ic_action_love"
             android:label="@string/label_execute_love">
@@ -79,7 +79,7 @@
 
         <!-- UnLove -->
         <receiver
-            android:name=".service.ExecuteReceiver$ExecuteUnLoveReceiver"
+            android:name=".service.PluginReceiver$ExecuteUnLoveReceiver"
             android:exported="true"
             android:icon="@drawable/ic_action_unlove"
             android:label="@string/label_execute_unlove">
@@ -92,7 +92,7 @@
 
         <!-- Get album art -->
         <receiver
-            android:name=".service.ExecuteReceiver$ExecuteGetAlbumArtReceiver"
+            android:name=".service.PluginReceiver$ExecuteGetAlbumArtReceiver"
             android:exported="true"
             android:icon="@drawable/ic_action_image"
             android:label="@string/label_execute_get_album_art">
@@ -105,7 +105,7 @@
 
         <!-- Get property -->
         <receiver
-            android:name=".service.ExecuteReceiver$ExecuteGetPropertyReceiver"
+            android:name=".service.PluginReceiver$ExecuteGetPropertyReceiver"
             android:exported="true"
             android:icon="@drawable/ic_action_property"
             android:label="@string/label_execute_get_property"
@@ -119,7 +119,7 @@
 
         <!-- Track page -->
         <receiver
-            android:name=".service.ExecuteReceiver$ExecuteTrackPageReceiver"
+            android:name=".service.PluginReceiver$ExecuteTrackPageReceiver"
             android:exported="true"
             android:icon="@drawable/ic_action_page_track"
             android:label="@string/label_execute_page_track"
@@ -133,7 +133,7 @@
 
         <!-- Last.fm site -->
         <receiver
-            android:name=".service.ExecuteReceiver$ExecuteLastfmSiteReceiver"
+            android:name=".service.PluginReceiver$ExecuteLastfmSiteReceiver"
             android:exported="true"
             android:icon="@drawable/ic_action_lastfm"
             android:label="@string/label_execute_site">

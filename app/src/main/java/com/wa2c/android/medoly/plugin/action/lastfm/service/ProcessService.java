@@ -41,16 +41,16 @@ import de.umass.lastfm.scrobble.ScrobbleResult;
 /**
  * Intent service.
  */
-public class PostIntentService extends IntentService {
+public class ProcessService extends IntentService {
 
     /** Received receiver class name. */
     public static String RECEIVED_CLASS_NAME = "RECEIVED_CLASS_NAME";
 
-    /** 前回のファイルパス設定キー。 */
+    /** Previous data key. */
     private static final String PREFKEY_PREVIOUS_MEDIA_URI = "previous_media_uri";
 
     /**
-     * Post result.
+     * Command result.
      */
     private enum CommandResult {
         /** Succeeded. */
@@ -82,8 +82,8 @@ public class PostIntentService extends IntentService {
     /**
      * Constructor.
      */
-    public PostIntentService() {
-        super(PostIntentService.class.getSimpleName());
+    public ProcessService() {
+        super(ProcessService.class.getSimpleName());
     }
 
     @Override
@@ -112,19 +112,20 @@ public class PostIntentService extends IntentService {
             }
 
             // Execute
+
             if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_EXECUTE)) {
                 String receivedClassName = pluginIntent.getStringExtra(RECEIVED_CLASS_NAME);
-                 if (receivedClassName.equals(ExecuteReceiver.ExecuteLoveReceiver.class.getName())) {
+                 if (receivedClassName.equals(PluginReceiver.ExecuteLoveReceiver.class.getName())) {
                      love(session);
-                } else if (receivedClassName.equals(ExecuteReceiver.ExecuteUnLoveReceiver.class.getName())) {
+                } else if (receivedClassName.equals(PluginReceiver.ExecuteUnLoveReceiver.class.getName())) {
                      unlove(session);
-                } else if (receivedClassName.equals(ExecuteReceiver.ExecuteGetAlbumArtReceiver.class.getName())) {
+                } else if (receivedClassName.equals(PluginReceiver.ExecuteGetAlbumArtReceiver.class.getName())) {
                     getAlbumArt(session);
-                } else if (receivedClassName.equals(ExecuteReceiver.ExecuteGetPropertyReceiver.class.getName())) {
+                } else if (receivedClassName.equals(PluginReceiver.ExecuteGetPropertyReceiver.class.getName())) {
                     getProperties(session);
-                } else if (receivedClassName.equals(ExecuteReceiver.ExecuteTrackPageReceiver.class.getName())) {
+                } else if (receivedClassName.equals(PluginReceiver.ExecuteTrackPageReceiver.class.getName())) {
                     openTrackPage(session);
-                } else if (receivedClassName.equals(ExecuteReceiver.ExecuteLastfmSiteReceiver.class.getName())) {
+                } else if (receivedClassName.equals(PluginReceiver.ExecuteLastfmSiteReceiver.class.getName())) {
                     openLastfmPage(session);
                 }
                 return;
@@ -277,6 +278,11 @@ public class PostIntentService extends IntentService {
     private void scrobble(Session session) {
         CommandResult result = CommandResult.IGNORE;
         try {
+            if (propertyData == null || propertyData.isMediaEmpty()) {
+                result = CommandResult.NO_MEDIA;
+                return;
+            }
+
             // Check previous media
             String mediaUriText = propertyData.getMediaUri().toString();
             String previousMediaUri = sharedPreferences.getString(PREFKEY_PREVIOUS_MEDIA_URI, "");
@@ -288,11 +294,6 @@ public class PostIntentService extends IntentService {
 
             if (session == null) {
                 result = CommandResult.AUTH_FAILED;
-                return;
-            }
-
-            if (propertyData == null || propertyData.isMediaEmpty()) {
-                result = CommandResult.NO_MEDIA;
                 return;
             }
 
