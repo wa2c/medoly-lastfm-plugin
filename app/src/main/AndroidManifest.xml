@@ -35,32 +35,70 @@
             android:exported="false" />
 
 
-
         <!-- Plugin event action -->
 
+        <!-- Scrobble -->
         <receiver
-            android:name=".service.PluginReceiver$EventAllReceiver"
-            android:exported="true">
-
-            <!-- Scrobble / NowPlaying -->
+            android:name=".service.PluginReceiver$EventScrobbleReceiver"
+            android:exported="true"
+            android:icon="@drawable/ic_action_post"
+            android:label="@string/label_event_scrobble">
             <intent-filter>
                 <action android:name="com.wa2c.android.medoly.plugin.action.ACTION_MEDIA" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="com.wa2c.android.medoly.plugin.category.TYPE_POST_MESSAGE" />
                 <category android:name="com.wa2c.android.medoly.plugin.category.OPERATION_PLAY_NOW" />
-                <category android:name="com.wa2c.android.medoly.plugin.category.OPERATION_PLAY_START" />
             </intent-filter>
+        </receiver>
 
-            <!-- Get property -->
+        <!-- Now Playing -->
+        <receiver
+            android:name=".service.PluginReceiver$EventNowPlayingReceiver"
+            android:exported="true"
+            android:icon="@drawable/ic_action_post"
+            android:label="@string/label_event_now_playing">
             <intent-filter>
                 <action android:name="com.wa2c.android.medoly.plugin.action.ACTION_MEDIA" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="com.wa2c.android.medoly.plugin.category.TYPE_POST_MESSAGE" />
+                <category android:name="com.wa2c.android.medoly.plugin.category.OPERATION_PLAY_START" />
+            </intent-filter>
+        </receiver>
+
+        <!-- Get Album Art -->
+        <receiver
+            android:name=".service.PluginReceiver$EventGetAlbumArtReceiver"
+            android:exported="true"
+            android:icon="@drawable/ic_action_image"
+            android:label="@string/label_execute_get_album_art">
+            <intent-filter>
+                <action android:name="com.wa2c.android.medoly.plugin.action.ACTION_MEDIA" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="com.wa2c.android.medoly.plugin.category.TYPE_GET_ALBUM_ART" />
+                <category android:name="com.wa2c.android.medoly.plugin.category.OPERATION_MEDIA_OPEN" />
+                <category android:name="com.wa2c.android.medoly.plugin.category.OPERATION_PLAY_START" />
+            </intent-filter>
+        </receiver>
+
+        <!-- Get Property -->
+        <receiver
+            android:name=".service.PluginReceiver$EventGetPropertyReceiver"
+            android:exported="true"
+            android:icon="@drawable/ic_action_property"
+            android:label="@string/label_execute_get_property">
+            <intent-filter>
+                <action android:name="com.wa2c.android.medoly.plugin.action.ACTION_MEDIA" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="com.wa2c.android.medoly.plugin.category.TYPE_GET_PROPERTY" />
                 <category android:name="com.wa2c.android.medoly.plugin.category.OPERATION_MEDIA_OPEN" />
                 <category android:name="com.wa2c.android.medoly.plugin.category.OPERATION_PLAY_START" />
             </intent-filter>
-
         </receiver>
+
 
         <!-- Plugin execute action -->
 
@@ -72,6 +110,7 @@
             android:label="@string/label_execute_love">
             <intent-filter>
                 <action android:name="com.wa2c.android.medoly.plugin.action.ACTION_MEDIA" />
+
                 <category android:name="com.wa2c.android.medoly.plugin.category.TYPE_POST_MESSAGE" />
                 <category android:name="com.wa2c.android.medoly.plugin.category.OPERATION_EXECUTE" />
             </intent-filter>
@@ -85,12 +124,13 @@
             android:label="@string/label_execute_unlove">
             <intent-filter>
                 <action android:name="com.wa2c.android.medoly.plugin.action.ACTION_MEDIA" />
+
                 <category android:name="com.wa2c.android.medoly.plugin.category.TYPE_POST_MESSAGE" />
                 <category android:name="com.wa2c.android.medoly.plugin.category.OPERATION_EXECUTE" />
             </intent-filter>
         </receiver>
 
-        <!-- Get album art -->
+        <!-- Get Album Art -->
         <receiver
             android:name=".service.PluginReceiver$ExecuteGetAlbumArtReceiver"
             android:exported="true"
@@ -98,40 +138,41 @@
             android:label="@string/label_execute_get_album_art">
             <intent-filter>
                 <action android:name="com.wa2c.android.medoly.plugin.action.ACTION_MEDIA" />
+
                 <category android:name="com.wa2c.android.medoly.plugin.category.TYPE_GET_ALBUM_ART" />
                 <category android:name="com.wa2c.android.medoly.plugin.category.OPERATION_EXECUTE" />
             </intent-filter>
         </receiver>
 
-        <!-- Get property -->
+        <!-- Get Property -->
         <receiver
             android:name=".service.PluginReceiver$ExecuteGetPropertyReceiver"
             android:exported="true"
             android:icon="@drawable/ic_action_property"
-            android:label="@string/label_execute_get_property"
-            android:permission="android.intent.action.BOOT_COMPLETED">
+            android:label="@string/label_execute_get_property">
             <intent-filter>
                 <action android:name="com.wa2c.android.medoly.plugin.action.ACTION_MEDIA" />
+
                 <category android:name="com.wa2c.android.medoly.plugin.category.TYPE_GET_PROPERTY" />
                 <category android:name="com.wa2c.android.medoly.plugin.category.OPERATION_EXECUTE" />
             </intent-filter>
         </receiver>
 
-        <!-- Track page -->
+        <!-- Track Page -->
         <receiver
             android:name=".service.PluginReceiver$ExecuteTrackPageReceiver"
             android:exported="true"
             android:icon="@drawable/ic_action_page_track"
-            android:label="@string/label_execute_page_track"
-            >
+            android:label="@string/label_execute_page_track">
             <intent-filter>
                 <action android:name="com.wa2c.android.medoly.plugin.action.ACTION_MEDIA" />
+
                 <category android:name="com.wa2c.android.medoly.plugin.category.TYPE_RUN" />
                 <category android:name="com.wa2c.android.medoly.plugin.category.OPERATION_EXECUTE" />
             </intent-filter>
         </receiver>
 
-        <!-- Last.fm site -->
+        <!-- Last.fm Site -->
         <receiver
             android:name=".service.PluginReceiver$ExecuteLastfmSiteReceiver"
             android:exported="true"
@@ -139,6 +180,7 @@
             android:label="@string/label_execute_site">
             <intent-filter>
                 <action android:name="com.wa2c.android.medoly.plugin.action.ACTION_MEDIA" />
+
                 <category android:name="com.wa2c.android.medoly.plugin.category.TYPE_RUN" />
                 <category android:name="com.wa2c.android.medoly.plugin.category.OPERATION_EXECUTE" />
             </intent-filter>
@@ -152,8 +194,8 @@
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="${applicationId}.fileprovider"
-            android:grantUriPermissions="true"
-            android:exported="false">
+            android:exported="false"
+            android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/filepaths" />

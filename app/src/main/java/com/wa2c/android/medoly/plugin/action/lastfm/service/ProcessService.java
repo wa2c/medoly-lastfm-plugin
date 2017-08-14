@@ -264,9 +264,9 @@ public class ProcessService extends IntentService {
 //            } else if (result == CommandResult.SUCCEEDED) {
 //                if (sharedPreferences.getBoolean(context.getString(R.string.prefkey_post_success_message_show), true))
 //                    AppUtils.showToast(context, R.string.message_post_success);
-            } else if (result == CommandResult.FAILED) {
-                if (sharedPreferences.getBoolean(context.getString(R.string.prefkey_post_failure_message_show), true))
-                    AppUtils.showToast(context, R.string.message_post_failure);
+//            } else if (result == CommandResult.FAILED) {
+//                if (sharedPreferences.getBoolean(context.getString(R.string.prefkey_post_failure_message_show), true))
+//                    AppUtils.showToast(context, R.string.message_post_failure);
             }
         }
     }
@@ -383,7 +383,7 @@ public class ProcessService extends IntentService {
             } else if (result == CommandResult.NO_MEDIA) {
                 AppUtils.showToast(context, R.string.message_no_media);
             } else if (result == CommandResult.SUCCEEDED) {
-                if (sharedPreferences.getBoolean(context.getString(R.string.prefkey_post_success_message_show), true))
+                if (sharedPreferences.getBoolean(context.getString(R.string.prefkey_post_success_message_show), false))
                     AppUtils.showToast(context, R.string.message_post_success);
             } else if (result == CommandResult.FAILED) {
                 if (sharedPreferences.getBoolean(context.getString(R.string.prefkey_post_failure_message_show), true))
@@ -545,7 +545,7 @@ public class ProcessService extends IntentService {
             if (result == CommandResult.NO_MEDIA) {
                 AppUtils.showToast(context, R.string.message_no_media);
             } else if (result == CommandResult.SUCCEEDED) {
-                if (sharedPreferences.getBoolean(context.getString(R.string.prefkey_post_success_message_show), true))
+                if (sharedPreferences.getBoolean(context.getString(R.string.prefkey_post_success_message_show), false))
                     AppUtils.showToast(context, R.string.message_get_data_success);
             } else if (result == CommandResult.FAILED) {
                 if (sharedPreferences.getBoolean(context.getString(R.string.prefkey_post_failure_message_show), true))
@@ -610,7 +610,7 @@ public class ProcessService extends IntentService {
             if (result == CommandResult.NO_MEDIA) {
                 AppUtils.showToast(context, R.string.message_no_media);
             } else if (result == CommandResult.SUCCEEDED) {
-                if (sharedPreferences.getBoolean(context.getString(R.string.prefkey_post_success_message_show), true))
+                if (sharedPreferences.getBoolean(context.getString(R.string.prefkey_post_success_message_show), false))
                     AppUtils.showToast(context, R.string.message_get_data_success);
             } else if (result == CommandResult.FAILED) {
                 if (sharedPreferences.getBoolean(context.getString(R.string.prefkey_post_failure_message_show), true))

@@ -2,6 +2,8 @@
 <resources>
     <!-- Package -->
     <string name="app_description">Medolyに、Last.fmに対するScrobble、Love、Unlove、サイトアクセス等の機能を提供します。</string>
+    <string name="label_event_scrobble">Scrobble</string>
+    <string name="label_event_now_playing">Now Playing</string>
     <string name="label_execute_love">Love</string>
     <string name="label_execute_unlove">Unlove</string>
     <string name="label_execute_ban">Ban</string>

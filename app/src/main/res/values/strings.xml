@@ -2,6 +2,8 @@
 <resources>
     <!-- Package -->
     <string name="app_description">Add functions to Medoly  such as Scrobble, Love, Unlove, Site Access, etc for Last.fm.</string>
+    <string name="label_event_scrobble">Scrobble</string>
+    <string name="label_event_now_playing">Now Playing</string>
     <string name="label_execute_love">Love</string>
     <string name="label_execute_unlove">Unlove</string>
     <string name="label_execute_ban">Ban</string>

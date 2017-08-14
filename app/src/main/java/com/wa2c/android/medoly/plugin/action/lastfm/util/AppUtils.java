@@ -85,27 +85,9 @@ public class AppUtils {
         }
     }
 
-    /**
-     * Start service.
-     * @param context A context.
-     * @param intent A received intent.
-     */
-    public static void startService(Context context, Intent intent) {
-        // Stop exists service
-        Intent stopIntent = new Intent(context, ProcessService.class);
-        context.stopService(stopIntent);
-
-        // Launch service
-        Intent serviceIntent = new Intent(intent);
-        serviceIntent.putExtra(ProcessService.RECEIVED_CLASS_NAME, intent.getComponent().getClassName());
-        serviceIntent.setClass(context, ProcessService.class);
-        context.startService(serviceIntent);
-    }
-
 
 
     private static final String SHARED_DIR_NAME = "download";
-    //private static final String PROVIDER_AUTHORITIES = "com.wa2c.android.medoly.plugin.action.lastfm.fileprovider";
     private static final String PROVIDER_AUTHORITIES = BuildConfig.APPLICATION_ID + ".fileprovider";
 
     /**
