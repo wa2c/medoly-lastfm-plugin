@@ -7,7 +7,7 @@ import android.content.Intent;
 /**
  * Plugin receiver classes.
  */
-public class PluginReceiver {
+public class PluginReceivers {
 
     public static abstract class AbstractPluginReceiver extends BroadcastReceiver {
         @Override

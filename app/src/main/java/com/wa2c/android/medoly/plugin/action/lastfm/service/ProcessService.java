@@ -115,17 +115,17 @@ public class ProcessService extends IntentService {
 
             if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_EXECUTE)) {
                 String receivedClassName = pluginIntent.getStringExtra(RECEIVED_CLASS_NAME);
-                 if (receivedClassName.equals(PluginReceiver.ExecuteLoveReceiver.class.getName())) {
+                 if (receivedClassName.equals(PluginReceivers.ExecuteLoveReceiver.class.getName())) {
                      love(session);
-                } else if (receivedClassName.equals(PluginReceiver.ExecuteUnLoveReceiver.class.getName())) {
+                } else if (receivedClassName.equals(PluginReceivers.ExecuteUnLoveReceiver.class.getName())) {
                      unlove(session);
-                } else if (receivedClassName.equals(PluginReceiver.ExecuteGetAlbumArtReceiver.class.getName())) {
+                } else if (receivedClassName.equals(PluginReceivers.ExecuteGetAlbumArtReceiver.class.getName())) {
                     getAlbumArt(session);
-                } else if (receivedClassName.equals(PluginReceiver.ExecuteGetPropertyReceiver.class.getName())) {
+                } else if (receivedClassName.equals(PluginReceivers.ExecuteGetPropertyReceiver.class.getName())) {
                     getProperties(session);
-                } else if (receivedClassName.equals(PluginReceiver.ExecuteTrackPageReceiver.class.getName())) {
+                } else if (receivedClassName.equals(PluginReceivers.ExecuteTrackPageReceiver.class.getName())) {
                     openTrackPage(session);
-                } else if (receivedClassName.equals(PluginReceiver.ExecuteLastfmSiteReceiver.class.getName())) {
+                } else if (receivedClassName.equals(PluginReceivers.ExecuteLastfmSiteReceiver.class.getName())) {
                     openLastfmPage(session);
                 }
                 return;
