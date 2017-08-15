@@ -95,6 +95,9 @@
     <string name="label_dialog_about_library">[Library]</string>
 
     <!-- Preferences -->
+    <string name="title_preference_category_event">イベント</string>
+    <string name="title_preference_category_info">情報</string>
+
     <string name="pref_title_now_playing_enabled">再生開始を通知</string>
     <string name="pref_summary_now_playing_enabled">Last.fmに再生開始を通知します。</string>
     <string name="pref_title_scrobble_enabled">Scrobbleを実行</string>

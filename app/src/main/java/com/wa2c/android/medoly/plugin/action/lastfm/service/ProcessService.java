@@ -136,9 +136,8 @@ public class ProcessService extends IntentService {
             // Get property
             if (pluginIntent.hasCategory(PluginTypeCategory.TYPE_GET_PROPERTY)) {
                 String operation = sharedPreferences.getString(getString(R.string.prefkey_event_get_property_operation), "");
-                if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_MEDIA_OPEN) && PluginOperationCategory.OPERATION_MEDIA_OPEN.name().equals(operation)) {
-                    getProperties(session); // media open
-                } else if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_PLAY_START) && PluginOperationCategory.OPERATION_PLAY_START.name().equals(operation)) {
+                if ((pluginIntent.hasCategory(PluginOperationCategory.OPERATION_MEDIA_OPEN) && PluginOperationCategory.OPERATION_MEDIA_OPEN.name().equals(operation)) ||
+                    (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_PLAY_START) && PluginOperationCategory.OPERATION_PLAY_START.name().equals(operation))) {
                     getProperties(session); // play start
                 } else {
                     sendBroadcast(pluginIntent.createResultIntent(null));
@@ -149,9 +148,8 @@ public class ProcessService extends IntentService {
             // Get album art
             if (pluginIntent.hasCategory(PluginTypeCategory.TYPE_GET_ALBUM_ART)) {
                 String operation = sharedPreferences.getString(getString(R.string.prefkey_event_get_album_art_operation), "");
-                if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_MEDIA_OPEN) && PluginOperationCategory.OPERATION_MEDIA_OPEN.name().equals(operation)) {
-                    getAlbumArt(session);
-                } else if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_PLAY_START) && PluginOperationCategory.OPERATION_PLAY_START.name().equals(operation)) {
+                if ((pluginIntent.hasCategory(PluginOperationCategory.OPERATION_MEDIA_OPEN) && PluginOperationCategory.OPERATION_MEDIA_OPEN.name().equals(operation)) ||
+                    (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_PLAY_START) && PluginOperationCategory.OPERATION_PLAY_START.name().equals(operation))) {
                     getAlbumArt(session);
                 } else {
                     sendBroadcast(pluginIntent.createResultIntent(null));
@@ -384,7 +382,7 @@ public class ProcessService extends IntentService {
                 AppUtils.showToast(context, R.string.message_no_media);
             } else if (result == CommandResult.SUCCEEDED) {
                 if (sharedPreferences.getBoolean(context.getString(R.string.prefkey_post_success_message_show), false))
-                    AppUtils.showToast(context, R.string.message_post_success);
+                    AppUtils.showToast(context, getString(R.string.message_post_success, propertyData.getFirst(MediaProperty.TITLE)));
             } else if (result == CommandResult.FAILED) {
                 if (sharedPreferences.getBoolean(context.getString(R.string.prefkey_post_failure_message_show), true))
                     AppUtils.showToast(context, R.string.message_post_failure);

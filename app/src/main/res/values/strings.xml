@@ -95,6 +95,9 @@
     <string name="label_dialog_about_library">[Library]</string>
 
     <!-- Preferences -->
+    <string name="title_preference_category_event">Event</string>
+    <string name="title_preference_category_info">Information</string>
+
     <string name="pref_title_now_playing_enabled">Notify Playing Enabled</string>
     <string name="pref_summary_now_playing_enabled">Notify playback start to Last.fm.</string>
     <string name="pref_title_scrobble_enabled">Scrobble Enabled</string>
