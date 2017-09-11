@@ -381,10 +381,10 @@ public class ProcessService extends IntentService {
             } else if (result == CommandResult.NO_MEDIA) {
                 AppUtils.showToast(context, R.string.message_no_media);
             } else if (result == CommandResult.SUCCEEDED) {
-                if (sharedPreferences.getBoolean(context.getString(R.string.prefkey_post_success_message_show), false))
+                if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_EXECUTE) || sharedPreferences.getBoolean(context.getString(R.string.prefkey_post_success_message_show), false))
                     AppUtils.showToast(context, getString(R.string.message_post_success, propertyData.getFirst(MediaProperty.TITLE)));
             } else if (result == CommandResult.FAILED) {
-                if (sharedPreferences.getBoolean(context.getString(R.string.prefkey_post_failure_message_show), true))
+                if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_EXECUTE) || sharedPreferences.getBoolean(context.getString(R.string.prefkey_post_failure_message_show), true))
                     AppUtils.showToast(context, R.string.message_post_failure);
             }
         }
@@ -426,9 +426,11 @@ public class ProcessService extends IntentService {
             } else if (result == CommandResult.NO_MEDIA) {
                 AppUtils.showToast(context, R.string.message_no_media);
             } else if (result == CommandResult.SUCCEEDED) {
-                AppUtils.showToast(context, context.getString(R.string.message_love_success,  propertyData.getFirst(MediaProperty.TITLE)));
+                if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_EXECUTE) || sharedPreferences.getBoolean(context.getString(R.string.prefkey_post_success_message_show), false))
+                    AppUtils.showToast(context, context.getString(R.string.message_love_success,  propertyData.getFirst(MediaProperty.TITLE)));
             } else if (result == CommandResult.FAILED) {
-                AppUtils.showToast(context, R.string.message_love_failure);
+                if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_EXECUTE) || sharedPreferences.getBoolean(context.getString(R.string.prefkey_post_failure_message_show), true))
+                    AppUtils.showToast(context, R.string.message_love_failure);
             }
          }
     }
@@ -469,9 +471,11 @@ public class ProcessService extends IntentService {
             } else if (result == CommandResult.NO_MEDIA) {
                 AppUtils.showToast(context, R.string.message_no_media);
             } else if (result == CommandResult.SUCCEEDED) {
-                AppUtils.showToast(context, context.getString(R.string.message_unlove_success,  propertyData.getFirst(MediaProperty.TITLE)));
+                if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_EXECUTE) || sharedPreferences.getBoolean(context.getString(R.string.prefkey_post_success_message_show), false))
+                    AppUtils.showToast(context, context.getString(R.string.message_unlove_success,  propertyData.getFirst(MediaProperty.TITLE)));
             } else if (result == CommandResult.FAILED) {
-                AppUtils.showToast(context, R.string.message_unlove_failure);
+                if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_EXECUTE) || sharedPreferences.getBoolean(context.getString(R.string.prefkey_post_failure_message_show), true))
+                    AppUtils.showToast(context, R.string.message_unlove_failure);
             }
         }
     }
@@ -543,10 +547,10 @@ public class ProcessService extends IntentService {
             if (result == CommandResult.NO_MEDIA) {
                 AppUtils.showToast(context, R.string.message_no_media);
             } else if (result == CommandResult.SUCCEEDED) {
-                if (sharedPreferences.getBoolean(context.getString(R.string.prefkey_post_success_message_show), false))
+                if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_EXECUTE) || sharedPreferences.getBoolean(context.getString(R.string.prefkey_post_success_message_show), false))
                     AppUtils.showToast(context, R.string.message_get_data_success);
             } else if (result == CommandResult.FAILED) {
-                if (sharedPreferences.getBoolean(context.getString(R.string.prefkey_post_failure_message_show), true))
+                if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_EXECUTE) || sharedPreferences.getBoolean(context.getString(R.string.prefkey_post_failure_message_show), true))
                     AppUtils.showToast(context, R.string.message_get_data_failure);
             }
         }
@@ -608,10 +612,10 @@ public class ProcessService extends IntentService {
             if (result == CommandResult.NO_MEDIA) {
                 AppUtils.showToast(context, R.string.message_no_media);
             } else if (result == CommandResult.SUCCEEDED) {
-                if (sharedPreferences.getBoolean(context.getString(R.string.prefkey_post_success_message_show), false))
+                if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_EXECUTE) || sharedPreferences.getBoolean(context.getString(R.string.prefkey_post_success_message_show), false))
                     AppUtils.showToast(context, R.string.message_get_data_success);
             } else if (result == CommandResult.FAILED) {
-                if (sharedPreferences.getBoolean(context.getString(R.string.prefkey_post_failure_message_show), true))
+                if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_EXECUTE) || sharedPreferences.getBoolean(context.getString(R.string.prefkey_post_failure_message_show), true))
                     AppUtils.showToast(context, R.string.message_get_data_failure);
             }
         }
