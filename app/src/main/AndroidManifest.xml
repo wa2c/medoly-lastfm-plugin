@@ -22,7 +22,10 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".activity.UnsentListActivity" />
+        <activity
+            android:name=".activity.UnsentListActivity"
+            android:label="@string/title_activity_unsent_list"
+            android:launchMode="singleTask"/>
 
         <activity
             android:name=".activity.SettingsActivity"
@@ -32,7 +35,18 @@
         <service
             android:name=".service.ProcessService"
             android:exported="false" />
-
+        <service
+            android:name=".service.PluginPostService"
+            android:exported="false" />
+        <service
+            android:name=".service.PluginGetAlbumArtService"
+            android:exported="false" />
+        <service
+            android:name=".service.PluginGetPropertyService"
+            android:exported="false" />
+        <service
+            android:name=".service.PluginRunService"
+            android:exported="false" />
 
         <!-- Plugin event action -->
 

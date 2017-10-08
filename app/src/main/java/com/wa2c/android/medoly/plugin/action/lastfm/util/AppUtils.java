@@ -2,7 +2,6 @@ package com.wa2c.android.medoly.plugin.action.lastfm.util;
 
 import android.content.ContentResolver;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.preference.PreferenceManager;
@@ -10,7 +9,6 @@ import android.support.v4.content.FileProvider;
 
 import com.google.gson.Gson;
 import com.wa2c.android.medoly.plugin.action.lastfm.BuildConfig;
-import com.wa2c.android.medoly.plugin.action.lastfm.service.ProcessService;
 
 import java.io.File;
 import java.io.FileOutputStream;

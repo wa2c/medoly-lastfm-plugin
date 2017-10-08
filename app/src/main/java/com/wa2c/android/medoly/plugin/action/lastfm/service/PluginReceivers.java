@@ -13,9 +13,28 @@ public class PluginReceivers {
         @Override
         public void onReceive(Context context, Intent intent) {
             Intent serviceIntent = new Intent(intent);
-            serviceIntent.putExtra(ProcessService.RECEIVED_CLASS_NAME, intent.getComponent().getClassName());
-            serviceIntent.setClass(context, ProcessService.class);
-            context.startService(serviceIntent);        }
+            Class c = this.getClass();
+            serviceIntent.putExtra(ProcessService.RECEIVED_CLASS_NAME, c.getName());
+
+            if (c == EventScrobbleReceiver.class ||
+                c == EventNowPlayingReceiver.class ||
+                c == ExecuteLoveReceiver.class ||
+                c == ExecuteUnLoveReceiver.class) {
+                serviceIntent.setClass(context, PluginPostService.class);
+            } else if (
+                    c == EventGetAlbumArtReceiver.class ||
+                    c == ExecuteGetAlbumArtReceiver.class) {
+                serviceIntent.setClass(context, PluginGetAlbumArtService.class);
+            } else if (c == EventGetPropertyReceiver.class ||
+                    c == ExecuteGetPropertyReceiver.class) {
+                serviceIntent.setClass(context, PluginGetPropertyService.class);
+            } else {
+                serviceIntent.setClass(context, PluginRunService.class);
+            }
+
+            context.stopService(serviceIntent);
+            context.startService(serviceIntent);
+        }
     }
 
     // Event
