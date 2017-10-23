@@ -14,8 +14,12 @@ import com.wa2c.android.medoly.plugin.action.lastfm.Token;
 import com.wa2c.android.medoly.plugin.action.lastfm.util.AppUtils;
 import com.wa2c.android.medoly.plugin.action.lastfm.util.Logger;
 
+import java.util.Locale;
+
 import de.umass.lastfm.Album;
+import de.umass.lastfm.Artist;
 import de.umass.lastfm.ImageSize;
+import de.umass.lastfm.Track;
 
 
 /**
@@ -67,49 +71,81 @@ public class PluginGetAlbumArtService extends AbstractPluginService {
             }
 
             // No property info
+            String trackText = propertyData.getFirst(MediaProperty.TITLE);
             String albumText = propertyData.getFirst(MediaProperty.ALBUM);
             String artistText = propertyData.getFirst(MediaProperty.ARTIST);
-            if (TextUtils.isEmpty(albumText) || TextUtils.isEmpty(artistText))
-                return;
+//            String trackMbidText = propertyData.getFirst(MediaProperty.MUSICBRAINZ_TRACK_ID);
+//            String albumMbidText = propertyData.getFirst(MediaProperty.MUSICBRAINZ_RELEASE_ID);
+//            String artistMbidText = propertyData.getFirst(MediaProperty.MUSICBRAINZ_ARTIST_ID);
 
-            // Get info
-            Album album;
-            if (session != null) {
-                album = Album.getInfo(artistText, albumText, session.getUsername(), session.getApiKey());
-            } else {
-                album = Album.getInfo(artistText, albumText, Token.getConsumerKey(context));
-            }
-
-
-//            // Track image
-//            Track track;
-//            if (TextUtils.isEmpty(session.getUsername()))
-//                track = Track.getInfo(artistText, titleText, session.getApiKey());
-//            else
-//                track = Track.getInfo(artistText, titleText, Locale.getDefault(), session.getUsername(), session.getApiKey());
-//            String imageUrl = track.getImageURL(ImageSize.EXTRALARGE);
-//            Uri downloadUri = LastfmUtils.downloadUrl(context, imageUrl, "test");
-
-            // Album image
             String remoteUri = null;
             Uri localUri = null;
-            ImageSize[] imageSizes = ImageSize.values();
-            for (int i = imageSizes.length - 1; i >= 0; i--) {
-                remoteUri = album.getImageURL(imageSizes[i]);
-                if (!TextUtils.isEmpty(remoteUri)) {
-                    localUri = AppUtils.downloadUrl(context, remoteUri);
-                    break;
+
+            // Album image
+            if (!TextUtils.isEmpty(artistText) && !TextUtils.isEmpty(albumText)) {
+                Album album;
+                //String al = !TextUtils.isEmpty(albumMbidText) ? albumMbidText : albumText;
+                if (session != null) {
+                    album = Album.getInfo(artistText, albumText, session.getUsername(), session.getApiKey());
+                } else {
+                    album = Album.getInfo(artistText, albumText, Token.getConsumerKey(context));
+                }
+
+                if (album != null) {
+                    ImageSize[] imageSizes = ImageSize.values();
+                    for (int i = imageSizes.length - 1; i >= 0; i--) {
+                        remoteUri = album.getImageURL(imageSizes[i]);
+                        if (!TextUtils.isEmpty(remoteUri)) {
+                            localUri = AppUtils.downloadUrl(context, remoteUri);
+                            break;
+                        }
+                    }
                 }
             }
 
+            // Track image
+            if (localUri == null && !TextUtils.isEmpty(artistText) && !TextUtils.isEmpty(trackText)) {
+                Track track;
+                //String tr = !TextUtils.isEmpty(trackMbidText) ? trackMbidText : trackText;
+                if (session != null) {
+                    track = Track.getInfo(artistText, trackText, Locale.getDefault(), session.getUsername(), session.getApiKey());
+                } else {
+                    track = Track.getInfo(artistText, trackText, session.getApiKey());
+                }
 
-//            // Artist image
-//            Artist artist;
-//            if (TextUtils.isEmpty(session.getUsername()))
-//                artist = Artist.getInfo(artistText, session.getApiKey());
-//            else
-//                artist = Artist.getInfo(artistText, session.getUsername(), session.getApiKey());
-//            String artistUrl = artist.getImageURL(ImageSize.ORIGINAL);
+                if (track != null) {
+                    ImageSize[] imageSizes = ImageSize.values();
+                    for (int i = imageSizes.length - 1; i >= 0; i--) {
+                        remoteUri = track.getImageURL(imageSizes[i]);
+                        if (!TextUtils.isEmpty(remoteUri)) {
+                            localUri = AppUtils.downloadUrl(context, remoteUri);
+                            break;
+                        }
+                    }
+                }
+            }
+
+            // Artist image
+            if (localUri == null && !TextUtils.isEmpty(artistText)) {
+                Artist artist;
+                //String ar = !TextUtils.isEmpty(artistMbidText) ? artistMbidText : artistText;
+                if (session != null) {
+                    artist = Artist.getInfo(artistText, Locale.getDefault(), session.getUsername(), session.getApiKey());
+                } else {
+                    artist = Artist.getInfo(artistText, session.getApiKey());
+                }
+
+                if (artist != null) {
+                    ImageSize[] imageSizes = ImageSize.values();
+                    for (int i = imageSizes.length - 1; i >= 0; i--) {
+                        remoteUri = artist.getImageURL(imageSizes[i]);
+                        if (!TextUtils.isEmpty(remoteUri)) {
+                            localUri = AppUtils.downloadUrl(context, remoteUri);
+                            break;
+                        }
+                    }
+                }
+            }
 
             if (localUri == null)
                 return;
