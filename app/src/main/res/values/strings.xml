@@ -102,12 +102,12 @@
     <string name="pref_summary_now_playing_enabled">Notify playback start to Last.fm.</string>
     <string name="pref_title_scrobble_enabled">Scrobble Enabled</string>
     <string name="pref_summary_scrobble_enabled">Scrobble to Last.fm.</string>
+    <string name="pref_title_previous_media_enabled">Scrobble Same Media</string>
+    <string name="pref_summary_previous_media_enabled">Enable to scrobble the last time scrobbled media.</string>
     <string name="pref_title_event_get_property_operation">Property Get Event</string>
     <string name="pref_summary_event_get_property_operation">Select the event to get property data.</string>
     <string name="pref_title_event_get_album_art_operation">Album Art Get Event</string>
     <string name="pref_summary_event_get_album_art_operation">Select the event to get album art.</string>
-    <string name="pref_title_previous_media_enabled">Run Previous Media</string>
-    <string name="pref_summary_previous_media_enabled">Enable to run the event for the same media that has run the event already last time.</string>
     <string name="pref_title_unsent_max">Unsent Max</string>
     <string name="pref_summary_unsent_max">Set the max count of unsent data. Unlimited in the case of 0.</string>
     <string name="pref_title_post_success_message_show">Show Success Message</string>

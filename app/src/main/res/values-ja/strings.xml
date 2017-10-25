@@ -102,12 +102,12 @@
     <string name="pref_summary_now_playing_enabled">Last.fmに再生開始を通知します。</string>
     <string name="pref_title_scrobble_enabled">Scrobbleを実行</string>
     <string name="pref_summary_scrobble_enabled">Last.fmにScrobbleします。</string>
+    <string name="pref_title_previous_media_enabled">同一メディアをScrobble</string>
+    <string name="pref_summary_previous_media_enabled">前回Scrobble済みのメディアに対しても、Scrobbleを実行します。</string>
     <string name="pref_title_event_get_property_operation">プロパティ取得</string>
     <string name="pref_summary_event_get_property_operation">プロパティ情報を自動取得するイベントを選択します。</string>
     <string name="pref_title_event_get_album_art_operation">アルバムアート取得</string>
     <string name="pref_summary_event_get_album_art_operation">アルバムアートを自動取得するイベントを選択します。</string>
-    <string name="pref_title_previous_media_enabled">前回メディア実行</string>
-    <string name="pref_summary_previous_media_enabled">前回イベント実行済みの同一メディアに対しても、イベントを実行します。</string>
     <string name="pref_title_unsent_max">未送信データ上限</string>
     <string name="pref_summary_unsent_max">未送信データ保存件数の上限を設定します。0の場合は無制限となります。</string>
     <string name="pref_title_post_success_message_show">成功メッセージ表示</string>

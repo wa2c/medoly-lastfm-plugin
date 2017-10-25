@@ -43,14 +43,14 @@ public class PluginPostService extends AbstractPluginService {
         }
 
         try {
-            if (receivedClassName.equals(PluginReceivers.EventScrobbleReceiver.class.getName())) {
-                // Update Now Playing
+            if (receivedClassName.equals(PluginReceivers.EventNowPlayingReceiver.class.getName())) {
+                // Update Now Playing (event: OPERATION_PLAY_START)
                 if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_PLAY_START) && sharedPreferences.getBoolean(getString(R.string.prefkey_now_playing_enabled), true)) {
                     updateNowPlaying(session);
                 }
-            } else if (receivedClassName.equals(PluginReceivers.EventNowPlayingReceiver.class.getName())) {
-                // Scrobble
-                if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_PLAY_NOW) &&  sharedPreferences.getBoolean(getString(R.string.prefkey_now_playing_enabled), true)) {
+            } else if (receivedClassName.equals(PluginReceivers.EventScrobbleReceiver.class.getName())) {
+                // Scrobble (event: OPERATION_PLAY_NOW)
+                if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_PLAY_NOW) && sharedPreferences.getBoolean(getString(R.string.prefkey_scrobble_enabled), true)) {
                     scrobble(session);
                 }
             } else if (receivedClassName.equals(PluginReceivers.ExecuteLoveReceiver.class.getName())) {
