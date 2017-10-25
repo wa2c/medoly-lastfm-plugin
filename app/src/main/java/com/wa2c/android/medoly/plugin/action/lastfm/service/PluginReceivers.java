@@ -14,6 +14,7 @@ public class PluginReceivers {
         public void onReceive(Context context, Intent intent) {
             Intent serviceIntent = new Intent(intent);
             Class c = this.getClass();
+            serviceIntent.putExtra(AbstractPluginService.RECEIVED_CLASS_NAME, c.getName());
 
             if (c == EventScrobbleReceiver.class ||
                 c == EventNowPlayingReceiver.class ||
