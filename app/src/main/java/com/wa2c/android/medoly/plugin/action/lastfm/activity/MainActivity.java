@@ -70,7 +70,7 @@ public class MainActivity extends Activity {
                                 preference.edit().remove(getString(R.string.prefkey_auth_password)).apply();
                                 AppUtils.showToast(getApplicationContext(), R.string.message_auth_failure);
                             }
-                        } else if (which == DialogInterface.BUTTON_NEUTRAL) {
+                        } else if (which == DialogInterface.BUTTON_NEGATIVE) {
                             // クリア
                             preference.edit().remove(getString(R.string.prefkey_auth_username)).apply();
                             preference.edit().remove(getString(R.string.prefkey_auth_password)).apply();

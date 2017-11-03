@@ -19,6 +19,7 @@ import java.io.File;
 import de.umass.lastfm.Authenticator;
 import de.umass.lastfm.Caller;
 import de.umass.lastfm.Session;
+import de.umass.lastfm.cache.Cache;
 import de.umass.lastfm.cache.FileSystemCache;
 
 
@@ -91,7 +92,7 @@ public abstract class AbstractPluginService extends IntentService {
             receivedClassName = pluginIntent.getStringExtra(RECEIVED_CLASS_NAME);
 
             // Initialize last.fm library
-            Caller.getInstance().setCache(new FileSystemCache(new File(context.getExternalCacheDir(), "last.fm")));
+            try { Caller.getInstance().setCache(new FileSystemCache(new File(context.getExternalCacheDir(), "last.fm"))); } catch (Exception ignore) {}
 
             // Authenticate
             String username = sharedPreferences.getString(context.getString(R.string.prefkey_auth_username), "");
@@ -104,7 +105,6 @@ public abstract class AbstractPluginService extends IntentService {
             }
         } catch (Exception e) {
             Logger.e(e);
-            AppUtils.showToast(this, R.string.error_app);
         }
     }
 

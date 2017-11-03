@@ -47,7 +47,8 @@ public class PluginGetPropertyService extends AbstractPluginService {
                 sendResult(null);
             }
         } catch (Exception e) {
-            AppUtils.showToast(this, R.string.error_app);
+            Logger.e(e);
+            //AppUtils.showToast(this, R.string.error_app);
         }
     }
 

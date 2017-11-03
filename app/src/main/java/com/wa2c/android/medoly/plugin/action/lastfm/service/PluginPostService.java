@@ -61,7 +61,8 @@ public class PluginPostService extends AbstractPluginService {
                 unlove(session);
             }
         } catch (Exception e) {
-            AppUtils.showToast(this, R.string.error_app);
+            Logger.e(e);
+            //AppUtils.showToast(this, R.string.error_app);
         }
     }
 
@@ -79,13 +80,11 @@ public class PluginPostService extends AbstractPluginService {
 
         try {
             newData.setDuration((int)(Long.valueOf(propertyData.getFirst(MediaProperty.DURATION)) / 1000));
-        } catch (NumberFormatException | NullPointerException e) {
-            Logger.e(e);
+        } catch (NumberFormatException | NullPointerException ignore) {
         }
         try {
             newData.setTrackNumber(Integer.valueOf(propertyData.getFirst(MediaProperty.TRACK)));
-        } catch (NumberFormatException | NullPointerException e) {
-            Logger.e(e);
+        } catch (NumberFormatException | NullPointerException ignore) {
         }
         newData.setTimestamp((int) (System.currentTimeMillis() / 1000));
         return newData;

@@ -42,7 +42,8 @@ public class PluginRunService extends AbstractPluginService {
                 openLastfmPage(session);
             }
         } catch (Exception e) {
-            AppUtils.showToast(this, R.string.error_app);
+            Logger.e(e);
+            //AppUtils.showToast(this, R.string.error_app);
         }
     }
 

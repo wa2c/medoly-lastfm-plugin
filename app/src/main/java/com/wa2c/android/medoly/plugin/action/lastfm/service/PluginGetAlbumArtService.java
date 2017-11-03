@@ -54,7 +54,7 @@ public class PluginGetAlbumArtService extends AbstractPluginService {
             }
         } catch (Exception e) {
             Logger.e(e);
-            AppUtils.showToast(this, R.string.error_app);
+            //AppUtils.showToast(this, R.string.error_app);
         }
     }
 

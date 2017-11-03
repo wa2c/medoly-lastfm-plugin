@@ -10,7 +10,6 @@ import android.widget.EditText;
 
 import com.wa2c.android.medoly.plugin.action.lastfm.R;
 
-
 /**
  * 確認ダイアログを表示する。
  */
@@ -54,9 +53,9 @@ public class AuthDialogFragment extends AbstractDialogFragment {
         // Auth
         builder.setPositiveButton(R.string.label_dialog_auth_auth, clickListener);
         // Clear
-        builder.setNeutralButton(R.string.label_dialog_auth_clear, clickListener);
+        builder.setNegativeButton(R.string.label_dialog_auth_clear, clickListener);
         // Cancel
-        builder.setNegativeButton(android.R.string.cancel, clickListener);
+        builder.setNeutralButton(android.R.string.cancel, clickListener);
 
 
         return  builder.create();
