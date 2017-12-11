@@ -1,5 +1,6 @@
 package com.wa2c.android.medoly.plugin.action.lastfm.service;
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -11,7 +12,7 @@ public class PluginReceivers {
 
     public static abstract class AbstractPluginReceiver extends BroadcastReceiver {
         @Override
-        public void onReceive(Context context, Intent intent) {
+        public synchronized void onReceive(Context context, Intent intent) {
             Intent serviceIntent = new Intent(intent);
             Class c = this.getClass();
             serviceIntent.putExtra(AbstractPluginService.RECEIVED_CLASS_NAME, c.getName());

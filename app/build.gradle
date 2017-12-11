@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 25
-    buildToolsVersion '25.0.0'
+    buildToolsVersion '26.0.2'
 
     defaultConfig {
         applicationId "com.wa2c.android.medoly.plugin.action.lastfm"
@@ -41,5 +41,5 @@ dependencies {
     compile files('libs/lastfm-java-0.1.2-fix.jar')
 
     // https://mvnrepository.com/artifact/com.google.code.gson/gson
-    compile 'com.google.code.gson:gson:2.7'
+    compile 'com.google.code.gson:gson:2.8.1'
 }

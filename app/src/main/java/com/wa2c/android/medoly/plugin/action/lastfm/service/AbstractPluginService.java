@@ -115,9 +115,9 @@ public abstract class AbstractPluginService extends IntentService {
 
         sendResult(null);
 
-        context = null;
-        sharedPreferences = null;
-        pluginIntent = null;
+        //context = null;
+        //sharedPreferences = null;
+        //pluginIntent = null;
     }
 
     /**
