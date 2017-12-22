@@ -9,61 +9,46 @@ import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.os.Bundle
 import android.preference.PreferenceManager
-import android.widget.Toast
-
-import com.wa2c.android.medoly.plugin.action.lastfm.R
-
-import java.util.HashMap
+import java.util.*
 
 
 /**
- * ダイアログの抽象クラス。
+ * Abstract dialog class.
  */
 abstract class AbstractDialogFragment : DialogFragment() {
 
-    /** アクティビティ。  */
-    protected var context: Activity
-    /** 設定。  */
-    protected var preferences: SharedPreferences
+    companion object {
+        private val shownDialogMap = HashMap<String, DialogFragment>()
+    }
+//    /** Activity.  */
+//    protected lateinit var context: Activity
+    /** Shared preference  */
+    private lateinit var preferences: SharedPreferences
 
+    /** Click listener  */
+    var clickListener: DialogInterface.OnClickListener? = null
 
-    /** クリックのリスナ。  */
-    protected var clickListener: DialogInterface.OnClickListener? = null
 
 
     /***
-     * ダイアログを表示する。
-     * @param activity アクティビティ。
+     * Show dialog.
+     * @param activity A activity.
      */
-    fun show(activity: Activity?) {
-        if (activity == null) {
-            Toast.makeText(getActivity(), R.string.error_dialog_dismissed, Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        val key = this.javaClass.getName()
-        if (shownDialogMap.containsKey(key) && shownDialogMap[key] != null) {
-            shownDialogMap[key].dismiss()
-        }
+    fun show(activity: Activity) {
+        val key = this.javaClass.name
+        shownDialogMap[key]?.dismiss()
 
         super.show(activity.fragmentManager, key)
         shownDialogMap.put(key, this)
     }
 
     /**
-     * ダイアログを表示する。
-     * @param fragment フラグメント。
+     * Show dialog.
+     * @param fragment A fragment.
      */
-    fun show(fragment: Fragment?) {
-        if (fragment == null) {
-            Toast.makeText(activity, R.string.error_dialog_dismissed, Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        val key = this.javaClass.getName()
-        if (shownDialogMap.containsKey(key) && shownDialogMap[key] != null) {
-            shownDialogMap[key].dismiss()
-        }
+    fun show(fragment: Fragment) {
+        val key = this.javaClass.name
+        shownDialogMap[key]?.dismiss()
 
         super.show(fragment.fragmentManager, key)
         shownDialogMap.put(key, this)
@@ -71,87 +56,55 @@ abstract class AbstractDialogFragment : DialogFragment() {
 
 
     /**
-     * onCreateDialogイベント処理。
+     * On create dialog event.
      */
-    override fun onCreateDialog(savedInstanceState: Bundle): Dialog? {
-        super.onCreateDialog(savedInstanceState)
-
-        context = activity
-        preferences = PreferenceManager.getDefaultSharedPreferences(context)
-
-        return null
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog? {
+        preferences = PreferenceManager.getDefaultSharedPreferences(activity)
+        return super.onCreateDialog(savedInstanceState)
     }
 
     /**
-     * onConfigurationChangedイベント処理。
+     * On configuration changed event.
      */
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
-
-        val d = dialog
-        d?.cancel() // 回転等が発生した場合は閉じる
+        dialog?.cancel() // close on rotation
     }
 
     /**
-     * onStartイベント。
+     * On start event.
      */
     override fun onStart() {
         super.onStart()
     }
 
     /**
-     * onStopイベント処理。 c
+     * On stop event.
      */
     override fun onStop() {
         super.onStop()
-        val d = dialog
-        d?.cancel() // 回転等が発生した場合は閉じる
+        dialog?.cancel()
     }
 
     /**
-     * onDissmissイベント処理。 c
+     * On dismiss event.
      */
     override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
-
-        val key = this.javaClass.getName()
-        shownDialogMap.remove(key)
+        shownDialogMap.remove(this.javaClass.name)
     }
 
     /**
-     * クリックのリスナを設定する。
-     * @param listener 実行処理。
+     * On click action.
+     * @param dialog A dialog.
+     * @param which A clicked button.
+     * @param close True if dialog closing.
      */
-    fun setClickListener(listener: DialogInterface.OnClickListener) {
-        this.clickListener = listener
-    }
-
-    /**
-     * クリックイベントを実行する。
-     * @param dialog ダイアログ。
-     * @param which クリックされたボタン。
-     * @param close ダイアログを閉じる場合はtrue。
-     */
-    @JvmOverloads protected fun onClickButton(dialog: DialogInterface?, which: Int, close: Boolean = true) {
-        if (dialog != null && clickListener != null) {
-            clickListener!!.onClick(dialog, which)
-            if (close) dialog.dismiss()
-        } else {
-            if (dialog != null && close) dialog.cancel()
-        }
-    }
-
-    companion object {
-
-        /**
-         * ダイアログ状態管理。
-         */
-        private val shownDialogMap = HashMap<String, DialogFragment>()
+    @JvmOverloads
+    protected fun onClickButton(dialog: DialogInterface?, which: Int, close: Boolean = true) {
+        clickListener?.onClick(dialog, which)
+        if ( close)
+            dialog?.cancel()
     }
 
 }
-/**
- * クリックイベントを実行する。
- * @param dialog ダイアログ。
- * @param which クリックされたボタン。
- */

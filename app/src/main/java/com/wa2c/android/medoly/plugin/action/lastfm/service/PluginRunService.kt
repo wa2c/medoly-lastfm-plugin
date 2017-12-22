@@ -1,5 +1,6 @@
 package com.wa2c.android.medoly.plugin.action.lastfm.service
 
+import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
 import android.text.TextUtils
@@ -21,26 +22,23 @@ import de.umass.lastfm.Track
 /**
  * Constructor.
  */
-class PluginRunService : AbstractPluginService(PluginRunService::class.java!!.getSimpleName()) {
+class PluginRunService : AbstractPluginService(PluginRunService::class.java.simpleName) {
 
     override fun onHandleIntent(intent: Intent?) {
         super.onHandleIntent(intent)
-        if (pluginIntent == null)
-            return
         if (!pluginIntent.hasCategory(PluginTypeCategory.TYPE_RUN)) {
             return
         }
         try {
-            if (receivedClassName == PluginReceivers.ExecuteTrackPageReceiver::class.java!!.getName()) {
+            if (receivedClassName == PluginReceivers.ExecuteTrackPageReceiver::class.java.name) {
                 openTrackPage(session)
-            } else if (receivedClassName == PluginReceivers.ExecuteLastfmSiteReceiver::class.java!!.getName()) {
+            } else if (receivedClassName == PluginReceivers.ExecuteLastfmSiteReceiver::class.java.name) {
                 openLastfmPage(session)
             }
         } catch (e: Exception) {
             Logger.e(e)
             //AppUtils.showToast(this, R.string.error_app);
         }
-
     }
 
     /**
@@ -52,7 +50,7 @@ class PluginRunService : AbstractPluginService(PluginRunService::class.java!!.ge
             return
         val launchIntent = Intent(Intent.ACTION_VIEW, uri)
         launchIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-        context!!.startActivity(launchIntent)
+        context.startActivity(launchIntent)
     }
 
     /**
@@ -62,22 +60,23 @@ class PluginRunService : AbstractPluginService(PluginRunService::class.java!!.ge
     private fun openTrackPage(session: Session?) {
         var result: AbstractPluginService.CommandResult = AbstractPluginService.CommandResult.IGNORE
         try {
-            if (propertyData == null || propertyData.isMediaEmpty) {
+            if (propertyData == null || propertyData!!.isMediaEmpty) {
                 result = AbstractPluginService.CommandResult.NO_MEDIA
                 return
             }
 
-            val trackText = propertyData.getFirst(MediaProperty.TITLE)
-            val artistText = propertyData.getFirst(MediaProperty.ARTIST)
-            if (TextUtils.isEmpty(trackText) || TextUtils.isEmpty(artistText))
+            val trackText = propertyData?.getFirst(MediaProperty.TITLE)
+            val artistText = propertyData?.getFirst(MediaProperty.ARTIST)
+            if (TextUtils.isEmpty(trackText) || TextUtils.isEmpty(artistText)) {
                 result = AbstractPluginService.CommandResult.IGNORE
+                return
+            }
 
             // Get info
-            val track: Track
-            if (session != null) {
-                track = Track.getInfo(artistText, trackText, null, session.username, session.apiKey)
+            val track = if (session != null) {
+                Track.getInfo(artistText, trackText, null, session.username, session.apiKey)
             } else {
-                track = Track.getInfo(artistText, trackText, Token.getConsumerKey(context))
+                Track.getInfo(artistText, trackText, Token.getConsumerKey(context))
             }
 
             startPage(Uri.parse(track.url))
@@ -102,18 +101,15 @@ class PluginRunService : AbstractPluginService(PluginRunService::class.java!!.ge
         var result: AbstractPluginService.CommandResult = AbstractPluginService.CommandResult.IGNORE
         try {
             // Last.fm
-            val siteUri: Uri
-            if (session != null) {
-                // ユーザ認証済
-                siteUri = Uri.parse(context!!.getString(R.string.lastfm_url_user, session.username))
+            val siteUri = if (session != null) {
+                Uri.parse(context.getString(R.string.lastfm_url_user, session.username)) // Authorized
             } else {
-                // ユーザ未認証
-                siteUri = Uri.parse(context!!.getString(R.string.lastfm_url))
+                Uri.parse(context.getString(R.string.lastfm_url)) // Unauthorized
             }
 
             startPage(siteUri)
             result = AbstractPluginService.CommandResult.SUCCEEDED
-        } catch (e: android.content.ActivityNotFoundException) {
+        } catch (e: ActivityNotFoundException) {
             Logger.d(e)
             result = AbstractPluginService.CommandResult.FAILED
         } finally {

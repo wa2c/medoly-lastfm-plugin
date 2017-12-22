@@ -1,10 +1,8 @@
 package com.wa2c.android.medoly.plugin.action.lastfm.activity
 
-import android.app.ActionBar
 import android.app.Activity
 import android.os.Bundle
 import android.view.MenuItem
-
 import com.wa2c.android.medoly.plugin.action.lastfm.R
 
 
@@ -20,13 +18,10 @@ class SettingsActivity : Activity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
 
-        val actionBar = actionBar
-        if (actionBar != null) {
-            actionBar.setDisplayShowHomeEnabled(true)
-            actionBar.setDisplayHomeAsUpEnabled(true)
-            actionBar.setDisplayShowTitleEnabled(true)
-            actionBar.setTitle(R.string.title_activity_settings)
-        }
+        actionBar.setDisplayShowHomeEnabled(true)
+        actionBar.setDisplayHomeAsUpEnabled(true)
+        actionBar.setDisplayShowTitleEnabled(true)
+        actionBar.setTitle(R.string.title_activity_settings)
     }
 
     /**

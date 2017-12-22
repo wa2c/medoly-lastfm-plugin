@@ -2,51 +2,49 @@ package com.wa2c.android.medoly.plugin.action.lastfm.dialog
 
 import android.app.AlertDialog
 import android.app.Dialog
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.view.View
-import android.widget.EditText
-
 import com.wa2c.android.medoly.plugin.action.lastfm.R
 
+import kotlinx.android.synthetic.main.dialog_auth.*
+import kotlinx.android.synthetic.main.dialog_auth.view.*
+
 /**
- * 確認ダイアログを表示する。
+ * Authentication dialog.
  */
 class AuthDialogFragment : AbstractDialogFragment() {
 
-    private var dialogAuthUsernameEditText: EditText? = null
-    private var dialogAuthPasswordEditText: EditText? = null
-
-
     /**
-     * 入力ユーザ名を取得する。
-     * @return ユーザ名。
+     * Get input user name.
+     * @return Input user name.
      */
     val username: String
-        get() = dialogAuthUsernameEditText!!.text.toString()
+        get() = dialog?.dialogAuthUsernameEditText?.text.toString()
 
     /**
-     * 入力パスワードを取得する。
-     * @return パスワード。
+     * Get input user name.
+     * @return Input password.
      */
     val password: String
-        get() = dialogAuthPasswordEditText!!.text.toString()
+        get() = dialog?.dialogAuthPasswordEditText?.text.toString()
 
 
     /**
      * onCreateDialogイベント処理。
      */
-    override fun onCreateDialog(savedInstanceState: Bundle): Dialog? {
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog? {
+        super.onCreateDialog(savedInstanceState)
         val content = View.inflate(activity, R.layout.dialog_auth, null)
 
         val pref = PreferenceManager.getDefaultSharedPreferences(activity)
         val username = pref.getString(getString(R.string.prefkey_auth_username), "")
 
+
         // default
-        dialogAuthUsernameEditText = content.findViewById(R.id.dialogAuthUsernameEditText) as EditText
-        dialogAuthPasswordEditText = content.findViewById(R.id.dialogAuthPasswordEditText) as EditText
-        dialogAuthUsernameEditText!!.setText(username)
+//        dialogAuthUsernameEditText = content.findViewById(R.id.dialogAuthUsernameEditText) as EditText
+//        dialogAuthPasswordEditText = content.findViewById(R.id.dialogAuthPasswordEditText) as EditText
+        content.dialogAuthUsernameEditText.setText(username)
 
         // Dialog build
         val builder = AlertDialog.Builder(activity)
@@ -66,8 +64,7 @@ class AuthDialogFragment : AbstractDialogFragment() {
 
     companion object {
         /**
-         * ダイアログのインスタンスを作成する。
-         * @return ダイアログのインスタンス。
+         *Create dialog instance
          */
         fun newInstance(): AuthDialogFragment {
             val fragment = AuthDialogFragment()

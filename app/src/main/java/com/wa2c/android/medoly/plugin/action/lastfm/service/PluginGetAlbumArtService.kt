@@ -3,23 +3,16 @@ package com.wa2c.android.medoly.plugin.action.lastfm.service
 import android.content.Intent
 import android.net.Uri
 import android.text.TextUtils
-
-import com.wa2c.android.medoly.library.AlbumArtProperty
-import com.wa2c.android.medoly.library.MediaProperty
-import com.wa2c.android.medoly.library.PluginOperationCategory
-import com.wa2c.android.medoly.library.PluginTypeCategory
-import com.wa2c.android.medoly.library.PropertyData
+import com.wa2c.android.medoly.library.*
 import com.wa2c.android.medoly.plugin.action.lastfm.R
 import com.wa2c.android.medoly.plugin.action.lastfm.Token
 import com.wa2c.android.medoly.plugin.action.lastfm.util.AppUtils
 import com.wa2c.android.medoly.plugin.action.lastfm.util.Logger
-
-import java.util.Locale
-
 import de.umass.lastfm.Album
 import de.umass.lastfm.Artist
 import de.umass.lastfm.ImageSize
 import de.umass.lastfm.Track
+import java.util.*
 
 
 /**
@@ -28,18 +21,18 @@ import de.umass.lastfm.Track
 /**
  * Constructor.
  */
-class PluginGetAlbumArtService : AbstractPluginService(PluginGetAlbumArtService::class.java!!.getSimpleName()) {
+class PluginGetAlbumArtService : AbstractPluginService(PluginGetAlbumArtService::class.java.simpleName) {
 
     override fun onHandleIntent(intent: Intent?) {
         super.onHandleIntent(intent)
-        if (pluginIntent == null)
-            return
+
         if (!pluginIntent.hasCategory(PluginTypeCategory.TYPE_GET_ALBUM_ART)) {
             sendResult(null)
             return
         }
+
         try {
-            val operation = sharedPreferences!!.getString(getString(R.string.prefkey_event_get_album_art_operation), "")
+            val operation = sharedPreferences.getString(getString(R.string.prefkey_event_get_album_art_operation), "")
             if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_EXECUTE) ||
                     pluginIntent.hasCategory(PluginOperationCategory.OPERATION_MEDIA_OPEN) && PluginOperationCategory.OPERATION_MEDIA_OPEN.name == operation ||
                     pluginIntent.hasCategory(PluginOperationCategory.OPERATION_PLAY_START) && PluginOperationCategory.OPERATION_PLAY_START.name == operation) {
@@ -61,7 +54,7 @@ class PluginGetAlbumArtService : AbstractPluginService(PluginGetAlbumArtService:
         var result: AbstractPluginService.CommandResult = AbstractPluginService.CommandResult.IGNORE
         var resultProperty: PropertyData? = null
         try {
-            if (propertyData == null || propertyData.isMediaEmpty) {
+            if (propertyData.isMediaEmpty) {
                 result = AbstractPluginService.CommandResult.NO_MEDIA
                 return
             }
@@ -79,12 +72,10 @@ class PluginGetAlbumArtService : AbstractPluginService(PluginGetAlbumArtService:
 
             // Album image
             if (!TextUtils.isEmpty(artistText) && !TextUtils.isEmpty(albumText)) {
-                val album: Album?
-                //String al = !TextUtils.isEmpty(albumMbidText) ? albumMbidText : albumText;
-                if (session != null) {
-                    album = Album.getInfo(artistText, albumText, session.username, session.apiKey)
+                val album = if (session != null) {
+                    Album.getInfo(artistText, albumText, session?.username, session?.apiKey)
                 } else {
-                    album = Album.getInfo(artistText, albumText, Token.getConsumerKey(context))
+                    Album.getInfo(artistText, albumText, Token.getConsumerKey(context))
                 }
 
                 if (album != null) {
@@ -101,12 +92,10 @@ class PluginGetAlbumArtService : AbstractPluginService(PluginGetAlbumArtService:
 
             // Track image
             if (localUri == null && !TextUtils.isEmpty(artistText) && !TextUtils.isEmpty(trackText)) {
-                val track: Track?
-                //String tr = !TextUtils.isEmpty(trackMbidText) ? trackMbidText : trackText;
-                if (session != null) {
-                    track = Track.getInfo(artistText, trackText, Locale.getDefault(), session.username, session.apiKey)
+                val track = if (session != null) {
+                    Track.getInfo(artistText, trackText, Locale.getDefault(), session?.username, session?.apiKey)
                 } else {
-                    track = Track.getInfo(artistText, trackText, session.apiKey)
+                    Track.getInfo(artistText, trackText, session?.apiKey)
                 }
 
                 if (track != null) {
@@ -123,12 +112,10 @@ class PluginGetAlbumArtService : AbstractPluginService(PluginGetAlbumArtService:
 
             // Artist image
             if (localUri == null && !TextUtils.isEmpty(artistText)) {
-                val artist: Artist?
-                //String ar = !TextUtils.isEmpty(artistMbidText) ? artistMbidText : artistText;
-                if (session != null) {
-                    artist = Artist.getInfo(artistText, Locale.getDefault(), session.username, session.apiKey)
+                val artist = if (session != null) {
+                    Artist.getInfo(artistText, Locale.getDefault(), session?.username, session?.apiKey)
                 } else {
-                    artist = Artist.getInfo(artistText, session.apiKey)
+                    Artist.getInfo(artistText, session?.apiKey)
                 }
 
                 if (artist != null) {
@@ -161,10 +148,10 @@ class PluginGetAlbumArtService : AbstractPluginService(PluginGetAlbumArtService:
             if (result == AbstractPluginService.CommandResult.NO_MEDIA) {
                 AppUtils.showToast(context, R.string.message_no_media)
             } else if (result == AbstractPluginService.CommandResult.SUCCEEDED) {
-                if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_EXECUTE) || sharedPreferences!!.getBoolean(context!!.getString(R.string.prefkey_post_success_message_show), false))
+                if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_EXECUTE) || sharedPreferences.getBoolean(context.getString(R.string.prefkey_post_success_message_show), false))
                     AppUtils.showToast(context, R.string.message_get_data_success)
             } else if (result == AbstractPluginService.CommandResult.FAILED) {
-                if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_EXECUTE) || sharedPreferences!!.getBoolean(context!!.getString(R.string.prefkey_post_failure_message_show), true))
+                if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_EXECUTE) || sharedPreferences.getBoolean(context.getString(R.string.prefkey_post_failure_message_show), true))
                     AppUtils.showToast(context, R.string.message_get_data_failure)
             }
         }

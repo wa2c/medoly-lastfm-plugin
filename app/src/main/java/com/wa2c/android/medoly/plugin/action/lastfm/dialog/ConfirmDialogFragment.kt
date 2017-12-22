@@ -14,12 +14,12 @@ class ConfirmDialogFragment : AbstractDialogFragment() {
     /**
      * onCreateDialogイベント処理。
      */
-    override fun onCreateDialog(savedInstanceState: Bundle): Dialog? {
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         super.onCreateDialog(savedInstanceState)
         val args = arguments
 
         // ダイアログビルダ
-        val builder = AlertDialog.Builder(context)
+        val builder = AlertDialog.Builder(activity)
         builder.setTitle(args.getCharSequence(ARG_TITLE))
         builder.setMessage(args.getCharSequence(ARG_MESSAGE))
 

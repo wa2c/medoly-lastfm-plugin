@@ -2,14 +2,11 @@ package com.wa2c.android.medoly.plugin.action.lastfm.util
 
 import android.content.ContentResolver
 import android.content.Context
-import android.content.SharedPreferences
 import android.net.Uri
 import android.preference.PreferenceManager
 import android.support.v4.content.FileProvider
-
 import com.google.gson.Gson
 import com.wa2c.android.medoly.plugin.action.lastfm.BuildConfig
-
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -53,18 +50,17 @@ object AppUtils {
      * @return succeeded / failed
      */
     fun saveObject(context: Context, prefKey: String, saveObject: Any): Boolean {
-        try {
+        return try {
             val gson = Gson()
             val json = gson.toJson(saveObject)
 
             val pref = PreferenceManager.getDefaultSharedPreferences(context)
             pref.edit().putString(prefKey, json).apply()
-            return true
+            true
         } catch (e: Exception) {
             Logger.e(e)
-            return false
+            false
         }
-
     }
 
     /**
@@ -74,20 +70,34 @@ object AppUtils {
      * @param clazz Object class.
      * @return Loaded object. null as failed.
      */
-    fun <T> loadObject(context: Context, prefKey: String, clazz: Class<T>): T? {
-        try {
+//    fun <T> loadObject(context: Context, prefKey: String, clazz: Class<T>): T? {
+//        return try {
+//            val pref = PreferenceManager.getDefaultSharedPreferences(context)
+//            val json = pref.getString(prefKey, "")
+//
+//            val gson = Gson()
+//
+//            gson.fromJson(json, clazz)
+//        } catch (e: Exception) {
+//            Logger.e(e)
+//            null
+//        }
+//    }
+    inline fun <reified T> loadObject(context: Context, prefKey: String): T? {
+        return try {
             val pref = PreferenceManager.getDefaultSharedPreferences(context)
             val json = pref.getString(prefKey, "")
 
             val gson = Gson()
-
-            return gson.fromJson(json, clazz)
+            gson.fromJson(json, T::class.java)
         } catch (e: Exception) {
             Logger.e(e)
-            return null
+            null
         }
 
+
     }
+
 
     /**
      * Download URI data.
@@ -113,10 +123,7 @@ object AppUtils {
             } else {
                 // Delete all files
                 val files = sharedDir.listFiles()
-                for (f in files) {
-                    if (f.isFile)
-                        f.delete()
-                }
+                files.filter { it.isFile }.forEach { it.delete() }
             }
 
             // InputStream

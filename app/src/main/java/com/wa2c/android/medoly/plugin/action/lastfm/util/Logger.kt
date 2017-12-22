@@ -33,18 +33,18 @@ object Logger {
      * @param msg message.
      */
     fun e(msg: Any) {
-        var msg = msg
+        var message = msg
         if (!BuildConfig.DEBUG) return
 
-        if (msg is Exception) {
+        if (message is Exception) {
             val w = StringWriter()
             val pw = PrintWriter(w)
-            msg.printStackTrace(pw)
+            message.printStackTrace(pw)
             pw.flush()
-            msg = w.toString()
+            message = w.toString()
         }
 
-        Log.e(TAG, msg.toString())
+        Log.e(TAG, message.toString())
     }
 
     /**

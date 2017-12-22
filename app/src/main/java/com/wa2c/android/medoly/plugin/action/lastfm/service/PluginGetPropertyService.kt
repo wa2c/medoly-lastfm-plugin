@@ -2,17 +2,11 @@ package com.wa2c.android.medoly.plugin.action.lastfm.service
 
 import android.content.Intent
 import android.text.TextUtils
-
-import com.wa2c.android.medoly.library.ExtraData
-import com.wa2c.android.medoly.library.MediaProperty
-import com.wa2c.android.medoly.library.PluginOperationCategory
-import com.wa2c.android.medoly.library.PluginTypeCategory
-import com.wa2c.android.medoly.library.PropertyData
+import com.wa2c.android.medoly.library.*
 import com.wa2c.android.medoly.plugin.action.lastfm.R
 import com.wa2c.android.medoly.plugin.action.lastfm.Token
 import com.wa2c.android.medoly.plugin.action.lastfm.util.AppUtils
 import com.wa2c.android.medoly.plugin.action.lastfm.util.Logger
-
 import de.umass.lastfm.Track
 
 
@@ -22,19 +16,18 @@ import de.umass.lastfm.Track
 /**
  * Constructor.
  */
-class PluginGetPropertyService : AbstractPluginService(PluginGetPropertyService::class.java!!.getSimpleName()) {
+class PluginGetPropertyService : AbstractPluginService(PluginGetPropertyService::class.java.simpleName) {
 
     override fun onHandleIntent(intent: Intent?) {
         super.onHandleIntent(intent)
-        if (pluginIntent == null)
-            return
+
         if (!pluginIntent.hasCategory(PluginTypeCategory.TYPE_GET_PROPERTY)) {
             sendResult(null)
             return
         }
 
         try {
-            val operation = sharedPreferences!!.getString(getString(R.string.prefkey_event_get_property_operation), "")
+            val operation = sharedPreferences.getString(getString(R.string.prefkey_event_get_property_operation), "")
             if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_EXECUTE) ||
                     pluginIntent.hasCategory(PluginOperationCategory.OPERATION_MEDIA_OPEN) && PluginOperationCategory.OPERATION_MEDIA_OPEN.name == operation ||
                     pluginIntent.hasCategory(PluginOperationCategory.OPERATION_PLAY_START) && PluginOperationCategory.OPERATION_PLAY_START.name == operation) {
@@ -57,7 +50,7 @@ class PluginGetPropertyService : AbstractPluginService(PluginGetPropertyService:
         var resultProperty: PropertyData? = null
         var resultExtra: ExtraData? = null
         try {
-            if (propertyData == null || propertyData.isMediaEmpty) {
+            if (propertyData.isMediaEmpty) {
                 result = AbstractPluginService.CommandResult.NO_MEDIA
                 return
             }
@@ -70,7 +63,7 @@ class PluginGetPropertyService : AbstractPluginService(PluginGetPropertyService:
             // Get info
             val track: Track
             if (session != null) {
-                track = Track.getInfo(artistText, trackText, null, session.username, session.apiKey)
+                track = Track.getInfo(artistText, trackText, null, session?.username, session?.apiKey)
             } else {
                 track = Track.getInfo(artistText, trackText, Token.getConsumerKey(context))
             }
@@ -104,10 +97,10 @@ class PluginGetPropertyService : AbstractPluginService(PluginGetPropertyService:
             if (result == AbstractPluginService.CommandResult.NO_MEDIA) {
                 AppUtils.showToast(context, R.string.message_no_media)
             } else if (result == AbstractPluginService.CommandResult.SUCCEEDED) {
-                if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_EXECUTE) || sharedPreferences!!.getBoolean(context!!.getString(R.string.prefkey_post_success_message_show), false))
+                if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_EXECUTE) || sharedPreferences.getBoolean(context.getString(R.string.prefkey_post_success_message_show), false))
                     AppUtils.showToast(context, R.string.message_get_data_success)
             } else if (result == AbstractPluginService.CommandResult.FAILED) {
-                if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_EXECUTE) || sharedPreferences!!.getBoolean(context!!.getString(R.string.prefkey_post_failure_message_show), true))
+                if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_EXECUTE) || sharedPreferences.getBoolean(context.getString(R.string.prefkey_post_failure_message_show), true))
                     AppUtils.showToast(context, R.string.message_get_data_failure)
             }
         }
