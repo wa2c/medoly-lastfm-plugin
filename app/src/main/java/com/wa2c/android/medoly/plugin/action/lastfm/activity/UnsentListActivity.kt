@@ -20,6 +20,9 @@ import de.umass.lastfm.scrobble.ScrobbleData
 import java.util.*
 
 
+/**
+ * Unsent list activity.
+ */
 class UnsentListActivity : Activity() {
 
     /** A preference.  */
@@ -174,37 +177,37 @@ class UnsentListActivity : Activity() {
                 // ビュー参照
                 holder = ListItemViewHolder()
 
-                holder.SelectedCheckBox = view!!.findViewById(R.id.unsentSelectedCheckBox) as CheckBox
-                holder.TitleTextView = view.findViewById(R.id.unsentTitleTextView) as TextView
-                holder.ArtistTextView = view.findViewById(R.id.unsentArtistTextView) as TextView
-                holder.TimeTextView = view.findViewById(R.id.unsentTimeTextView) as TextView
+                holder.selectedCheckBox = view.findViewById(R.id.unsentSelectedCheckBox) as CheckBox
+                holder.titleTextView = view.findViewById(R.id.unsentTitleTextView) as TextView
+                holder.artistTextView = view.findViewById(R.id.unsentArtistTextView) as TextView
+                holder.timeTextView = view.findViewById(R.id.unsentTimeTextView) as TextView
                 view.tag = holder
             } else {
                 holder = view.tag as ListItemViewHolder
             }
 
             // イベント更新
-            view.setOnClickListener { v -> (parent as ListView).performItemClick(v, getPosition(item), v.id.toLong()) }
+            view!!.setOnClickListener { v -> (parent as ListView).performItemClick(v, getPosition(item), v.id.toLong()) }
             val tempView = view
-            holder.SelectedCheckBox!!.setOnTouchListener { _, event -> tempView.onTouchEvent(event) }
+            holder.selectedCheckBox!!.setOnTouchListener { _, event -> tempView.onTouchEvent(event) }
 
             // チェック状態更新
-            holder.SelectedCheckBox!!.isChecked = checkedSet.contains(position)
+            holder.selectedCheckBox!!.isChecked = checkedSet.contains(position)
             // データ更新
             val time = item!!.timestamp
             if (time > 0) {
                 if (!TextUtils.isEmpty(item.track))
-                    holder.TitleTextView!!.text = item.track
+                    holder.titleTextView!!.text = item.track
                 if (!TextUtils.isEmpty(item.artist))
-                    holder.ArtistTextView!!.text = item.artist
+                    holder.artistTextView!!.text = item.artist
                 if (item.timestamp > 0)
-                    holder.TimeTextView!!.text = context.getString(R.string.label_unsent_played_time, DateUtils.formatDateTime(context, java.lang.Long.valueOf(item.timestamp.toLong())!! * 1000, DateUtils.FORMAT_SHOW_TIME or DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_SHOW_YEAR or DateUtils.FORMAT_ABBREV_ALL))
+                    holder.timeTextView!!.text = context.getString(R.string.label_unsent_played_time, DateUtils.formatDateTime(context, java.lang.Long.valueOf(item.timestamp.toLong())!! * 1000, DateUtils.FORMAT_SHOW_TIME or DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_SHOW_YEAR or DateUtils.FORMAT_ABBREV_ALL))
                 view.isClickable = true
             } else {
-                holder.TitleTextView!!.text = item.track
-                holder.ArtistTextView!!.text = null
-                holder.TimeTextView!!.text = null
-                holder.SelectedCheckBox!!.visibility = View.INVISIBLE
+                holder.titleTextView!!.text = item.track
+                holder.artistTextView!!.text = null
+                holder.timeTextView!!.text = null
+                holder.selectedCheckBox!!.visibility = View.INVISIBLE
                 view.isClickable = false
             }
 
@@ -213,10 +216,10 @@ class UnsentListActivity : Activity() {
 
         /** リスト項目のビュー情報を保持するHolder。  */
         internal class ListItemViewHolder {
-            var SelectedCheckBox: CheckBox? = null
-            var TitleTextView: TextView? = null
-            var ArtistTextView: TextView? = null
-            var TimeTextView: TextView? = null
+            var selectedCheckBox: CheckBox? = null
+            var titleTextView: TextView? = null
+            var artistTextView: TextView? = null
+            var timeTextView: TextView? = null
         }
 
     }

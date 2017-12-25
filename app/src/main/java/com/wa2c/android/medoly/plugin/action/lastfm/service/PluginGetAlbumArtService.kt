@@ -63,9 +63,6 @@ class PluginGetAlbumArtService : AbstractPluginService(PluginGetAlbumArtService:
             val trackText = propertyData.getFirst(MediaProperty.TITLE)
             val albumText = propertyData.getFirst(MediaProperty.ALBUM)
             val artistText = propertyData.getFirst(MediaProperty.ARTIST)
-            //            String trackMbidText = propertyData.getFirst(MediaProperty.MUSICBRAINZ_TRACK_ID);
-            //            String albumMbidText = propertyData.getFirst(MediaProperty.MUSICBRAINZ_RELEASE_ID);
-            //            String artistMbidText = propertyData.getFirst(MediaProperty.MUSICBRAINZ_ARTIST_ID);
 
             var remoteUri: String? = null
             var localUri: Uri? = null

@@ -60,7 +60,7 @@ class PluginRunService : AbstractPluginService(PluginRunService::class.java.simp
     private fun openTrackPage(session: Session?) {
         var result: AbstractPluginService.CommandResult = AbstractPluginService.CommandResult.IGNORE
         try {
-            if (propertyData == null || propertyData!!.isMediaEmpty) {
+            if (propertyData == null || propertyData.isMediaEmpty) {
                 result = AbstractPluginService.CommandResult.NO_MEDIA
                 return
             }

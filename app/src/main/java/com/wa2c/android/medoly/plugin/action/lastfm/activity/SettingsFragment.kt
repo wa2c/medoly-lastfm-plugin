@@ -14,7 +14,7 @@ import java.util.*
 
 
 /**
- * Settings Activity
+ * Settings fragment
  */
 class SettingsFragment : PreferenceFragment() {
 

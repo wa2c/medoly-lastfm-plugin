@@ -7,10 +7,7 @@ import android.preference.PreferenceManager
 import android.support.v4.content.FileProvider
 import com.google.gson.Gson
 import com.wa2c.android.medoly.plugin.action.lastfm.BuildConfig
-import java.io.File
-import java.io.FileOutputStream
-import java.io.IOException
-import java.io.InputStream
+import java.io.*
 import java.net.HttpURLConnection
 import java.net.URL
 
@@ -67,22 +64,8 @@ object AppUtils {
      * Load object from shared preference.
      * @param context Context.
      * @param prefKey Preference key.
-     * @param clazz Object class.
      * @return Loaded object. null as failed.
      */
-//    fun <T> loadObject(context: Context, prefKey: String, clazz: Class<T>): T? {
-//        return try {
-//            val pref = PreferenceManager.getDefaultSharedPreferences(context)
-//            val json = pref.getString(prefKey, "")
-//
-//            val gson = Gson()
-//
-//            gson.fromJson(json, clazz)
-//        } catch (e: Exception) {
-//            Logger.e(e)
-//            null
-//        }
-//    }
     inline fun <reified T> loadObject(context: Context, prefKey: String): T? {
         return try {
             val pref = PreferenceManager.getDefaultSharedPreferences(context)
@@ -106,9 +89,7 @@ object AppUtils {
      * @return Shared URI.
      */
     fun downloadUrl(context: Context, downloadUrl: String): Uri? {
-        var inputStream: InputStream? = null
-        var outputStream: FileOutputStream? = null
-        val providerUri: Uri
+        var providerUri: Uri? = null
         try {
             val url = URL(downloadUrl)
             if (ContentResolver.SCHEME_FILE == url.protocol || ContentResolver.SCHEME_CONTENT == url.protocol) {
@@ -134,43 +115,27 @@ object AppUtils {
             if (status != HttpURLConnection.HTTP_OK) {
                 return null
             }
-            inputStream = con.inputStream
 
-            // OutputStream
             val pathElements = url.path.split("/".toRegex()).dropLastWhile({ it.isEmpty() }).toTypedArray()
             val saveFileName = pathElements[pathElements.size - 1]
             val sharedFile = File(sharedDir, saveFileName)
-            outputStream = FileOutputStream(sharedFile)
 
-            // Stream copy
-            val buffer = ByteArray(16384)
-            while (true) {
-                val len = inputStream!!.read(buffer)
-                if (len < 0) {
-                    break
+            BufferedInputStream(con.inputStream).use { input ->
+                BufferedOutputStream(sharedFile.outputStream()).use { output ->
+                    val buffer = ByteArray(16384)
+                    while (true) {
+                        val len = input.read(buffer)
+                        if (len < 0) {
+                            break
+                        }
+                        output.write(buffer, 0, len)
+                    }
+                    output.flush()
+                    providerUri = FileProvider.getUriForFile(context, PROVIDER_AUTHORITIES, sharedFile)
                 }
-                outputStream.write(buffer, 0, len)
             }
-            outputStream.flush()
-
-            providerUri = FileProvider.getUriForFile(context, PROVIDER_AUTHORITIES, sharedFile)
         } catch (e: Exception) {
             return null
-        } finally {
-            if (inputStream != null)
-                try {
-                    inputStream.close()
-                } catch (e: IOException) {
-                    e.printStackTrace()
-                }
-
-            if (outputStream != null)
-                try {
-                    outputStream.close()
-                } catch (e: IOException) {
-                    e.printStackTrace()
-                }
-
         }
 
         // URI

@@ -11,7 +11,6 @@ import android.text.util.Linkify
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
-import android.widget.LinearLayout
 import android.widget.TextView
 import com.wa2c.android.medoly.plugin.action.lastfm.R
 import com.wa2c.android.medoly.plugin.action.lastfm.util.Logger
@@ -63,7 +62,7 @@ class AboutDialogFragment : AbstractDialogFragment() {
                 dialogAboutGooglePlayTextView,
                 Pattern.compile(getString(R.string.label_dialog_about_link)),
                 getString(R.string.app_market_web), null,
-                Linkify.TransformFilter { _, url -> getString(R.string.app_market_web) })
+                Linkify.TransformFilter { _, _ -> getString(R.string.app_market_web) })
 
 
         // Library
