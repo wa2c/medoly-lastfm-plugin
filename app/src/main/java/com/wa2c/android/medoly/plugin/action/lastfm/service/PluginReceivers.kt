@@ -3,6 +3,7 @@ package com.wa2c.android.medoly.plugin.action.lastfm.service
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 
 /**
  * Plugin receiver classes.
@@ -29,7 +30,11 @@ class PluginReceivers {
             }
 
             context.stopService(serviceIntent)
-            context.startService(serviceIntent)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                context.startForegroundService(serviceIntent)
+            } else {
+                context.startService(serviceIntent)
+            }
         }
     }
 

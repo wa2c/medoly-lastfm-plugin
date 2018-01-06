@@ -68,13 +68,13 @@ class PluginPostService : AbstractPluginService(PluginPostService::class.java.si
         newData.album = propertyData.getFirst(MediaProperty.ALBUM)
 
         try {
-            newData.duration = (propertyData.getFirst(MediaProperty.DURATION).toLong() / 1000).toInt()
+            newData.duration = (propertyData.getFirst(MediaProperty.DURATION)?.toLong() ?: 0 / 1000).toInt()
         } catch (ignore: NumberFormatException) {
         } catch (ignore: NullPointerException) {
         }
 
         try {
-            newData.trackNumber = propertyData.getFirst(MediaProperty.TRACK).toInt()
+            newData.trackNumber = propertyData.getFirst(MediaProperty.TRACK)?.toInt() ?: 0
         } catch (ignore: NumberFormatException) {
         } catch (ignore: NullPointerException) {
         }

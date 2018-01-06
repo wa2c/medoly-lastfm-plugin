@@ -60,13 +60,13 @@ class PluginRunService : AbstractPluginService(PluginRunService::class.java.simp
     private fun openTrackPage(session: Session?) {
         var result: AbstractPluginService.CommandResult = AbstractPluginService.CommandResult.IGNORE
         try {
-            if (propertyData == null || propertyData.isMediaEmpty) {
+            if (propertyData.isMediaEmpty) {
                 result = AbstractPluginService.CommandResult.NO_MEDIA
                 return
             }
 
-            val trackText = propertyData?.getFirst(MediaProperty.TITLE)
-            val artistText = propertyData?.getFirst(MediaProperty.ARTIST)
+            val trackText = propertyData.getFirst(MediaProperty.TITLE)
+            val artistText = propertyData.getFirst(MediaProperty.ARTIST)
             if (TextUtils.isEmpty(trackText) || TextUtils.isEmpty(artistText)) {
                 result = AbstractPluginService.CommandResult.IGNORE
                 return

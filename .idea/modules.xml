@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/MedolyLastfmScrobblerPlugin.iml" filepath="$PROJECT_DIR$/MedolyLastfmScrobblerPlugin.iml" />
+      <module fileurl="file://$PROJECT_DIR$/MedolyLastfmPlugin.iml" filepath="$PROJECT_DIR$/MedolyLastfmPlugin.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>
