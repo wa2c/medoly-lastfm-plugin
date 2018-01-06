@@ -14,16 +14,13 @@ import android.view.View
 import android.widget.TextView
 import com.wa2c.android.medoly.plugin.action.lastfm.R
 import com.wa2c.android.medoly.plugin.action.lastfm.util.Logger
-import java.util.regex.Pattern
-
 import kotlinx.android.synthetic.main.dialog_about.*
-
+import java.util.regex.Pattern
 
 /**
  * About dialog.
  */
 class AboutDialogFragment : AbstractDialogFragment() {
-
 
     /**
      * onCreateDialog

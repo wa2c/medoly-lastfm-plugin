@@ -6,8 +6,19 @@ import android.net.Uri
 import android.preference.PreferenceManager
 import android.support.v4.content.FileProvider
 import com.google.gson.Gson
+import com.wa2c.android.medoly.library.ExtraData
+import com.wa2c.android.medoly.library.MediaPluginIntent
+import com.wa2c.android.medoly.library.PropertyData
 import com.wa2c.android.medoly.plugin.action.lastfm.BuildConfig
-import java.io.*
+import com.wa2c.android.medoly.plugin.action.lastfm.R
+import com.wa2c.android.medoly.plugin.action.lastfm.Token
+import de.umass.lastfm.Authenticator
+import de.umass.lastfm.Caller
+import de.umass.lastfm.Session
+import de.umass.lastfm.cache.FileSystemCache
+import java.io.BufferedInputStream
+import java.io.BufferedOutputStream
+import java.io.File
 import java.net.HttpURLConnection
 import java.net.URL
 
@@ -16,7 +27,6 @@ import java.net.URL
  * App utilities.
  */
 object AppUtils {
-
 
     private val SHARED_DIR_NAME = "download"
     private val PROVIDER_AUTHORITIES = BuildConfig.APPLICATION_ID + ".fileprovider"
@@ -83,6 +93,25 @@ object AppUtils {
 
 
     /**
+     * Create last.fm session
+     */
+    fun createSession(context: Context): Session? {
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+
+        // Initialize last.fm library
+        try {
+            Caller.getInstance().cache = FileSystemCache(File(context.externalCacheDir, "last.fm"))
+        } catch (ignore: Exception) {
+        }
+
+        // Authenticate
+        val username = sharedPreferences.getString(context.getString(R.string.prefkey_auth_username), "")
+        val password = sharedPreferences.getString(context.getString(R.string.prefkey_auth_password), "")
+        return Authenticator.getMobileSession(username, password!!, Token.getConsumerKey(context), Token.getConsumerSecret(context))
+    }
+
+
+    /**
      * Download URI data.
      * @param context A context.
      * @param downloadUrl Download URI.
@@ -140,5 +169,18 @@ object AppUtils {
 
         // URI
         return providerUri
+    }
+
+    /**
+     * Send result.
+     * @param context A context.
+     * @param pluginIntent A plugin intent.
+     * @param resultProperty A result property data.
+     * @param resultExtra A result extra data.
+     */
+    fun sendResult(context: Context, pluginIntent: MediaPluginIntent, resultProperty: PropertyData? = null, resultExtra: ExtraData? = null) {
+        if (context == null || pluginIntent == null)
+            return
+        context.sendBroadcast(pluginIntent.createResultIntent(resultProperty, resultExtra))
     }
 }

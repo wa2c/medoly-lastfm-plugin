@@ -31,7 +31,7 @@ class AuthDialogFragment : AbstractDialogFragment() {
 
 
     /**
-     * onCreateDialogイベント処理。
+     * onCreateDialog event.
      */
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog? {
         super.onCreateDialog(savedInstanceState)
@@ -40,10 +40,7 @@ class AuthDialogFragment : AbstractDialogFragment() {
         val pref = PreferenceManager.getDefaultSharedPreferences(activity)
         val username = pref.getString(getString(R.string.prefkey_auth_username), "")
 
-
         // default
-//        dialogAuthUsernameEditText = content.findViewById(R.id.dialogAuthUsernameEditText) as EditText
-//        dialogAuthPasswordEditText = content.findViewById(R.id.dialogAuthPasswordEditText) as EditText
         content.dialogAuthUsernameEditText.setText(username)
 
         // Dialog build
@@ -64,7 +61,7 @@ class AuthDialogFragment : AbstractDialogFragment() {
 
     companion object {
         /**
-         *Create dialog instance
+         * Create dialog instance
          */
         fun newInstance(): AuthDialogFragment {
             val fragment = AuthDialogFragment()

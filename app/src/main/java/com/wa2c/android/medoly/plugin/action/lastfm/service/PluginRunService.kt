@@ -3,15 +3,11 @@ package com.wa2c.android.medoly.plugin.action.lastfm.service
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
-import android.text.TextUtils
-
 import com.wa2c.android.medoly.library.MediaProperty
-import com.wa2c.android.medoly.library.PluginTypeCategory
 import com.wa2c.android.medoly.plugin.action.lastfm.R
 import com.wa2c.android.medoly.plugin.action.lastfm.Token
 import com.wa2c.android.medoly.plugin.action.lastfm.util.AppUtils
 import com.wa2c.android.medoly.plugin.action.lastfm.util.Logger
-
 import de.umass.lastfm.Session
 import de.umass.lastfm.Track
 
@@ -19,16 +15,10 @@ import de.umass.lastfm.Track
 /**
  * Intent service.
  */
-/**
- * Constructor.
- */
 class PluginRunService : AbstractPluginService(PluginRunService::class.java.simpleName) {
 
     override fun onHandleIntent(intent: Intent?) {
         super.onHandleIntent(intent)
-        if (!pluginIntent.hasCategory(PluginTypeCategory.TYPE_RUN)) {
-            return
-        }
         try {
             if (receivedClassName == PluginReceivers.ExecuteTrackPageReceiver::class.java.name) {
                 openTrackPage(session)
@@ -60,19 +50,8 @@ class PluginRunService : AbstractPluginService(PluginRunService::class.java.simp
     private fun openTrackPage(session: Session?) {
         var result: AbstractPluginService.CommandResult = AbstractPluginService.CommandResult.IGNORE
         try {
-            if (propertyData.isMediaEmpty) {
-                result = AbstractPluginService.CommandResult.NO_MEDIA
-                return
-            }
-
             val trackText = propertyData.getFirst(MediaProperty.TITLE)
             val artistText = propertyData.getFirst(MediaProperty.ARTIST)
-            if (TextUtils.isEmpty(trackText) || TextUtils.isEmpty(artistText)) {
-                result = AbstractPluginService.CommandResult.IGNORE
-                return
-            }
-
-            // Get info
             val track = if (session != null) {
                 Track.getInfo(artistText, trackText, null, session.username, session.apiKey)
             } else {
@@ -85,9 +64,7 @@ class PluginRunService : AbstractPluginService(PluginRunService::class.java.simp
             Logger.e(e)
             result = AbstractPluginService.CommandResult.FAILED
         } finally {
-            if (result == AbstractPluginService.CommandResult.NO_MEDIA) {
-                AppUtils.showToast(context, R.string.message_no_media)
-            } else if (result == AbstractPluginService.CommandResult.FAILED) {
+            if (result == AbstractPluginService.CommandResult.FAILED) {
                 AppUtils.showToast(context, R.string.message_page_failure)
             }
         }

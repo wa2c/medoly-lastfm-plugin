@@ -11,7 +11,6 @@ import android.os.Bundle
 import android.preference.PreferenceManager
 import java.util.*
 
-
 /**
  * Abstract dialog class.
  */
@@ -20,8 +19,7 @@ abstract class AbstractDialogFragment : DialogFragment() {
     companion object {
         private val shownDialogMap = HashMap<String, DialogFragment>()
     }
-//    /** Activity.  */
-//    protected lateinit var context: Activity
+
     /** Shared preference  */
     private lateinit var preferences: SharedPreferences
 

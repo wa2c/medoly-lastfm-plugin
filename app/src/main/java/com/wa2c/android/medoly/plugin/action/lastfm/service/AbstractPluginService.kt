@@ -3,6 +3,7 @@ package com.wa2c.android.medoly.plugin.action.lastfm.service
 import android.annotation.SuppressLint
 import android.app.IntentService
 import android.app.Notification
+import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
@@ -14,15 +15,13 @@ import com.wa2c.android.medoly.library.MediaPluginIntent
 import com.wa2c.android.medoly.library.PropertyData
 import com.wa2c.android.medoly.plugin.action.lastfm.R
 import com.wa2c.android.medoly.plugin.action.lastfm.Token
+import com.wa2c.android.medoly.plugin.action.lastfm.util.AppUtils
 import com.wa2c.android.medoly.plugin.action.lastfm.util.Logger
 import de.umass.lastfm.Authenticator
 import de.umass.lastfm.Caller
 import de.umass.lastfm.Session
 import de.umass.lastfm.cache.FileSystemCache
 import java.io.File
-import android.app.NotificationChannel
-
-
 
 
 /**
@@ -140,10 +139,9 @@ abstract class AbstractPluginService(name: String) : IntentService(name) {
      */
     @JvmOverloads protected fun sendResult(resultProperty: PropertyData?, resultExtra: ExtraData? = null) {
         if (!resultSent && (this is PluginGetPropertyService || this is PluginGetAlbumArtService)) {
-            sendBroadcast(pluginIntent.createResultIntent(resultProperty, resultExtra))
+            AppUtils.sendResult(this, pluginIntent, resultProperty, resultExtra)
             resultSent = true
         }
     }
-
 
 }

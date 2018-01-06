@@ -6,39 +6,38 @@ import android.os.Bundle
 import android.text.TextUtils
 
 /**
- * 確認ダイアログを表示する。
+ * Confirmation dialog
  */
 class ConfirmDialogFragment : AbstractDialogFragment() {
 
-
     /**
-     * onCreateDialogイベント処理。
+     * onCreateDialog
      */
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         super.onCreateDialog(savedInstanceState)
         val args = arguments
 
-        // ダイアログビルダ
+        // dialog build
         val builder = AlertDialog.Builder(activity)
         builder.setTitle(args.getCharSequence(ARG_TITLE))
         builder.setMessage(args.getCharSequence(ARG_MESSAGE))
 
-        // ボタン
+        // button
         if (args.getBoolean(ARG_IS_BUTTON_DEFAULT)) {
             builder.setPositiveButton(android.R.string.ok, clickListener)
             builder.setNeutralButton(android.R.string.cancel, clickListener)
         } else {
-            // Positiveボタン
+            // Positive button
             val positive = args.getString(ARG_POSITIVE_BUTTON)
             if (!TextUtils.isEmpty(positive)) {
                 builder.setPositiveButton(positive, clickListener)
             }
-            // Neutralボタン
+            // Neutral button
             val neutral = args.getString(ARG_NEUTRAL_BUTTON)
             if (!TextUtils.isEmpty(neutral)) {
                 builder.setNeutralButton(neutral, clickListener)
             }
-            // Negativeボタン
+            // Negative button
             val negative = args.getString(ARG_NEGATIVE_BUTTON)
             if (!TextUtils.isEmpty(negative)) {
                 builder.setNegativeButton(negative, clickListener)
@@ -50,26 +49,26 @@ class ConfirmDialogFragment : AbstractDialogFragment() {
 
     companion object {
 
-        /** タイトルキー。  */
+        /** Title key.  */
         private val ARG_TITLE = "TITLE"
-        /** メッセージキー。  */
+        /** Message key. */
         private val ARG_MESSAGE = "MESSAGE"
 
 
         private val ARG_IS_BUTTON_DEFAULT = "IS_BUTTON_DEFAULT"
-        /** Positiveボタンキー。  */
+        /** Positive button key.  */
         private val ARG_POSITIVE_BUTTON = "POSITIVE_BUTTON"
-        /** Neutralボタンキー。  */
+        /** Neutral button key.  */
         private val ARG_NEUTRAL_BUTTON = "NEUTRAL_BUTTON"
-        /** Negativeボタンキー。  */
+        /** Negative button key.  */
         private val ARG_NEGATIVE_BUTTON = "NEGATIVE_BUTTON"
 
 
         /**
-         * ダイアログのインスタンスを作成する。(OK/Cancelボタン。)
-         * @param message メッセージ。
-         * @param title タイトル。
-         * @return ダイアログのインスタンス。
+         * Create dialog instance. (OK/Cancel)
+         * @param message A message.
+         * @param title A title.
+         * @return New dialog instance.
          */
         fun newInstance(message: CharSequence, title: CharSequence): ConfirmDialogFragment {
             val fragment = ConfirmDialogFragment()
@@ -83,13 +82,13 @@ class ConfirmDialogFragment : AbstractDialogFragment() {
         }
 
         /**
-         * ダイアログのインスタンスを作成する。(ボタン文字指定。null指定の場合はボタン無し。)
-         * @param message メッセージ。
-         * @param title タイトル。
-         * @param positiveButton Positiveボタン。
-         * @param neutralButton  Neutralボタン。
-         * @param negativeButton Negativeボタン。
-         * @return ダイアログのインスタンス。
+         * Create dialog instance. (Customized button)
+         * @param message A message.
+         * @param title A title.
+         * @param positiveButton Positive button. None if null.
+         * @param neutralButton  Neutral button. None if null.
+         * @param negativeButton Negative button. None if null.
+         * @return New dialog instance.
          */
         fun newInstance(message: String, title: String, positiveButton: String, neutralButton: String, negativeButton: String): ConfirmDialogFragment {
             val fragment = ConfirmDialogFragment()

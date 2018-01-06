@@ -3,7 +3,10 @@ package com.wa2c.android.medoly.plugin.action.lastfm.service
 import android.content.Intent
 import android.net.Uri
 import android.text.TextUtils
-import com.wa2c.android.medoly.library.*
+import com.wa2c.android.medoly.library.AlbumArtProperty
+import com.wa2c.android.medoly.library.MediaProperty
+import com.wa2c.android.medoly.library.PluginOperationCategory
+import com.wa2c.android.medoly.library.PropertyData
 import com.wa2c.android.medoly.plugin.action.lastfm.R
 import com.wa2c.android.medoly.plugin.action.lastfm.Token
 import com.wa2c.android.medoly.plugin.action.lastfm.util.AppUtils
@@ -26,25 +29,12 @@ class PluginGetAlbumArtService : AbstractPluginService(PluginGetAlbumArtService:
     override fun onHandleIntent(intent: Intent?) {
         super.onHandleIntent(intent)
 
-        if (!pluginIntent.hasCategory(PluginTypeCategory.TYPE_GET_ALBUM_ART)) {
-            sendResult(null)
-            return
-        }
-
         try {
-            val operation = sharedPreferences.getString(getString(R.string.prefkey_event_get_album_art_operation), "")
-            if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_EXECUTE) ||
-                    pluginIntent.hasCategory(PluginOperationCategory.OPERATION_MEDIA_OPEN) && PluginOperationCategory.OPERATION_MEDIA_OPEN.name == operation ||
-                    pluginIntent.hasCategory(PluginOperationCategory.OPERATION_PLAY_START) && PluginOperationCategory.OPERATION_PLAY_START.name == operation) {
-                getAlbumArt()
-            } else {
-                sendResult(null)
-            }
+            getAlbumArt()
         } catch (e: Exception) {
             Logger.e(e)
             //AppUtils.showToast(this, R.string.error_app);
         }
-
     }
 
     /**
@@ -54,12 +44,6 @@ class PluginGetAlbumArtService : AbstractPluginService(PluginGetAlbumArtService:
         var result: AbstractPluginService.CommandResult = AbstractPluginService.CommandResult.IGNORE
         var resultProperty: PropertyData? = null
         try {
-            if (propertyData.isMediaEmpty) {
-                result = AbstractPluginService.CommandResult.NO_MEDIA
-                return
-            }
-
-            // No property info
             val trackText = propertyData.getFirst(MediaProperty.TITLE)
             val albumText = propertyData.getFirst(MediaProperty.ALBUM)
             val artistText = propertyData.getFirst(MediaProperty.ARTIST)
@@ -127,8 +111,10 @@ class PluginGetAlbumArtService : AbstractPluginService(PluginGetAlbumArtService:
                 }
             }
 
-            if (localUri == null)
+            if (localUri == null) {
+                result = AbstractPluginService.CommandResult.FAILED
                 return
+            }
 
             resultProperty = PropertyData()
             resultProperty.put(AlbumArtProperty.DATA_URI, localUri.toString())
@@ -142,9 +128,7 @@ class PluginGetAlbumArtService : AbstractPluginService(PluginGetAlbumArtService:
             result = AbstractPluginService.CommandResult.FAILED
         } finally {
             sendResult(resultProperty)
-            if (result == AbstractPluginService.CommandResult.NO_MEDIA) {
-                AppUtils.showToast(context, R.string.message_no_media)
-            } else if (result == AbstractPluginService.CommandResult.SUCCEEDED) {
+            if (result == AbstractPluginService.CommandResult.SUCCEEDED) {
                 if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_EXECUTE) || sharedPreferences.getBoolean(context.getString(R.string.prefkey_post_success_message_show), false))
                     AppUtils.showToast(context, R.string.message_get_data_success)
             } else if (result == AbstractPluginService.CommandResult.FAILED) {
