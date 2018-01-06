@@ -14,7 +14,7 @@ import java.io.StringWriter
  */
 object Logger {
     /** Tag name.  */
-    private val TAG = "Medoly"
+    private const val TAG = "Medoly"
 
     /**
      * Output debug message.

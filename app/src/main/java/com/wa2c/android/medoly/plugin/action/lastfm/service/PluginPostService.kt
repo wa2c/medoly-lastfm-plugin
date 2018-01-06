@@ -23,21 +23,18 @@ class PluginPostService : AbstractPluginService(PluginPostService::class.java.si
         super.onHandleIntent(intent)
 
         try {
-            if (session == null) {
-                AppUtils.showToast(context, R.string.message_account_not_auth)
-                return
-            }
-
             if (receivedClassName == PluginReceivers.EventNowPlayingReceiver::class.java.name) {
-                updateNowPlaying(session!!)
+                // Now Playing
+                updateNowPlaying(session)
             } else if (receivedClassName == PluginReceivers.EventScrobbleReceiver::class.java.name) {
-                scrobble(session!!)
+                // Scrobble
+                scrobble(session)
             } else if (receivedClassName == PluginReceivers.ExecuteLoveReceiver::class.java.name) {
                 // Love
-                love(session!!)
+                love(session)
             } else if (receivedClassName == PluginReceivers.ExecuteUnLoveReceiver::class.java.name) {
                 // Unlove
-                unlove(session!!)
+                unlove(session)
             }
         } catch (e: Exception) {
             Logger.e(e)
@@ -78,9 +75,18 @@ class PluginPostService : AbstractPluginService(PluginPostService::class.java.si
      * Update now playing.
      * @param session The session.
      */
-    private fun updateNowPlaying(session: Session) {
+    private fun updateNowPlaying(session: Session?) {
         var result: AbstractPluginService.CommandResult = AbstractPluginService.CommandResult.IGNORE
         try {
+            if (session == null) {
+                result = AbstractPluginService.CommandResult.FAILED
+                return
+            }
+            if (!session.isSubscriber) {
+                result = AbstractPluginService.CommandResult.AUTH_FAILED
+                return
+            }
+
             // create scrobble data
             val scrobbleData = createScrobbleData()
             val scrobbleResult = Track.updateNowPlaying(scrobbleData, session)
@@ -92,11 +98,13 @@ class PluginPostService : AbstractPluginService(PluginPostService::class.java.si
             Logger.e(e)
             result = AbstractPluginService.CommandResult.FAILED
         } finally {
-            if (result == CommandResult.SUCCEEDED) {
-//                if (sharedPreferences.getBoolean(context.getString(R.string.prefkey_post_success_message_show), true))
+            if (result == AbstractPluginService.CommandResult.AUTH_FAILED) {
+//                AppUtils.showToast(context, R.string.message_account_not_auth)
+            } else if (result == CommandResult.SUCCEEDED) {
+//                if (preferences.getBoolean(context.getString(R.string.prefkey_post_success_message_show), true))
 //                    AppUtils.showToast(context, R.string.message_post_success)
             } else if (result == CommandResult.FAILED) {
-//                if (sharedPreferences.getBoolean(context.getString(R.string.prefkey_post_failure_message_show), true))
+//                if (preferences.getBoolean(context.getString(R.string.prefkey_post_failure_message_show), true))
 //                    AppUtils.showToast(context, R.string.message_post_failure)
             }
         }
@@ -106,17 +114,17 @@ class PluginPostService : AbstractPluginService(PluginPostService::class.java.si
      * Scrobble.
      * @param session The session.
      */
-    private fun scrobble(session: Session) {
+    private fun scrobble(session: Session?) {
         var result: AbstractPluginService.CommandResult = AbstractPluginService.CommandResult.IGNORE
         try {
             // Check previous media
             val mediaUriText = propertyData.mediaUri.toString()
-            val previousMediaUri = sharedPreferences.getString(AbstractPluginService.PREFKEY_PREVIOUS_MEDIA_URI, "")
-            val previousMediaEnabled = sharedPreferences.getBoolean(context.getString(R.string.prefkey_previous_media_enabled), false)
+            val previousMediaUri = preferences.getString(AbstractPluginService.PREFKEY_PREVIOUS_MEDIA_URI, "")
+            val previousMediaEnabled = preferences.getBoolean(context.getString(R.string.prefkey_previous_media_enabled), false)
             if (!previousMediaEnabled && !TextUtils.isEmpty(mediaUriText) && !TextUtils.isEmpty(previousMediaUri) && mediaUriText == previousMediaUri) {
                 return
             }
-            sharedPreferences.edit().putString(AbstractPluginService.PREFKEY_PREVIOUS_MEDIA_URI, mediaUriText).apply()
+            preferences.edit().putString(AbstractPluginService.PREFKEY_PREVIOUS_MEDIA_URI, mediaUriText).apply()
 
             // create scrobble data
             val scrobbleData = createScrobbleData()
@@ -128,7 +136,7 @@ class PluginPostService : AbstractPluginService(PluginPostService::class.java.si
             dataList.add(scrobbleData)
 
             // send if session is not null
-            if (!session.isSubscriber) {
+            if (session != null && !session.isSubscriber) {
                 val resultList = ArrayList<ScrobbleResult>(dataList.size)
                 val maxSize = 50
                 var from = 0
@@ -161,7 +169,7 @@ class PluginPostService : AbstractPluginService(PluginPostService::class.java.si
                     AbstractPluginService.CommandResult.FAILED
             }
 
-            val notSave = sharedPreferences.getBoolean(context.getString(R.string.prefkey_unsent_scrobble_not_save), false)
+            val notSave = preferences.getBoolean(context.getString(R.string.prefkey_unsent_scrobble_not_save), false)
 
             // not save (leave exists data)
             if (notSave) {
@@ -170,7 +178,7 @@ class PluginPostService : AbstractPluginService(PluginPostService::class.java.si
 
             // truncate to limit
             val maxDefault = context.resources.getInteger(R.integer.pref_default_unsent_max)
-            val unsentMaxString = sharedPreferences.getString(context.getString(R.string.prefkey_unsent_max), maxDefault.toString())
+            val unsentMaxString = preferences.getString(context.getString(R.string.prefkey_unsent_max), maxDefault.toString())
             val unsentMax = try {
                 Integer.parseInt(unsentMaxString)
             } catch (e: Exception) {
@@ -185,9 +193,10 @@ class PluginPostService : AbstractPluginService(PluginPostService::class.java.si
             AppUtils.saveObject(context, context.getString(R.string.prefkey_unsent_scrobble_data), dataList.toTypedArray())
 
             if (result == AbstractPluginService.CommandResult.IGNORE) {
-                result = if (!session.isSubscriber)
+                result = if (session == null)
                     AbstractPluginService.CommandResult.FAILED
-                    //AbstractPluginService.CommandResult.AUTH_FAILED
+                else if (!session.isSubscriber)
+                    AbstractPluginService.CommandResult.AUTH_FAILED
                 else if (!notSave)
                     AbstractPluginService.CommandResult.SAVED
                 else
@@ -197,11 +206,13 @@ class PluginPostService : AbstractPluginService(PluginPostService::class.java.si
             Logger.e(e)
             result = AbstractPluginService.CommandResult.FAILED
         } finally {
-            if (result == AbstractPluginService.CommandResult.SUCCEEDED) {
-                if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_EXECUTE) || sharedPreferences.getBoolean(context.getString(R.string.prefkey_post_success_message_show), false))
+            if (result == AbstractPluginService.CommandResult.AUTH_FAILED) {
+                AppUtils.showToast(context, R.string.message_account_not_auth)
+            } else if (result == AbstractPluginService.CommandResult.SUCCEEDED) {
+                if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_EXECUTE) || preferences.getBoolean(context.getString(R.string.prefkey_post_success_message_show), false))
                     AppUtils.showToast(context, getString(R.string.message_post_success, propertyData.getFirst(MediaProperty.TITLE)))
             } else if (result == AbstractPluginService.CommandResult.FAILED) {
-                if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_EXECUTE) || sharedPreferences.getBoolean(context.getString(R.string.prefkey_post_failure_message_show), true))
+                if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_EXECUTE) || preferences.getBoolean(context.getString(R.string.prefkey_post_failure_message_show), true))
                     AppUtils.showToast(context, R.string.message_post_failure)
             }
         }
@@ -211,9 +222,18 @@ class PluginPostService : AbstractPluginService(PluginPostService::class.java.si
      * Love.
      * @param session The session.
      */
-    private fun love(session: Session) {
+    private fun love(session: Session?) {
         var result: AbstractPluginService.CommandResult = AbstractPluginService.CommandResult.IGNORE
         try {
+            if (session == null) {
+                result = AbstractPluginService.CommandResult.FAILED
+                return
+            }
+            if (!session.isSubscriber) {
+                result = AbstractPluginService.CommandResult.AUTH_FAILED
+                return
+            }
+
             val res = Track.love(propertyData.getFirst(MediaProperty.ARTIST), propertyData.getFirst(MediaProperty.TITLE), session)
             result = if (res.isSuccessful)
                 AbstractPluginService.CommandResult.SUCCEEDED
@@ -223,11 +243,13 @@ class PluginPostService : AbstractPluginService(PluginPostService::class.java.si
             Logger.e(e)
             result = AbstractPluginService.CommandResult.FAILED
         } finally {
-            if (result == AbstractPluginService.CommandResult.SUCCEEDED) {
-                if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_EXECUTE) || sharedPreferences.getBoolean(context.getString(R.string.prefkey_post_success_message_show), false))
+            if (result == AbstractPluginService.CommandResult.AUTH_FAILED) {
+                AppUtils.showToast(context, R.string.message_account_not_auth)
+            } else if (result == AbstractPluginService.CommandResult.SUCCEEDED) {
+                if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_EXECUTE) || preferences.getBoolean(context.getString(R.string.prefkey_post_success_message_show), false))
                     AppUtils.showToast(context, context.getString(R.string.message_love_success, propertyData.getFirst(MediaProperty.TITLE)))
             } else if (result == AbstractPluginService.CommandResult.FAILED) {
-                if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_EXECUTE) || sharedPreferences.getBoolean(context.getString(R.string.prefkey_post_failure_message_show), true))
+                if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_EXECUTE) || preferences.getBoolean(context.getString(R.string.prefkey_post_failure_message_show), true))
                     AppUtils.showToast(context, R.string.message_love_failure)
             }
         }
@@ -237,9 +259,18 @@ class PluginPostService : AbstractPluginService(PluginPostService::class.java.si
      * UnLove.
      * @param session The session.
      */
-    private fun unlove(session: Session) {
+    private fun unlove(session: Session?) {
         var result: AbstractPluginService.CommandResult = AbstractPluginService.CommandResult.IGNORE
         try {
+            if (session == null) {
+                result = AbstractPluginService.CommandResult.FAILED
+                return
+            }
+            if (!session.isSubscriber) {
+                result = AbstractPluginService.CommandResult.AUTH_FAILED
+                return
+            }
+
             val res = Track.unlove(propertyData.getFirst(MediaProperty.ARTIST), propertyData.getFirst(MediaProperty.TITLE), session)
             result = if (res.isSuccessful)
                 AbstractPluginService.CommandResult.SUCCEEDED
@@ -249,11 +280,13 @@ class PluginPostService : AbstractPluginService(PluginPostService::class.java.si
             Logger.e(e)
             result = AbstractPluginService.CommandResult.FAILED
         } finally {
-            if (result == AbstractPluginService.CommandResult.SUCCEEDED) {
-                if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_EXECUTE) || sharedPreferences.getBoolean(context.getString(R.string.prefkey_post_success_message_show), false))
+            if (result == AbstractPluginService.CommandResult.AUTH_FAILED) {
+                AppUtils.showToast(context, R.string.message_account_not_auth)
+            } else if (result == AbstractPluginService.CommandResult.SUCCEEDED) {
+                if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_EXECUTE) || preferences.getBoolean(context.getString(R.string.prefkey_post_success_message_show), false))
                     AppUtils.showToast(context, context.getString(R.string.message_unlove_success, propertyData.getFirst(MediaProperty.TITLE)))
             } else if (result == AbstractPluginService.CommandResult.FAILED) {
-                if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_EXECUTE) || sharedPreferences.getBoolean(context.getString(R.string.prefkey_post_failure_message_show), true))
+                if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_EXECUTE) || preferences.getBoolean(context.getString(R.string.prefkey_post_failure_message_show), true))
                     AppUtils.showToast(context, R.string.message_unlove_failure)
             }
         }

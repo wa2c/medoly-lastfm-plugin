@@ -14,14 +14,9 @@ import com.wa2c.android.medoly.library.ExtraData
 import com.wa2c.android.medoly.library.MediaPluginIntent
 import com.wa2c.android.medoly.library.PropertyData
 import com.wa2c.android.medoly.plugin.action.lastfm.R
-import com.wa2c.android.medoly.plugin.action.lastfm.Token
 import com.wa2c.android.medoly.plugin.action.lastfm.util.AppUtils
 import com.wa2c.android.medoly.plugin.action.lastfm.util.Logger
-import de.umass.lastfm.Authenticator
-import de.umass.lastfm.Caller
 import de.umass.lastfm.Session
-import de.umass.lastfm.cache.FileSystemCache
-import java.io.File
 
 
 /**
@@ -31,14 +26,14 @@ abstract class AbstractPluginService(name: String) : IntentService(name) {
 
     companion object {
         /** Notification ID */
-        private val NOTIFICATION_ID = 1
+        private const val NOTIFICATION_ID = 1
         /** Notification Channel ID */
-        private val NOTIFICATION_CHANNEL_ID = "Notification"
+        private const val NOTIFICATION_CHANNEL_ID = "Notification"
 
         /** Received receiver class name.  */
-        val RECEIVED_CLASS_NAME = "RECEIVED_CLASS_NAME"
+        const val RECEIVED_CLASS_NAME = "RECEIVED_CLASS_NAME"
         /** Previous data key.  */
-        val PREFKEY_PREVIOUS_MEDIA_URI = "previous_media_uri"
+        const val PREFKEY_PREVIOUS_MEDIA_URI = "previous_media_uri"
     }
 
     /**
@@ -64,7 +59,7 @@ abstract class AbstractPluginService(name: String) : IntentService(name) {
     /** Context.  */
     protected lateinit var context: Context
     /** Preferences.  */
-    protected lateinit var sharedPreferences: SharedPreferences
+    protected lateinit var preferences: SharedPreferences
     /** Plugin intent.  */
     protected lateinit var pluginIntent: MediaPluginIntent
     /** Property data.  */
@@ -100,21 +95,11 @@ abstract class AbstractPluginService(name: String) : IntentService(name) {
         try {
             resultSent = false
             context = applicationContext
-            sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+            preferences = PreferenceManager.getDefaultSharedPreferences(context)
             pluginIntent = MediaPluginIntent(intent)
             propertyData = pluginIntent.propertyData ?: PropertyData()
             receivedClassName = pluginIntent.getStringExtra(RECEIVED_CLASS_NAME)
 
-            // Initialize last.fm library
-            try {
-                Caller.getInstance().cache = FileSystemCache(File(context.externalCacheDir, "last.fm"))
-            } catch (ignore: Exception) {
-            }
-
-            // Authenticate
-            val username = sharedPreferences.getString(context.getString(R.string.prefkey_auth_username), "")
-            val password = sharedPreferences.getString(context.getString(R.string.prefkey_auth_password), "")
-            session = Authenticator.getMobileSession(username, password!!, Token.getConsumerKey(context), Token.getConsumerSecret(context))
         } catch (e: Exception) {
             Logger.e(e)
         } finally {
@@ -124,6 +109,8 @@ abstract class AbstractPluginService(name: String) : IntentService(name) {
                 stopForeground(true)
             }
         }
+
+        try { session = AppUtils.createSession(context) } catch (e: Exception) { }
     }
 
     override fun onDestroy() {

@@ -44,20 +44,20 @@ class MainActivity : Activity() {
                 val preference = PreferenceManager.getDefaultSharedPreferences(applicationContext)
                 if (which == DialogInterface.BUTTON_POSITIVE) {
                     try {
-                        // 認証
+                        // Authenticate
                         val username = dialogFragment.username
                         val password = dialogFragment.password
                         AsyncAuthTask(this, username, password).execute()
                     } catch (e: Exception) {
                         Logger.e(e)
-                        // 失敗
+                        // Failed
                         preference.edit().remove(getString(R.string.prefkey_auth_username)).apply()
                         preference.edit().remove(getString(R.string.prefkey_auth_password)).apply()
                         AppUtils.showToast(applicationContext, R.string.message_auth_failure)
                     }
 
                 } else if (which == DialogInterface.BUTTON_NEGATIVE) {
-                    // クリア
+                    // Clear
                     preference.edit().remove(getString(R.string.prefkey_auth_username)).apply()
                     preference.edit().remove(getString(R.string.prefkey_auth_password)).apply()
                     AppUtils.showToast(applicationContext, R.string.message_account_clear)
@@ -75,8 +75,8 @@ class MainActivity : Activity() {
 
         // Open Last.fm
         lastfmSiteButton.setOnClickListener {
-            val preference = PreferenceManager.getDefaultSharedPreferences(applicationContext)
-            val username = preference.getString(getString(R.string.prefkey_auth_username), "")
+            val preferences = PreferenceManager.getDefaultSharedPreferences(applicationContext)
+            val username = preferences.getString(getString(R.string.prefkey_auth_username), "")
             val uri = if (TextUtils.isEmpty(username)) {
                 Uri.parse(getString(R.string.lastfm_url)) // Authorized
             } else {
@@ -108,9 +108,9 @@ class MainActivity : Activity() {
      * Update auth message.
      */
     fun updateAuthMessage() {
-        val preference = PreferenceManager.getDefaultSharedPreferences(this)
-        val username = preference.getString(getString(R.string.prefkey_auth_username), "")
-        val password = preference.getString(getString(R.string.prefkey_auth_password), "")
+        val preferences = PreferenceManager.getDefaultSharedPreferences(this)
+        val username = preferences.getString(getString(R.string.prefkey_auth_username), "")
+        val password = preferences.getString(getString(R.string.prefkey_auth_password), "")
 
         if (!TextUtils.isEmpty(username) && !TextUtils.isEmpty(password)) {
             accountAuthTextView.text = getString(R.string.message_account_auth)

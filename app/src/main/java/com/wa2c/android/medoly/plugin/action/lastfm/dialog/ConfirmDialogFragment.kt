@@ -50,18 +50,18 @@ class ConfirmDialogFragment : AbstractDialogFragment() {
     companion object {
 
         /** Title key.  */
-        private val ARG_TITLE = "TITLE"
+        private const val ARG_TITLE = "TITLE"
         /** Message key. */
-        private val ARG_MESSAGE = "MESSAGE"
+        private const val ARG_MESSAGE = "MESSAGE"
 
 
-        private val ARG_IS_BUTTON_DEFAULT = "IS_BUTTON_DEFAULT"
+        private const val ARG_IS_BUTTON_DEFAULT = "IS_BUTTON_DEFAULT"
         /** Positive button key.  */
-        private val ARG_POSITIVE_BUTTON = "POSITIVE_BUTTON"
+        private const val ARG_POSITIVE_BUTTON = "POSITIVE_BUTTON"
         /** Neutral button key.  */
-        private val ARG_NEUTRAL_BUTTON = "NEUTRAL_BUTTON"
+        private const val ARG_NEUTRAL_BUTTON = "NEUTRAL_BUTTON"
         /** Negative button key.  */
-        private val ARG_NEGATIVE_BUTTON = "NEGATIVE_BUTTON"
+        private const val ARG_NEGATIVE_BUTTON = "NEGATIVE_BUTTON"
 
 
         /**

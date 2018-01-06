@@ -92,11 +92,12 @@ object AppUtils {
     }
 
 
+
     /**
      * Create last.fm session
      */
     fun createSession(context: Context): Session? {
-        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+        val preferences = PreferenceManager.getDefaultSharedPreferences(context)
 
         // Initialize last.fm library
         try {
@@ -105,8 +106,8 @@ object AppUtils {
         }
 
         // Authenticate
-        val username = sharedPreferences.getString(context.getString(R.string.prefkey_auth_username), "")
-        val password = sharedPreferences.getString(context.getString(R.string.prefkey_auth_password), "")
+        val username = preferences.getString(context.getString(R.string.prefkey_auth_username), "")
+        val password = preferences.getString(context.getString(R.string.prefkey_auth_password), "")
         return Authenticator.getMobileSession(username, password!!, Token.getConsumerKey(context), Token.getConsumerSecret(context))
     }
 
@@ -179,8 +180,6 @@ object AppUtils {
      * @param resultExtra A result extra data.
      */
     fun sendResult(context: Context, pluginIntent: MediaPluginIntent, resultProperty: PropertyData? = null, resultExtra: ExtraData? = null) {
-        if (context == null || pluginIntent == null)
-            return
         context.sendBroadcast(pluginIntent.createResultIntent(resultProperty, resultExtra))
     }
 }

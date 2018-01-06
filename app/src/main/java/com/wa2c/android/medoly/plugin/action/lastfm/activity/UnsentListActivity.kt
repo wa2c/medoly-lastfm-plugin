@@ -17,7 +17,9 @@ import com.wa2c.android.medoly.plugin.action.lastfm.dialog.ConfirmDialogFragment
 import com.wa2c.android.medoly.plugin.action.lastfm.util.AppUtils
 import com.wa2c.android.medoly.plugin.action.lastfm.util.Logger
 import de.umass.lastfm.scrobble.ScrobbleData
+import kotlinx.android.synthetic.main.activity_unsent_list.*
 import java.util.*
+
 
 
 /**
@@ -35,27 +37,19 @@ class UnsentListActivity : Activity() {
     private var items: Array<ScrobbleData>? = null
 
     private var adapter: UnsentListAdapter? = null
-    private var unsentListView: ListView? = null
-    private var unsentNoDataTextView: TextView? = null
-    private var unsentNotSaveCheckBox: CheckBox? = null
-    private var unsentCheckAllButton: Button? = null
-    private var unsentDeleteButton: Button? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_unsent_list)
         preferences = PreferenceManager.getDefaultSharedPreferences(applicationContext)
 
-
-
         actionBar.setDisplayShowHomeEnabled(true)
         actionBar.setDisplayHomeAsUpEnabled(true)
         actionBar.setDisplayShowTitleEnabled(true)
         actionBar.setTitle(R.string.title_activity_unsent_list)
 
-        // リスト
-        unsentListView = findViewById(R.id.unsentListView) as ListView
-        unsentListView!!.onItemClickListener = AdapterView.OnItemClickListener { _, _, position, _ ->
+        // list
+        unsentListView.onItemClickListener = AdapterView.OnItemClickListener { _, _, position, _ ->
             if (checkedSet.contains(position)) {
                 checkedSet.remove(position)
             } else {
@@ -64,31 +58,25 @@ class UnsentListActivity : Activity() {
             adapter!!.notifyDataSetChanged()
         }
 
-        // データ無し
-        unsentNoDataTextView = findViewById(R.id.unsentNoDataTextView) as TextView
+        // not save
+        unsentNotSaveCheckBox.setOnCheckedChangeListener { _, isChecked -> preferences.edit().putBoolean(getString(R.string.prefkey_unsent_scrobble_not_save), isChecked).apply() }
+        unsentNotSaveCheckBox.isChecked = preferences.getBoolean(getString(R.string.prefkey_unsent_scrobble_not_save), false)
 
-        // 保存しない
-        unsentNotSaveCheckBox = findViewById(R.id.unsentNotSaveCheckBox) as CheckBox
-        unsentNotSaveCheckBox!!.setOnCheckedChangeListener { _, isChecked -> preferences.edit().putBoolean(getString(R.string.prefkey_unsent_scrobble_not_save), isChecked).apply() }
-        unsentNotSaveCheckBox!!.isChecked = preferences.getBoolean(getString(R.string.prefkey_unsent_scrobble_not_save), false)
-
-        // 全チェック
-        unsentCheckAllButton = findViewById(R.id.unsentCheckAllButton) as Button
+        // check all
         unsentCheckAllButton!!.setOnClickListener {
             var checking = false
             for (i in 0 until adapter!!.count) {
                 checking = checking or checkedSet.add(i)
             }
             if (!checking) {
-                // 既に全チェック済みの場合は未チェックにする
+                // Uncheck if checked
                 checkedSet.clear()
             }
             adapter!!.notifyDataSetChanged()
         }
 
-        // 削除
-        unsentDeleteButton = findViewById(R.id.unsentDeleteButton) as Button
-        unsentDeleteButton!!.setOnClickListener(View.OnClickListener {
+        // delete
+        unsentDeleteButton.setOnClickListener(View.OnClickListener {
             if (checkedSet.isEmpty()) {
                 AppUtils.showToast(applicationContext, R.string.message_unsent_check_data)
             } else {
@@ -98,14 +86,14 @@ class UnsentListActivity : Activity() {
                         return@OnClickListener
 
                     try {
-                        // リストから削除
+                        // delete from list
                         val checks = checkedSet.toTypedArray<Int>()
-                        val itemList = ArrayList(Arrays.asList(*items!!))
+                        val itemList =  ArrayList(items!!.toList())
                         for (i in checks.indices.reversed()) {
                             itemList.removeAt(checks[i])
                         }
 
-                        // 削除した結果を保存
+                        // save result
                         val dataArray = itemList.toTypedArray<ScrobbleData>()
                         if (AppUtils.saveObject(applicationContext, getString(R.string.prefkey_unsent_scrobble_data), dataArray)) {
                             items = dataArray
@@ -124,44 +112,41 @@ class UnsentListActivity : Activity() {
             }
         })
 
-        // 項目
+        // items
         items = AppUtils.loadObject<Array<ScrobbleData>>(applicationContext, getString(R.string.prefkey_unsent_scrobble_data))
         initializeListView()
     }
 
     /**
-     * リストを初期化する。
+     * Initialize list.
      */
     private fun initializeListView() {
-
         if (items == null || items!!.isEmpty()) {
             val data = ScrobbleData()
             data.track = getString(R.string.message_unsent_no_data)
             items = arrayOf(data)
 
-            unsentListView!!.visibility = View.INVISIBLE
-            unsentNoDataTextView!!.visibility = View.VISIBLE
-            unsentCheckAllButton!!.isEnabled = false
-            unsentDeleteButton!!.isEnabled = false
+            unsentListView.visibility = View.INVISIBLE
+            unsentNoDataTextView.visibility = View.VISIBLE
+            unsentCheckAllButton.isEnabled = false
+            unsentDeleteButton.isEnabled = false
         } else {
-            unsentListView!!.visibility = View.VISIBLE
-            unsentNoDataTextView!!.visibility = View.INVISIBLE
-            unsentCheckAllButton!!.isEnabled = true
-            unsentDeleteButton!!.isEnabled = true
+            unsentListView.visibility = View.VISIBLE
+            unsentNoDataTextView.visibility = View.INVISIBLE
+            unsentCheckAllButton.isEnabled = true
+            unsentDeleteButton.isEnabled = true
         }
 
         adapter = UnsentListAdapter(this, items!!, checkedSet)
-        unsentListView!!.adapter = adapter
+        unsentListView.adapter = adapter
         adapter!!.notifyDataSetChanged()
     }
 
 
     /**
-     * リストアダプタ。
+     * List adapter
      */
-    private class UnsentListAdapter
-    /** コンストラクタ。  */
-    (context: Context, itemList: Array<ScrobbleData>, private val checkedSet: TreeSet<Int>) : ArrayAdapter<ScrobbleData>(context, R.layout.layout_unsent_list_item, itemList) {
+    private class UnsentListAdapter(context: Context, itemList: Array<ScrobbleData>, private val checkedSet: TreeSet<Int>) : ArrayAdapter<ScrobbleData>(context, R.layout.layout_unsent_list_item, itemList) {
 
         override fun isEnabled(position: Int): Boolean {
             return true
@@ -174,9 +159,7 @@ class UnsentListActivity : Activity() {
 
             if (view == null) {
                 view = View.inflate(context, R.layout.layout_unsent_list_item, null)
-                // ビュー参照
                 holder = ListItemViewHolder()
-
                 holder.selectedCheckBox = view.findViewById(R.id.unsentSelectedCheckBox) as CheckBox
                 holder.titleTextView = view.findViewById(R.id.unsentTitleTextView) as TextView
                 holder.artistTextView = view.findViewById(R.id.unsentArtistTextView) as TextView
@@ -187,9 +170,13 @@ class UnsentListActivity : Activity() {
             }
 
             // イベント更新
-            view!!.setOnClickListener { v -> (parent as ListView).performItemClick(v, getPosition(item), v.id.toLong()) }
-            val tempView = view
-            holder.selectedCheckBox!!.setOnTouchListener { _, event -> tempView.onTouchEvent(event) }
+            view!!.setOnClickListener {
+                v -> (parent as ListView).performItemClick(v, getPosition(item), v.id.toLong())
+            }
+            //val tempView = view
+            holder.selectedCheckBox!!.setOnTouchListener { _, event ->
+                view!!.onTouchEvent(event)
+            }
 
             // チェック状態更新
             holder.selectedCheckBox!!.isChecked = checkedSet.contains(position)
@@ -221,7 +208,6 @@ class UnsentListActivity : Activity() {
             var artistTextView: TextView? = null
             var timeTextView: TextView? = null
         }
-
     }
 
 
