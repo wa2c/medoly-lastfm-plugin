@@ -35,7 +35,7 @@ class PluginGetPropertyService : AbstractPluginService(PluginGetPropertyService:
      * Get properties.
      */
     private fun getProperties() {
-        var result: AbstractPluginService.CommandResult = AbstractPluginService.CommandResult.IGNORE
+        var result = CommandResult.IGNORE
         var resultProperty: PropertyData? = null
         var resultExtra: ExtraData? = null
         try {
@@ -66,18 +66,18 @@ class PluginGetPropertyService : AbstractPluginService(PluginGetPropertyService:
             if (track.listeners > 0)
                 resultExtra.put(getString(R.string.label_extra_data_listener_count), track.listeners.toString())
             resultExtra.put(getString(R.string.label_extra_data_lastfm_track_url), track.url)
-            result = AbstractPluginService.CommandResult.SUCCEEDED
+            result = CommandResult.SUCCEEDED
         } catch (e: Exception) {
             Logger.e(e)
             resultProperty = null
             resultExtra = null
-            result = AbstractPluginService.CommandResult.FAILED
+            result = CommandResult.FAILED
         } finally {
             sendResult(resultProperty, resultExtra)
-            if (result == AbstractPluginService.CommandResult.SUCCEEDED) {
+            if (result == CommandResult.SUCCEEDED) {
                 if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_EXECUTE) || preferences.getBoolean(context.getString(R.string.prefkey_post_success_message_show), false))
                     AppUtils.showToast(context, R.string.message_get_data_success)
-            } else if (result == AbstractPluginService.CommandResult.FAILED) {
+            } else if (result == CommandResult.FAILED) {
                 if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_EXECUTE) || preferences.getBoolean(context.getString(R.string.prefkey_post_failure_message_show), true))
                     AppUtils.showToast(context, R.string.message_get_data_failure)
             }

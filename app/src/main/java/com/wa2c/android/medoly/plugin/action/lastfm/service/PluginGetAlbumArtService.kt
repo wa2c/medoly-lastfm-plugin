@@ -41,7 +41,7 @@ class PluginGetAlbumArtService : AbstractPluginService(PluginGetAlbumArtService:
      * Get album art.
      */
     private fun getAlbumArt() {
-        var result: AbstractPluginService.CommandResult = AbstractPluginService.CommandResult.IGNORE
+        var result = CommandResult.IGNORE
         var resultProperty: PropertyData? = null
         try {
             val trackText = propertyData.getFirst(MediaProperty.TITLE)
@@ -112,7 +112,7 @@ class PluginGetAlbumArtService : AbstractPluginService(PluginGetAlbumArtService:
             }
 
             if (localUri == null) {
-                result = AbstractPluginService.CommandResult.FAILED
+                result = CommandResult.FAILED
                 return
             }
 
@@ -121,17 +121,17 @@ class PluginGetAlbumArtService : AbstractPluginService(PluginGetAlbumArtService:
             resultProperty.put(AlbumArtProperty.SOURCE_TITLE, getString(R.string.lastfm))
             resultProperty.put(AlbumArtProperty.SOURCE_URI, remoteUri)
             applicationContext.grantUriPermission(pluginIntent.srcPackage, localUri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            result = AbstractPluginService.CommandResult.SUCCEEDED
+            result = CommandResult.SUCCEEDED
         } catch (e: Exception) {
             Logger.e(e)
             resultProperty = null
-            result = AbstractPluginService.CommandResult.FAILED
+            result = CommandResult.FAILED
         } finally {
             sendResult(resultProperty)
-            if (result == AbstractPluginService.CommandResult.SUCCEEDED) {
+            if (result == CommandResult.SUCCEEDED) {
                 if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_EXECUTE) || preferences.getBoolean(context.getString(R.string.prefkey_post_success_message_show), false))
                     AppUtils.showToast(context, R.string.message_get_data_success)
-            } else if (result == AbstractPluginService.CommandResult.FAILED) {
+            } else if (result == CommandResult.FAILED) {
                 if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_EXECUTE) || preferences.getBoolean(context.getString(R.string.prefkey_post_failure_message_show), true))
                     AppUtils.showToast(context, R.string.message_get_data_failure)
             }

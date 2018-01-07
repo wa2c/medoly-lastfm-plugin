@@ -36,25 +36,6 @@ abstract class AbstractPluginService(name: String) : IntentService(name) {
         const val PREFKEY_PREVIOUS_MEDIA_URI = "previous_media_uri"
     }
 
-    /**
-     * Command result.
-     */
-    internal enum class CommandResult {
-        /** Succeeded.  */
-        SUCCEEDED,
-        /** Failed.  */
-        FAILED,
-        /** Authorization failed.  */
-        AUTH_FAILED,
-        /** No media.  */
-        NO_MEDIA,
-        /** Post saved.  */
-        SAVED,
-        /** Ignore.  */
-        IGNORE
-    }
-
-
 
     /** Context.  */
     protected lateinit var context: Context

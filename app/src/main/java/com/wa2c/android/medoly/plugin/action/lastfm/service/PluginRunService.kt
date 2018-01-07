@@ -48,7 +48,7 @@ class PluginRunService : AbstractPluginService(PluginRunService::class.java.simp
      * @param session The session.
      */
     private fun openTrackPage(session: Session?) {
-        var result: AbstractPluginService.CommandResult = AbstractPluginService.CommandResult.IGNORE
+        var result = CommandResult.IGNORE
         try {
             val trackText = propertyData.getFirst(MediaProperty.TITLE)
             val artistText = propertyData.getFirst(MediaProperty.ARTIST)
@@ -59,12 +59,12 @@ class PluginRunService : AbstractPluginService(PluginRunService::class.java.simp
             }
 
             startPage(Uri.parse(track.url))
-            result = AbstractPluginService.CommandResult.SUCCEEDED
+            result = CommandResult.SUCCEEDED
         } catch (e: Exception) {
             Logger.e(e)
-            result = AbstractPluginService.CommandResult.FAILED
+            result = CommandResult.FAILED
         } finally {
-            if (result == AbstractPluginService.CommandResult.FAILED) {
+            if (result == CommandResult.FAILED) {
                 AppUtils.showToast(context, R.string.message_page_failure)
             }
         }
@@ -75,7 +75,7 @@ class PluginRunService : AbstractPluginService(PluginRunService::class.java.simp
      * @param session The session.
      */
     private fun openLastfmPage(session: Session?) {
-        var result: AbstractPluginService.CommandResult = AbstractPluginService.CommandResult.IGNORE
+        var result = CommandResult.IGNORE
         try {
             // Last.fm
             val siteUri = if (session != null) {
@@ -85,12 +85,12 @@ class PluginRunService : AbstractPluginService(PluginRunService::class.java.simp
             }
 
             startPage(siteUri)
-            result = AbstractPluginService.CommandResult.SUCCEEDED
+            result = CommandResult.SUCCEEDED
         } catch (e: ActivityNotFoundException) {
             Logger.d(e)
-            result = AbstractPluginService.CommandResult.FAILED
+            result = CommandResult.FAILED
         } finally {
-            if (result == AbstractPluginService.CommandResult.FAILED) {
+            if (result == CommandResult.FAILED) {
                 AppUtils.showToast(context, R.string.message_page_failure)
             }
         }
