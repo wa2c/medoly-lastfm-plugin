@@ -14,7 +14,7 @@ import com.wa2c.android.medoly.plugin.action.lastfm.util.AppUtils
 import com.wa2c.android.medoly.plugin.action.lastfm.util.Logger
 
 /**
- * Plugin receiver classes.
+ * Plugin receiver.
  */
 class PluginReceivers {
 
@@ -23,9 +23,6 @@ class PluginReceivers {
             Logger.d("onReceive: " + this.javaClass.simpleName)
 
             val pluginIntent = MediaPluginIntent(intent)
-            val c = this.javaClass
-            pluginIntent.putExtra(AbstractPluginService.RECEIVED_CLASS_NAME, c.name)
-
             val propertyData = pluginIntent.propertyData ?: return
             val preferences = PreferenceManager.getDefaultSharedPreferences(context)
 
@@ -117,6 +114,7 @@ class PluginReceivers {
                 pluginIntent.setClass(context, PluginRunService::class.java)
             }
 
+            pluginIntent.putExtra(AbstractPluginService.RECEIVED_CLASS_NAME, this.javaClass.name)
             context.stopService(pluginIntent)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 context.startForegroundService(pluginIntent)

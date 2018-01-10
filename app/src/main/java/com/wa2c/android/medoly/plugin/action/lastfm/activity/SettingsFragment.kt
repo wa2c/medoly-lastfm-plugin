@@ -138,12 +138,10 @@ class SettingsFragment : PreferenceFragment() {
                 if (stringSet != null && stringSet.size > 0) {
                     p.values = stringSet // update value once
                     val builder = StringBuilder()
-                    for (i in 0 until p.entries.size) {
-                        if (stringSet.contains(p.entryValues[i])) {
-                            builder.append(p.entries[i]).append(",")
-                        }
-                    }
-                    if (builder.length > 0) {
+                    (0 until p.entries.size)
+                            .filter { stringSet.contains(p.entryValues[it]) }
+                            .forEach { builder.append(p.entries[it]).append(",") }
+                    if (builder.isNotEmpty()) {
                         text = builder.substring(0, builder.length - 1) // remove end comma
                     }
                 }

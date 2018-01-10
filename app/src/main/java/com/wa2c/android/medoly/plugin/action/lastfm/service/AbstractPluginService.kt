@@ -80,7 +80,6 @@ abstract class AbstractPluginService(name: String) : IntentService(name) {
             pluginIntent = MediaPluginIntent(intent)
             propertyData = pluginIntent.propertyData ?: PropertyData()
             receivedClassName = pluginIntent.getStringExtra(RECEIVED_CLASS_NAME)
-
         } catch (e: Exception) {
             Logger.e(e)
         } finally {
@@ -96,7 +95,7 @@ abstract class AbstractPluginService(name: String) : IntentService(name) {
 
     override fun onDestroy() {
         super.onDestroy()
-        Logger.d("onDestroy")
+        Logger.d("onDestroy: " + this.javaClass.simpleName)
         sendResult(null)
     }
 

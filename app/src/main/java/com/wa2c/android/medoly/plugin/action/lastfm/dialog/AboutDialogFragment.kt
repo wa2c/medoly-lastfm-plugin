@@ -79,7 +79,7 @@ class AboutDialogFragment : AbstractDialogFragment() {
             content.dialogAboutLibraryLayout.addView(libTextView)
         }
 
-        // ダイアログ作成
+        // Build
         val builder = AlertDialog.Builder(activity)
         builder.setTitle(R.string.pref_title_about)
         builder.setView(content)
