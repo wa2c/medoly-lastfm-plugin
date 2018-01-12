@@ -36,9 +36,7 @@ class AuthDialogFragment : AbstractDialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog? {
         super.onCreateDialog(savedInstanceState)
         val content = View.inflate(activity, R.layout.dialog_auth, null)
-
-        val pref = PreferenceManager.getDefaultSharedPreferences(activity)
-        val username = pref.getString(getString(R.string.prefkey_auth_username), "")
+        val username = prefs.getString(R.string.prefkey_auth_username)
 
         // default
         content.dialogAuthUsernameEditText.setText(username)

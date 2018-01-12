@@ -12,6 +12,7 @@ import com.wa2c.android.medoly.library.PluginTypeCategory
 import com.wa2c.android.medoly.plugin.action.lastfm.R
 import com.wa2c.android.medoly.plugin.action.lastfm.util.AppUtils
 import com.wa2c.android.medoly.plugin.action.lastfm.util.Logger
+import com.wa2c.android.medoly.plugin.action.lastfm.util.Prefs
 
 /**
  * Plugin receiver.
@@ -24,7 +25,7 @@ class PluginReceivers {
 
             val pluginIntent = MediaPluginIntent(intent)
             val propertyData = pluginIntent.propertyData ?: return
-            val preferences = PreferenceManager.getDefaultSharedPreferences(context)
+            val prefs = Prefs(context)
 
             if (this is EventScrobbleReceiver ||
                 this is EventNowPlayingReceiver ||
@@ -34,10 +35,10 @@ class PluginReceivers {
                 if (!pluginIntent.hasCategory(PluginTypeCategory.TYPE_POST_MESSAGE)) {
                     return
                 }
-                if (this is EventNowPlayingReceiver && !preferences.getBoolean(context.getString(R.string.prefkey_now_playing_enabled), true)) {
+                if (this is EventNowPlayingReceiver && !prefs.getBoolean(R.string.prefkey_now_playing_enabled)) {
                     return
                 }
-                if (this is EventScrobbleReceiver && !preferences.getBoolean(context.getString(R.string.prefkey_scrobble_enabled), true)) {
+                if (this is EventScrobbleReceiver && !prefs.getBoolean(R.string.prefkey_scrobble_enabled)) {
                     return
                 }
                 if (propertyData.isMediaEmpty) {
@@ -65,7 +66,7 @@ class PluginReceivers {
                     AppUtils.sendResult(context, pluginIntent)
                     return
                 }
-                val operation = try { PluginOperationCategory.valueOf(preferences.getString(context.getString(R.string.prefkey_event_get_album_art_operation), "")) } catch (ignore : Exception) { null }
+                val operation = try { PluginOperationCategory.valueOf(prefs.getString(R.string.prefkey_event_get_album_art_operation)) } catch (ignore : Exception) { null }
                 if (!pluginIntent.hasCategory(PluginOperationCategory.OPERATION_EXECUTE) && !pluginIntent.hasCategory(operation)) {
                     AppUtils.sendResult(context, pluginIntent)
                     return
@@ -87,7 +88,7 @@ class PluginReceivers {
                     AppUtils.sendResult(context, pluginIntent)
                     return
                 }
-                val operation = preferences.getString(context.getString(R.string.prefkey_event_get_property_operation), "")
+                val operation = prefs.getString(R.string.prefkey_event_get_property_operation)
                 if (!pluginIntent.hasCategory(PluginOperationCategory.OPERATION_EXECUTE) && !pluginIntent.hasCategory(operation)) {
                     AppUtils.sendResult(context, pluginIntent)
                     return

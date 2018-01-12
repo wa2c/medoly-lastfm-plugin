@@ -114,12 +114,12 @@ class PluginPostService : AbstractPluginService(PluginPostService::class.java.si
         try {
             // Check previous media
             val mediaUriText = propertyData.mediaUri.toString()
-            val previousMediaUri = preferences.getString(AbstractPluginService.PREFKEY_PREVIOUS_MEDIA_URI, "")
-            val previousMediaEnabled = preferences.getBoolean(context.getString(R.string.prefkey_previous_media_enabled), false)
+            val previousMediaUri = prefs.getString(AbstractPluginService.PREFKEY_PREVIOUS_MEDIA_URI)
+            val previousMediaEnabled = prefs.getBoolean(R.string.prefkey_previous_media_enabled)
             if (!previousMediaEnabled && !TextUtils.isEmpty(mediaUriText) && !TextUtils.isEmpty(previousMediaUri) && mediaUriText == previousMediaUri) {
                 return
             }
-            preferences.edit().putString(AbstractPluginService.PREFKEY_PREVIOUS_MEDIA_URI, mediaUriText).apply()
+            prefs.putValue(AbstractPluginService.PREFKEY_PREVIOUS_MEDIA_URI, mediaUriText)
 
             // create scrobble data
             val scrobbleData = createScrobbleData()
@@ -166,7 +166,7 @@ class PluginPostService : AbstractPluginService(PluginPostService::class.java.si
                 result = CommandResult.AUTH_FAILED
             }
 
-            val notSave = preferences.getBoolean(context.getString(R.string.prefkey_unsent_scrobble_not_save), false)
+            val notSave = prefs.getBoolean(R.string.prefkey_unsent_scrobble_not_save)
 
             // not save (leave exists data)
             if (notSave) {
@@ -175,7 +175,7 @@ class PluginPostService : AbstractPluginService(PluginPostService::class.java.si
 
             // truncate to limit
             val maxDefault = context.resources.getInteger(R.integer.pref_default_unsent_max)
-            val unsentMaxString = preferences.getString(context.getString(R.string.prefkey_unsent_max), maxDefault.toString())
+            val unsentMaxString = prefs.getString(R.string.prefkey_unsent_max, maxDefault.toString())
             val unsentMax = try { Integer.parseInt(unsentMaxString) } catch (e: Exception) { maxDefault }
             if (unsentMax > 0 && dataList.size > unsentMax) {
                 dataList = dataList.subList(dataList.size - unsentMax, dataList.size)
@@ -190,10 +190,10 @@ class PluginPostService : AbstractPluginService(PluginPostService::class.java.si
             if (result == CommandResult.AUTH_FAILED) {
                 AppUtils.showToast(context, R.string.message_account_not_auth)
             } else if (result == CommandResult.SUCCEEDED) {
-                if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_EXECUTE) || preferences.getBoolean(context.getString(R.string.prefkey_post_success_message_show), false))
+                if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_EXECUTE) || prefs.getBoolean(R.string.prefkey_post_success_message_show))
                     AppUtils.showToast(context, getString(R.string.message_post_success, propertyData.getFirst(MediaProperty.TITLE)))
             } else if (result == CommandResult.FAILED) {
-                if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_EXECUTE) || preferences.getBoolean(context.getString(R.string.prefkey_post_failure_message_show), true))
+                if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_EXECUTE) || prefs.getBoolean(R.string.prefkey_post_failure_message_show, true))
                     AppUtils.showToast(context, R.string.message_post_failure)
             }
         }
@@ -223,10 +223,10 @@ class PluginPostService : AbstractPluginService(PluginPostService::class.java.si
             if (result == CommandResult.AUTH_FAILED) {
                 AppUtils.showToast(context, R.string.message_account_not_auth)
             } else if (result == CommandResult.SUCCEEDED) {
-                if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_EXECUTE) || preferences.getBoolean(context.getString(R.string.prefkey_post_success_message_show), false))
+                if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_EXECUTE) || prefs.getBoolean(R.string.prefkey_post_success_message_show))
                     AppUtils.showToast(context, context.getString(R.string.message_love_success, propertyData.getFirst(MediaProperty.TITLE)))
             } else if (result == CommandResult.FAILED) {
-                if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_EXECUTE) || preferences.getBoolean(context.getString(R.string.prefkey_post_failure_message_show), true))
+                if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_EXECUTE) || prefs.getBoolean(R.string.prefkey_post_failure_message_show, true))
                     AppUtils.showToast(context, R.string.message_love_failure)
             }
         }
@@ -256,10 +256,10 @@ class PluginPostService : AbstractPluginService(PluginPostService::class.java.si
             if (result == CommandResult.AUTH_FAILED) {
                 AppUtils.showToast(context, R.string.message_account_not_auth)
             } else if (result == CommandResult.SUCCEEDED) {
-                if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_EXECUTE) || preferences.getBoolean(context.getString(R.string.prefkey_post_success_message_show), false))
+                if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_EXECUTE) || prefs.getBoolean(R.string.prefkey_post_success_message_show))
                     AppUtils.showToast(context, context.getString(R.string.message_unlove_success, propertyData.getFirst(MediaProperty.TITLE)))
             } else if (result == CommandResult.FAILED) {
-                if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_EXECUTE) || preferences.getBoolean(context.getString(R.string.prefkey_post_failure_message_show), true))
+                if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_EXECUTE) || prefs.getBoolean(R.string.prefkey_post_failure_message_show, true))
                     AppUtils.showToast(context, R.string.message_unlove_failure)
             }
         }

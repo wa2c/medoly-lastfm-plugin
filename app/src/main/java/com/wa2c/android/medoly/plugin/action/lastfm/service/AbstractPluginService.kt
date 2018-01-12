@@ -16,6 +16,7 @@ import com.wa2c.android.medoly.library.PropertyData
 import com.wa2c.android.medoly.plugin.action.lastfm.R
 import com.wa2c.android.medoly.plugin.action.lastfm.util.AppUtils
 import com.wa2c.android.medoly.plugin.action.lastfm.util.Logger
+import com.wa2c.android.medoly.plugin.action.lastfm.util.Prefs
 import de.umass.lastfm.Session
 
 
@@ -40,7 +41,7 @@ abstract class AbstractPluginService(name: String) : IntentService(name) {
     /** Context.  */
     protected lateinit var context: Context
     /** Preferences.  */
-    protected lateinit var preferences: SharedPreferences
+    protected lateinit var prefs: Prefs
     /** Plugin intent.  */
     protected lateinit var pluginIntent: MediaPluginIntent
     /** Property data.  */
@@ -76,7 +77,7 @@ abstract class AbstractPluginService(name: String) : IntentService(name) {
         try {
             resultSent = false
             context = applicationContext
-            preferences = PreferenceManager.getDefaultSharedPreferences(context)
+            prefs = Prefs(this)
             pluginIntent = MediaPluginIntent(intent)
             propertyData = pluginIntent.propertyData ?: PropertyData()
             receivedClassName = pluginIntent.getStringExtra(RECEIVED_CLASS_NAME)

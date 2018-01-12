@@ -15,6 +15,7 @@ import com.wa2c.android.medoly.plugin.action.lastfm.Token
 import com.wa2c.android.medoly.plugin.action.lastfm.dialog.AuthDialogFragment
 import com.wa2c.android.medoly.plugin.action.lastfm.util.AppUtils
 import com.wa2c.android.medoly.plugin.action.lastfm.util.Logger
+import com.wa2c.android.medoly.plugin.action.lastfm.util.Prefs
 import de.umass.lastfm.Authenticator
 import de.umass.lastfm.Caller
 import de.umass.lastfm.cache.FileSystemCache
@@ -32,6 +33,7 @@ class MainActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
 
         // ActionBar
         actionBar.setDisplayShowHomeEnabled(true)
@@ -108,9 +110,9 @@ class MainActivity : Activity() {
      * Update auth message.
      */
     fun updateAuthMessage() {
-        val preferences = PreferenceManager.getDefaultSharedPreferences(this)
-        val username = preferences.getString(getString(R.string.prefkey_auth_username), "")
-        val password = preferences.getString(getString(R.string.prefkey_auth_password), "")
+        val prefs = Prefs(this)
+        val username = prefs.getString(R.string.prefkey_auth_username)
+        val password = prefs.getString(R.string.prefkey_auth_password)
 
         if (!TextUtils.isEmpty(username) && !TextUtils.isEmpty(password)) {
             accountAuthTextView.text = getString(R.string.message_account_auth)
@@ -131,7 +133,8 @@ class MainActivity : Activity() {
          */
         class AsyncAuthTask internal constructor(context: MainActivity, private val username: String, password: String) : AsyncTask<String, Void, Boolean>() {
             private val weakActivity: WeakReference<MainActivity> = WeakReference(context)
-            private val preferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+            //private val preferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+            private val prefs = Prefs(context)
             private val password: String = StringUtilities.md5(password)
 
             override fun doInBackground(vararg params: String): Boolean {
@@ -153,12 +156,12 @@ class MainActivity : Activity() {
             override fun onPostExecute(result: Boolean) {
                 val context = weakActivity.get() ?: return
                 if (result) {
-                    preferences.edit().putString(context.getString(R.string.prefkey_auth_username), username).apply()
-                    preferences.edit().putString(context.getString(R.string.prefkey_auth_password), password).apply()
+                    prefs.putValue(R.string.prefkey_auth_username, username)
+                    prefs.putValue(R.string.prefkey_auth_password, password)
                     AppUtils.showToast(context, R.string.message_auth_success) // Succeed
                 } else {
-                    preferences.edit().remove(context.getString(R.string.prefkey_auth_username)).apply()
-                    preferences.edit().remove(context.getString(R.string.prefkey_auth_password)).apply()
+                    prefs.remove(R.string.prefkey_auth_username)
+                    prefs.remove(R.string.prefkey_auth_password)
                     AppUtils.showToast(context, R.string.message_auth_failure) // Failed
                 }
 

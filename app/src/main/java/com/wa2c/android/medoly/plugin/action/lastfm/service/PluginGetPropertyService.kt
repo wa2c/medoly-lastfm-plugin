@@ -75,10 +75,10 @@ class PluginGetPropertyService : AbstractPluginService(PluginGetPropertyService:
         } finally {
             sendResult(resultProperty, resultExtra)
             if (result == CommandResult.SUCCEEDED) {
-                if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_EXECUTE) || preferences.getBoolean(context.getString(R.string.prefkey_post_success_message_show), false))
+                if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_EXECUTE) || prefs.getBoolean(R.string.prefkey_post_success_message_show))
                     AppUtils.showToast(context, R.string.message_get_data_success)
             } else if (result == CommandResult.FAILED) {
-                if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_EXECUTE) || preferences.getBoolean(context.getString(R.string.prefkey_post_failure_message_show), true))
+                if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_EXECUTE) || prefs.getBoolean(R.string.prefkey_post_failure_message_show, true))
                     AppUtils.showToast(context, R.string.message_get_data_failure)
             }
         }
