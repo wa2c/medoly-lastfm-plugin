@@ -164,13 +164,13 @@ class Prefs(val context: Context, name : String? = null) {
     }
 
     /** Set a value to preference. */
-    fun putValue(keyRes : Int, value : String?) : Prefs {
+    fun putValue(keyRes : Int, value : CharSequence?) : Prefs {
         putValue(context.getString(keyRes), value)
         return this
     }
     /** Set a value to preference. */
-    fun putValue(key : String, value : String?) : Prefs {
-        pref.edit().putString(key, value).apply()
+    fun putValue(key : String, value : CharSequence?) : Prefs {
+        pref.edit().putString(key, value?.toString()).apply()
         return this
     }
 
