@@ -65,7 +65,7 @@ class PluginReceivers {
                     AppUtils.sendResult(context, pluginIntent)
                     return
                 }
-                val operation = try { PluginOperationCategory.valueOf(prefs.getString(R.string.prefkey_event_get_album_art_operation)) } catch (ignore : Exception) { null }
+                val operation = try { PluginOperationCategory.valueOf(prefs.getString(R.string.prefkey_event_get_album_art_operation)!!) } catch (ignore : Exception) { null }
                 if (!pluginIntent.hasCategory(PluginOperationCategory.OPERATION_EXECUTE) && !pluginIntent.hasCategory(operation)) {
                     AppUtils.sendResult(context, pluginIntent)
                     return
