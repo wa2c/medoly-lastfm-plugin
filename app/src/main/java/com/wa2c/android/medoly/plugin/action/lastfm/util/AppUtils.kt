@@ -3,19 +3,11 @@ package com.wa2c.android.medoly.plugin.action.lastfm.util
 import android.content.ContentResolver
 import android.content.Context
 import android.net.Uri
-import android.preference.PreferenceManager
 import android.support.v4.content.FileProvider
-import com.google.gson.Gson
 import com.wa2c.android.medoly.library.ExtraData
 import com.wa2c.android.medoly.library.MediaPluginIntent
 import com.wa2c.android.medoly.library.PropertyData
 import com.wa2c.android.medoly.plugin.action.lastfm.BuildConfig
-import com.wa2c.android.medoly.plugin.action.lastfm.R
-import com.wa2c.android.medoly.plugin.action.lastfm.Token
-import de.umass.lastfm.Authenticator
-import de.umass.lastfm.Caller
-import de.umass.lastfm.Session
-import de.umass.lastfm.cache.FileSystemCache
 import java.io.BufferedInputStream
 import java.io.BufferedOutputStream
 import java.io.File
@@ -47,68 +39,6 @@ object AppUtils {
      */
     fun showToast(context: Context, stringId: Int) {
         ToastReceiver.showToast(context, stringId)
-    }
-
-    /**
-     * Save object to shared preference.
-     * @param context context
-     * @param prefKey preference key.
-     * @param saveObject save object.
-     * @return succeeded / failed
-     */
-    fun saveObject(context: Context, prefKey: String, saveObject: Any): Boolean {
-        return try {
-            val gson = Gson()
-            val json = gson.toJson(saveObject)
-
-            val pref = PreferenceManager.getDefaultSharedPreferences(context)
-            pref.edit().putString(prefKey, json).apply()
-            true
-        } catch (e: Exception) {
-            Logger.e(e)
-            false
-        }
-    }
-
-    /**
-     * Load object from shared preference.
-     * @param context Context.
-     * @param prefKey Preference key.
-     * @return Loaded object. null as failed.
-     */
-    inline fun <reified T> loadObject(context: Context, prefKey: String): T? {
-        return try {
-            val pref = PreferenceManager.getDefaultSharedPreferences(context)
-            val json = pref.getString(prefKey, "")
-
-            val gson = Gson()
-            gson.fromJson(json, T::class.java)
-        } catch (e: Exception) {
-            Logger.e(e)
-            null
-        }
-
-
-    }
-
-
-
-    /**
-     * Create last.fm session
-     */
-    fun createSession(context: Context): Session? {
-        val preferences = PreferenceManager.getDefaultSharedPreferences(context)
-
-        // Initialize last.fm library
-        try {
-            Caller.getInstance().cache = FileSystemCache(File(context.externalCacheDir, "last.fm"))
-        } catch (ignore: Exception) {
-        }
-
-        // Authenticate
-        val username = preferences.getString(context.getString(R.string.prefkey_auth_username), "")
-        val password = preferences.getString(context.getString(R.string.prefkey_auth_password), "")
-        return Authenticator.getMobileSession(username, password!!, Token.getConsumerKey(context), Token.getConsumerSecret(context))
     }
 
 

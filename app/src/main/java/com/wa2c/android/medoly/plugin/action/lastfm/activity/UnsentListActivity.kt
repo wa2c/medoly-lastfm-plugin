@@ -16,6 +16,7 @@ import com.wa2c.android.medoly.plugin.action.lastfm.R
 import com.wa2c.android.medoly.plugin.action.lastfm.dialog.ConfirmDialogFragment
 import com.wa2c.android.medoly.plugin.action.lastfm.util.AppUtils
 import com.wa2c.android.medoly.plugin.action.lastfm.util.Logger
+import com.wa2c.android.medoly.plugin.action.lastfm.util.Prefs
 import de.umass.lastfm.scrobble.ScrobbleData
 import kotlinx.android.synthetic.main.activity_unsent_list.*
 import java.util.*
@@ -27,8 +28,8 @@ import java.util.*
  */
 class UnsentListActivity : Activity() {
 
-    /** A preference.  */
-    private lateinit var preferences: SharedPreferences
+    /** Preferences controller.  */
+    private lateinit var prefs: Prefs
 
     /** Check index set.。  */
     private val checkedSet: TreeSet<Int> = TreeSet()
@@ -41,7 +42,7 @@ class UnsentListActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_unsent_list)
-        preferences = PreferenceManager.getDefaultSharedPreferences(applicationContext)
+        prefs = Prefs(this)
 
         actionBar.setDisplayShowHomeEnabled(true)
         actionBar.setDisplayHomeAsUpEnabled(true)
@@ -59,8 +60,8 @@ class UnsentListActivity : Activity() {
         }
 
         // not save
-        unsentNotSaveCheckBox.setOnCheckedChangeListener { _, isChecked -> preferences.edit().putBoolean(getString(R.string.prefkey_unsent_scrobble_not_save), isChecked).apply() }
-        unsentNotSaveCheckBox.isChecked = preferences.getBoolean(getString(R.string.prefkey_unsent_scrobble_not_save), false)
+        unsentNotSaveCheckBox.setOnCheckedChangeListener { _, isChecked ->  prefs.putValue(R.string.prefkey_unsent_scrobble_not_save, isChecked) }
+        unsentNotSaveCheckBox.isChecked = prefs.getBoolean(R.string.prefkey_unsent_scrobble_not_save)
 
         // check all
         unsentCheckAllButton!!.setOnClickListener {
@@ -95,12 +96,9 @@ class UnsentListActivity : Activity() {
 
                         // save result
                         val dataArray = itemList.toTypedArray<ScrobbleData>()
-                        if (AppUtils.saveObject(applicationContext, getString(R.string.prefkey_unsent_scrobble_data), dataArray)) {
-                            items = dataArray
-                            checkedSet.clear()
-                        } else {
-                            throw RuntimeException()
-                        }
+                        prefs.putObject(R.string.prefkey_unsent_scrobble_data, dataArray)
+                        items = dataArray
+                        checkedSet.clear()
                     } catch (e: Exception) {
                         Logger.e(e)
                         AppUtils.showToast(applicationContext, R.string.message_unsent_delete_failure)
@@ -113,7 +111,7 @@ class UnsentListActivity : Activity() {
         })
 
         // items
-        items = AppUtils.loadObject<Array<ScrobbleData>>(applicationContext, getString(R.string.prefkey_unsent_scrobble_data))
+        items = prefs.getObject<Array<ScrobbleData>>(R.string.prefkey_unsent_scrobble_data)
         initializeListView()
     }
 

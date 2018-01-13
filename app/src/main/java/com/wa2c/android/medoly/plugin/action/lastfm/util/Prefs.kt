@@ -3,20 +3,20 @@ package com.wa2c.android.medoly.plugin.action.lastfm.util
 import android.content.Context
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
-import com.google.gson.Gson
 import android.util.TypedValue
-
+import com.google.gson.Gson
 
 
 /**
- * Preference class.
+ * Preferences controller.
  */
-class Prefs(val context: Context) {
-    private val pref = PreferenceManager.getDefaultSharedPreferences(context)
+class Prefs(val context: Context, name : String? = null) {
 
-    /** Get a pref object. */
-    fun getPref() : SharedPreferences {
-        return pref
+    /** Preferences. */
+    val pref : SharedPreferences = if (name == null) {
+        PreferenceManager.getDefaultSharedPreferences(context)
+    } else {
+        context.getSharedPreferences(name, Context.MODE_PRIVATE)
     }
 
 
@@ -97,7 +97,7 @@ class Prefs(val context: Context) {
 
     /** Get a value from preference. */
     fun getStringSet(keyRes : Int, default: Set<String?> = HashSet(), defRes : Int = -1) : Set<String?> {
-        return getStringSet(keyRes, default, defRes)
+        return getStringSet(context.getString(keyRes), default, defRes)
     }
     /** Get a value from preference. */
     fun getStringSet(key : String, default: Set<String?> = HashSet(), defRes : Int = -1) : Set<String?> {
@@ -105,6 +105,16 @@ class Prefs(val context: Context) {
             pref.getStringSet(key, context.resources.getStringArray(defRes).toSet())
         else
             pref.getStringSet(key, default)
+    }
+
+    /** Get a value from preference. */
+    inline fun <reified T> getObject(keyRes: Int): T? {
+        return getObject(context.getString(keyRes))
+    }
+    /** Get a value from preference.  */
+    inline fun <reified T> getObject(key: String): T? {
+        val json = pref.getString(key, "")
+        return Gson().fromJson(json, T::class.java)
     }
 
 
@@ -182,8 +192,7 @@ class Prefs(val context: Context) {
     }
     /** Set a value to preference. */
     fun putObject(key : String, value : Any) : Prefs {
-        val gson = Gson()
-        val json = gson.toJson(value)
+        val json = Gson().toJson(value)
         pref.edit().putString(key, json).apply()
         return this
     }

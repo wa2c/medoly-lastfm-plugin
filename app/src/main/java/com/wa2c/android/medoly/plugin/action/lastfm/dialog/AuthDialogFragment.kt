@@ -3,10 +3,8 @@ package com.wa2c.android.medoly.plugin.action.lastfm.dialog
 import android.app.AlertDialog
 import android.app.Dialog
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.view.View
 import com.wa2c.android.medoly.plugin.action.lastfm.R
-
 import kotlinx.android.synthetic.main.dialog_auth.*
 import kotlinx.android.synthetic.main.dialog_auth.view.*
 

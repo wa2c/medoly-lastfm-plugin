@@ -3,7 +3,6 @@ package com.wa2c.android.medoly.plugin.action.lastfm.activity
 import android.app.Activity
 import android.content.DialogInterface
 import android.content.Intent
-import android.content.SharedPreferences
 import android.net.Uri
 import android.os.AsyncTask
 import android.os.Bundle
@@ -30,10 +29,13 @@ import java.lang.ref.WeakReference
  */
 class MainActivity : Activity() {
 
+    /** Preferences controller.  */
+    private lateinit var prefs: Prefs
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
+        prefs = Prefs(this)
 
         // ActionBar
         actionBar.setDisplayShowHomeEnabled(true)
@@ -43,7 +45,6 @@ class MainActivity : Activity() {
         accountAuthButton.setOnClickListener {
             val dialogFragment = AuthDialogFragment.newInstance()
             dialogFragment.clickListener = DialogInterface.OnClickListener { _, which ->
-                val preference = PreferenceManager.getDefaultSharedPreferences(applicationContext)
                 if (which == DialogInterface.BUTTON_POSITIVE) {
                     try {
                         // Authenticate
@@ -53,15 +54,15 @@ class MainActivity : Activity() {
                     } catch (e: Exception) {
                         Logger.e(e)
                         // Failed
-                        preference.edit().remove(getString(R.string.prefkey_auth_username)).apply()
-                        preference.edit().remove(getString(R.string.prefkey_auth_password)).apply()
+                        prefs.remove(R.string.prefkey_auth_username)
+                        prefs.remove(R.string.prefkey_auth_password)
                         AppUtils.showToast(applicationContext, R.string.message_auth_failure)
                     }
 
                 } else if (which == DialogInterface.BUTTON_NEGATIVE) {
                     // Clear
-                    preference.edit().remove(getString(R.string.prefkey_auth_username)).apply()
-                    preference.edit().remove(getString(R.string.prefkey_auth_password)).apply()
+                    prefs.remove(R.string.prefkey_auth_username)
+                    prefs.remove(R.string.prefkey_auth_password)
                     AppUtils.showToast(applicationContext, R.string.message_account_clear)
                 }
 
@@ -77,8 +78,7 @@ class MainActivity : Activity() {
 
         // Open Last.fm
         lastfmSiteButton.setOnClickListener {
-            val preferences = PreferenceManager.getDefaultSharedPreferences(applicationContext)
-            val username = preferences.getString(getString(R.string.prefkey_auth_username), "")
+            val username = prefs.getString(R.string.prefkey_auth_username)
             val uri = if (TextUtils.isEmpty(username)) {
                 Uri.parse(getString(R.string.lastfm_url)) // Authorized
             } else {
@@ -133,8 +133,6 @@ class MainActivity : Activity() {
          */
         class AsyncAuthTask internal constructor(context: MainActivity, private val username: String, password: String) : AsyncTask<String, Void, Boolean>() {
             private val weakActivity: WeakReference<MainActivity> = WeakReference(context)
-            //private val preferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-            private val prefs = Prefs(context)
             private val password: String = StringUtilities.md5(password)
 
             override fun doInBackground(vararg params: String): Boolean {
@@ -155,6 +153,7 @@ class MainActivity : Activity() {
 
             override fun onPostExecute(result: Boolean) {
                 val context = weakActivity.get() ?: return
+                val prefs = Prefs(context)
                 if (result) {
                     prefs.putValue(R.string.prefkey_auth_username, username)
                     prefs.putValue(R.string.prefkey_auth_password, password)

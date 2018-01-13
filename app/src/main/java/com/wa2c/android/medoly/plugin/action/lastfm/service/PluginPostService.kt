@@ -126,7 +126,7 @@ class PluginPostService : AbstractPluginService(PluginPostService::class.java.si
 
             // create scrobble list data
             var dataList: MutableList<ScrobbleData> = ArrayList()
-            val dataArray = AppUtils.loadObject<Array<ScrobbleData>>(context, context.getString(R.string.prefkey_unsent_scrobble_data))
+            val dataArray = prefs.getObject<Array<ScrobbleData>>(R.string.prefkey_unsent_scrobble_data)
             if (dataArray != null) dataList.addAll(Arrays.asList(*dataArray)) // load unsent data
             dataList.add(scrobbleData)
 
@@ -163,7 +163,7 @@ class PluginPostService : AbstractPluginService(PluginPostService::class.java.si
                 else
                     CommandResult.FAILED
             } else {
-                result = CommandResult.AUTH_FAILED
+                result = CommandResult.FAILED
             }
 
             val notSave = prefs.getBoolean(R.string.prefkey_unsent_scrobble_not_save)
@@ -182,7 +182,7 @@ class PluginPostService : AbstractPluginService(PluginPostService::class.java.si
             }
 
             // save unsent data
-            AppUtils.saveObject(context, context.getString(R.string.prefkey_unsent_scrobble_data), dataList.toTypedArray())
+            prefs.putObject(R.string.prefkey_unsent_scrobble_data, dataList.toTypedArray())
         } catch (e: Exception) {
             Logger.e(e)
             result = CommandResult.FAILED
