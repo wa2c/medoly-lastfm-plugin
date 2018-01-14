@@ -78,8 +78,8 @@ class PluginRunService : AbstractPluginService(PluginRunService::class.java.simp
         var result = CommandResult.IGNORE
         try {
             // Last.fm
-            val siteUri = if (session != null) {
-                Uri.parse(context.getString(R.string.lastfm_url_user, session.username)) // Authorized
+            val siteUri = if (username.isNullOrEmpty()) {
+                Uri.parse(context.getString(R.string.lastfm_url_user, username)) // Authorized
             } else {
                 Uri.parse(context.getString(R.string.lastfm_url)) // Unauthorized
             }

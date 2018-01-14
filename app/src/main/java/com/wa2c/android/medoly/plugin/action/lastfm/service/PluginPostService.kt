@@ -78,8 +78,11 @@ class PluginPostService : AbstractPluginService(PluginPostService::class.java.si
     private fun updateNowPlaying(session: Session?) {
         var result = CommandResult.IGNORE
         try {
-            if (session == null) {
+            if (username.isNullOrEmpty()) {
                 result = CommandResult.AUTH_FAILED
+                return
+            } else if (session == null) {
+                result = CommandResult.FAILED
                 return
             }
 
@@ -163,7 +166,10 @@ class PluginPostService : AbstractPluginService(PluginPostService::class.java.si
                 else
                     CommandResult.FAILED
             } else {
-                result = CommandResult.FAILED
+                result = if (username.isNullOrEmpty())
+                    CommandResult.AUTH_FAILED
+                else
+                    CommandResult.FAILED
             }
 
             val notSave = prefs.getBoolean(R.string.prefkey_unsent_scrobble_not_save)
@@ -206,8 +212,11 @@ class PluginPostService : AbstractPluginService(PluginPostService::class.java.si
     private fun love(session: Session?) {
         var result = CommandResult.IGNORE
         try {
-            if (session == null) {
+            if (username.isNullOrEmpty()) {
                 result = CommandResult.AUTH_FAILED
+                return
+            } else if (session == null) {
+                result = CommandResult.FAILED
                 return
             }
 
@@ -239,10 +248,14 @@ class PluginPostService : AbstractPluginService(PluginPostService::class.java.si
     private fun unlove(session: Session?) {
         var result = CommandResult.IGNORE
         try {
-            if (session == null) {
+            if (username.isNullOrEmpty()) {
                 result = CommandResult.AUTH_FAILED
                 return
+            } else if (session == null) {
+                result = CommandResult.FAILED
+                return
             }
+
 
             val res = Track.unlove(propertyData.getFirst(MediaProperty.ARTIST), propertyData.getFirst(MediaProperty.TITLE), session)
             result = if (res.isSuccessful)

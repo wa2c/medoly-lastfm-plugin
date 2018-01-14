@@ -53,6 +53,8 @@ abstract class AbstractPluginService(name: String) : IntentService(name) {
     protected lateinit var receivedClassName: String
     /** Session.  */
     protected var session: Session? = null
+    /** Username */
+    protected var username: String? = null
     /** True if a result sent  */
     private var resultSent = false
 
@@ -63,27 +65,31 @@ abstract class AbstractPluginService(name: String) : IntentService(name) {
         Logger.d("onHandleIntent")
 
         var notificationManager : NotificationManager? = null
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            val channel = NotificationChannel(NOTIFICATION_CHANNEL_ID, getString(R.string.app_name), NotificationManager.IMPORTANCE_LOW)
-            notificationManager.createNotificationChannel(channel)
-            val builder = Notification.Builder(this, NOTIFICATION_CHANNEL_ID)
-                    .setContentTitle(getString(R.string.app_name))
-                    .setContentText("")
-                    .setSmallIcon(R.drawable.ic_launcher)
-            startForeground(NOTIFICATION_ID, builder.build())
-        }
-
-        if (intent == null)
-            return
-
         try {
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                val channel = NotificationChannel(NOTIFICATION_CHANNEL_ID, getString(R.string.app_name), NotificationManager.IMPORTANCE_LOW)
+                notificationManager.createNotificationChannel(channel)
+                val builder = Notification.Builder(this, NOTIFICATION_CHANNEL_ID)
+                        .setContentTitle(getString(R.string.app_name))
+                        .setContentText("")
+                        .setSmallIcon(R.drawable.ic_launcher)
+                startForeground(NOTIFICATION_ID, builder.build())
+            }
+
+            if (intent == null)
+                return
+
             resultSent = false
             context = applicationContext
             prefs = Prefs(this)
             pluginIntent = MediaPluginIntent(intent)
             propertyData = pluginIntent.propertyData ?: PropertyData()
             receivedClassName = pluginIntent.getStringExtra(RECEIVED_CLASS_NAME)
+
+            createSession()
+
         } catch (e: Exception) {
             Logger.e(e)
         } finally {
@@ -93,10 +99,6 @@ abstract class AbstractPluginService(name: String) : IntentService(name) {
                 stopForeground(true)
             }
         }
-
-        try {
-            session = createSession()
-        } catch (e: Exception) { }
     }
 
     override fun onDestroy() {
@@ -108,15 +110,17 @@ abstract class AbstractPluginService(name: String) : IntentService(name) {
     /**
      * Create last.fm session
      */
-    fun createSession(): Session? {
-        // Initialize last.fm library
+    private fun createSession() {
         try {
-            Caller.getInstance().cache = FileSystemCache(File(context.externalCacheDir, "last.fm"))
-        } catch (ignore: Exception) {
+            // Initialize last.fm library
+            try {
+                Caller.getInstance().cache = FileSystemCache(File(context.externalCacheDir, "last.fm"))
+            } catch (ignore: Exception) {
+            }
+            username = prefs.getString(R.string.prefkey_auth_username)
+            session = Authenticator.getMobileSession(username, prefs.getString(R.string.prefkey_auth_password), Token.getConsumerKey(context), Token.getConsumerSecret(context))
+        } catch (e : Exception) {
         }
-        val username = prefs.getString(R.string.prefkey_auth_username)
-        val password = prefs.getString(R.string.prefkey_auth_password)
-         return Authenticator.getMobileSession(username, password, Token.getConsumerKey(context), Token.getConsumerSecret(context))
     }
 
 
@@ -126,7 +130,7 @@ abstract class AbstractPluginService(name: String) : IntentService(name) {
      * @param resultProperty A result property data.
      * @param resultExtra A result extra data.
      */
-    @JvmOverloads protected fun sendResult(resultProperty: PropertyData?, resultExtra: ExtraData? = null) {
+    protected fun sendResult(resultProperty: PropertyData?, resultExtra: ExtraData? = null) {
         if (!resultSent && (this is PluginGetPropertyService || this is PluginGetAlbumArtService)) {
             AppUtils.sendResult(this, pluginIntent, resultProperty, resultExtra)
             resultSent = true
