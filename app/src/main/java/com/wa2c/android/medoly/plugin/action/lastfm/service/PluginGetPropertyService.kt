@@ -13,10 +13,7 @@ import de.umass.lastfm.Track
 
 
 /**
- * Intent service.
- */
-/**
- * Constructor.
+ * Get album art plugin service.
  */
 class PluginGetPropertyService : AbstractPluginService(PluginGetPropertyService::class.java.simpleName) {
 

@@ -18,10 +18,7 @@ import java.util.*
 
 
 /**
- * Intent service.
- */
-/**
- * Constructor.
+ * Get album art plugin service.
  */
 class PluginGetAlbumArtService : AbstractPluginService(PluginGetAlbumArtService::class.java.simpleName) {
 

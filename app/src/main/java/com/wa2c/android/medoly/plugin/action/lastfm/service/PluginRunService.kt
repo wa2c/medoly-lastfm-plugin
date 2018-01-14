@@ -13,7 +13,7 @@ import de.umass.lastfm.Track
 
 
 /**
- * Intent service.
+ * Run plugin service.
  */
 class PluginRunService : AbstractPluginService(PluginRunService::class.java.simpleName) {
 

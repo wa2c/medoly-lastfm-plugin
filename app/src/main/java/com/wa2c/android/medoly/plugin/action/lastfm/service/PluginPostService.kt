@@ -14,7 +14,7 @@ import java.util.*
 
 
 /**
- * Intent service.
+ * Post plugin service.
  */
 class PluginPostService : AbstractPluginService(PluginPostService::class.java.simpleName) {
 
@@ -114,22 +114,14 @@ class PluginPostService : AbstractPluginService(PluginPostService::class.java.si
     private fun scrobble(session: Session?) {
         var result = CommandResult.IGNORE
         try {
-            // Check previous media
-            val mediaUriText = propertyData.mediaUri.toString()
-            val previousMediaUri = prefs.getString(AbstractPluginService.PREFKEY_PREVIOUS_MEDIA_URI)
-            val previousMediaEnabled = prefs.getBoolean(R.string.prefkey_previous_media_enabled)
-            if (!previousMediaEnabled && !mediaUriText.isNullOrEmpty() && !previousMediaUri.isNullOrEmpty() && mediaUriText == previousMediaUri) {
-                return
-            }
-            prefs.putValue(AbstractPluginService.PREFKEY_PREVIOUS_MEDIA_URI, mediaUriText)
-
             // create scrobble data
             val scrobbleData = createScrobbleData()
 
             // create scrobble list data
             var dataList: MutableList<ScrobbleData> = ArrayList()
             val dataArray = prefs.getObject<Array<ScrobbleData>>(R.string.prefkey_unsent_scrobble_data)
-            if (dataArray != null) dataList.addAll(Arrays.asList(*dataArray)) // load unsent data
+            if (dataArray != null)
+                dataList.addAll(Arrays.asList(*dataArray)) // load unsent data
             dataList.add(scrobbleData)
 
             // send if session is not null
@@ -192,6 +184,9 @@ class PluginPostService : AbstractPluginService(PluginPostService::class.java.si
             Logger.e(e)
             result = CommandResult.FAILED
         } finally {
+            // save previous media
+            prefs.putValue(PREFKEY_PREVIOUS_MEDIA_URI, propertyData.mediaUri.toString())
+
             if (result == CommandResult.AUTH_FAILED) {
                 AppUtils.showToast(context, R.string.message_account_not_auth)
             } else if (result == CommandResult.SUCCEEDED) {

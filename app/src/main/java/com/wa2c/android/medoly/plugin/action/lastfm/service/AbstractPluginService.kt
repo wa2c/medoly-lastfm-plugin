@@ -24,7 +24,7 @@ import java.io.File
 
 
 /**
- * Intent service.
+ * Abstract plugin service.
  */
 abstract class AbstractPluginService(name: String) : IntentService(name) {
 
