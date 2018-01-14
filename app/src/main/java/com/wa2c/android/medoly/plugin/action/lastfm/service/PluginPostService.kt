@@ -1,7 +1,6 @@
 package com.wa2c.android.medoly.plugin.action.lastfm.service
 
 import android.content.Intent
-import android.text.TextUtils
 import com.wa2c.android.medoly.library.MediaProperty
 import com.wa2c.android.medoly.library.PluginOperationCategory
 import com.wa2c.android.medoly.plugin.action.lastfm.R
@@ -119,7 +118,7 @@ class PluginPostService : AbstractPluginService(PluginPostService::class.java.si
             val mediaUriText = propertyData.mediaUri.toString()
             val previousMediaUri = prefs.getString(AbstractPluginService.PREFKEY_PREVIOUS_MEDIA_URI)
             val previousMediaEnabled = prefs.getBoolean(R.string.prefkey_previous_media_enabled)
-            if (!previousMediaEnabled && !TextUtils.isEmpty(mediaUriText) && !TextUtils.isEmpty(previousMediaUri) && mediaUriText == previousMediaUri) {
+            if (!previousMediaEnabled && !mediaUriText.isNullOrEmpty() && !previousMediaUri.isNullOrEmpty() && mediaUriText == previousMediaUri) {
                 return
             }
             prefs.putValue(AbstractPluginService.PREFKEY_PREVIOUS_MEDIA_URI, mediaUriText)

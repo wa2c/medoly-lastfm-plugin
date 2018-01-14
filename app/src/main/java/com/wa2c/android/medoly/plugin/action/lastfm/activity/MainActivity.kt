@@ -6,8 +6,6 @@ import android.content.Intent
 import android.net.Uri
 import android.os.AsyncTask
 import android.os.Bundle
-import android.preference.PreferenceManager
-import android.text.TextUtils
 import com.wa2c.android.medoly.library.MedolyEnvironment
 import com.wa2c.android.medoly.plugin.action.lastfm.R
 import com.wa2c.android.medoly.plugin.action.lastfm.Token
@@ -79,7 +77,7 @@ class MainActivity : Activity() {
         // Open Last.fm
         lastfmSiteButton.setOnClickListener {
             val username = prefs.getString(R.string.prefkey_auth_username)
-            val uri = if (TextUtils.isEmpty(username)) {
+            val uri = if (username.isNullOrEmpty()) {
                 Uri.parse(getString(R.string.lastfm_url)) // Authorized
             } else {
                 Uri.parse(getString(R.string.lastfm_url_user, username)) // Unauthorized
@@ -114,7 +112,7 @@ class MainActivity : Activity() {
         val username = prefs.getString(R.string.prefkey_auth_username)
         val password = prefs.getString(R.string.prefkey_auth_password)
 
-        if (!TextUtils.isEmpty(username) && !TextUtils.isEmpty(password)) {
+        if (!username.isNullOrEmpty() && !password.isNullOrEmpty()) {
             accountAuthTextView.text = getString(R.string.message_account_auth)
         } else {
             accountAuthTextView.text = getString(R.string.message_account_not_auth)

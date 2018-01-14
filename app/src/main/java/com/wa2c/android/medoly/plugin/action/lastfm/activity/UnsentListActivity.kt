@@ -3,10 +3,7 @@ package com.wa2c.android.medoly.plugin.action.lastfm.activity
 import android.app.Activity
 import android.content.Context
 import android.content.DialogInterface
-import android.content.SharedPreferences
 import android.os.Bundle
-import android.preference.PreferenceManager
-import android.text.TextUtils
 import android.text.format.DateUtils
 import android.view.MenuItem
 import android.view.View
@@ -20,7 +17,6 @@ import com.wa2c.android.medoly.plugin.action.lastfm.util.Prefs
 import de.umass.lastfm.scrobble.ScrobbleData
 import kotlinx.android.synthetic.main.activity_unsent_list.*
 import java.util.*
-
 
 
 /**
@@ -181,9 +177,9 @@ class UnsentListActivity : Activity() {
             // データ更新
             val time = item!!.timestamp
             if (time > 0) {
-                if (!TextUtils.isEmpty(item.track))
+                if (!item.track.isNullOrEmpty())
                     holder.titleTextView!!.text = item.track
-                if (!TextUtils.isEmpty(item.artist))
+                if (!item.artist.isNullOrEmpty())
                     holder.artistTextView!!.text = item.artist
                 if (item.timestamp > 0)
                     holder.timeTextView!!.text = context.getString(R.string.label_unsent_played_time, DateUtils.formatDateTime(context, java.lang.Long.valueOf(item.timestamp.toLong())!! * 1000, DateUtils.FORMAT_SHOW_TIME or DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_SHOW_YEAR or DateUtils.FORMAT_ABBREV_ALL))

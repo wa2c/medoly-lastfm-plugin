@@ -2,7 +2,6 @@ package com.wa2c.android.medoly.plugin.action.lastfm.service
 
 import android.content.Intent
 import android.net.Uri
-import android.text.TextUtils
 import com.wa2c.android.medoly.library.AlbumArtProperty
 import com.wa2c.android.medoly.library.MediaProperty
 import com.wa2c.android.medoly.library.PluginOperationCategory
@@ -52,7 +51,7 @@ class PluginGetAlbumArtService : AbstractPluginService(PluginGetAlbumArtService:
             var localUri: Uri? = null
 
             // Album image
-            if (!TextUtils.isEmpty(artistText) && !TextUtils.isEmpty(albumText)) {
+            if (!artistText.isNullOrEmpty() && !albumText.isNullOrEmpty()) {
                 val album = if (session != null) {
                     Album.getInfo(artistText, albumText, session?.username, session?.apiKey)
                 } else {
@@ -63,7 +62,7 @@ class PluginGetAlbumArtService : AbstractPluginService(PluginGetAlbumArtService:
                     val imageSizes = ImageSize.values()
                     for (i in imageSizes.indices.reversed()) {
                         remoteUri = album.getImageURL(imageSizes[i])
-                        if (!TextUtils.isEmpty(remoteUri)) {
+                        if (!remoteUri.isNullOrEmpty()) {
                             localUri = AppUtils.downloadUrl(context, remoteUri)
                             break
                         }
@@ -72,7 +71,7 @@ class PluginGetAlbumArtService : AbstractPluginService(PluginGetAlbumArtService:
             }
 
             // Track image
-            if (localUri == null && !TextUtils.isEmpty(artistText) && !TextUtils.isEmpty(trackText)) {
+            if (localUri == null && !artistText.isNullOrEmpty() && !trackText.isNullOrEmpty()) {
                 val track = if (session != null) {
                     Track.getInfo(artistText, trackText, Locale.getDefault(), session?.username, session?.apiKey)
                 } else {
@@ -83,7 +82,7 @@ class PluginGetAlbumArtService : AbstractPluginService(PluginGetAlbumArtService:
                     val imageSizes = ImageSize.values()
                     for (i in imageSizes.indices.reversed()) {
                         remoteUri = track.getImageURL(imageSizes[i])
-                        if (!TextUtils.isEmpty(remoteUri)) {
+                        if (!remoteUri.isNullOrEmpty()) {
                             localUri = AppUtils.downloadUrl(context, remoteUri)
                             break
                         }
@@ -92,7 +91,7 @@ class PluginGetAlbumArtService : AbstractPluginService(PluginGetAlbumArtService:
             }
 
             // Artist image
-            if (localUri == null && !TextUtils.isEmpty(artistText)) {
+            if (localUri == null && !artistText.isNullOrEmpty()) {
                 val artist = if (session != null) {
                     Artist.getInfo(artistText, Locale.getDefault(), session?.username, session?.apiKey)
                 } else {
@@ -103,7 +102,7 @@ class PluginGetAlbumArtService : AbstractPluginService(PluginGetAlbumArtService:
                     val imageSizes = ImageSize.values()
                     for (i in imageSizes.indices.reversed()) {
                         remoteUri = artist.getImageURL(imageSizes[i])
-                        if (!TextUtils.isEmpty(remoteUri)) {
+                        if (!remoteUri.isNullOrEmpty()) {
                             localUri = AppUtils.downloadUrl(context, remoteUri)
                             break
                         }
