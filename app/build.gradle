@@ -1,15 +1,17 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 
 android {
-    compileSdkVersion 25
+    compileSdkVersion 26
     buildToolsVersion '26.0.2'
 
     defaultConfig {
         applicationId "com.wa2c.android.medoly.plugin.action.lastfm"
         minSdkVersion 16
-        targetSdkVersion 25
-        versionCode 16
-        versionName "2.0.7"
+        targetSdkVersion 26
+        versionCode 17
+        versionName "2.1.0"
     }
     buildTypes {
         debug {
@@ -30,11 +32,15 @@ android {
 
 repositories {
     maven { url 'https://api.bitbucket.org/1.0/repositories/wa2c/medoly-library/raw/master/repository/' }
+    mavenCentral()
 }
 
 dependencies {
     // Medoly library
-    compile 'com.wa2c.android:medolylibrary:1.1.0'
+    compile 'com.wa2c.android:medolylibrary:1.2.0'
+
+    // Support library
+    compile 'com.android.support:support-v4:26.1.0'
 
     // https://mvnrepository.com/artifact/de.u-mass/lastfm-java
     //compile group: 'de.u-mass', name: 'lastfm-java', version: '0.1.2'
@@ -42,4 +48,5 @@ dependencies {
 
     // https://mvnrepository.com/artifact/com.google.code.gson/gson
     compile 'com.google.code.gson:gson:2.8.1'
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
 }

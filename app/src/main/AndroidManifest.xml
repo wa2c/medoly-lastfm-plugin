@@ -33,9 +33,6 @@
             android:launchMode="singleTask" />
 
         <service
-            android:name=".service.ProcessService"
-            android:exported="false" />
-        <service
             android:name=".service.PluginPostService"
             android:exported="false" />
         <service

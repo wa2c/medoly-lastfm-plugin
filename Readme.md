@@ -1,11 +1,11 @@
-Medoly Last.fm Scrobbler Plugin
-===============================
+Medoly Last.fm Plugin
+=====================
 
 Last.fm plugin app for Medoly.
 
 ## Description
 
-Medoly Last.fm Scrobbler Plugin は、[Medoly](https://play.google.com/store/apps/details?id=com.wa2c.android.medoly) で再生しているメディアの再生情報を [Last.fm](http://www.last.fm/) に送信 ( Scrobble ) するAndroidアプリです。
+Medoly Last.fm Plugin は、[Medoly](https://play.google.com/store/apps/details?id=com.wa2c.android.medoly) で再生しているメディアの再生情報を [Last.fm](http://www.last.fm/) に送信 ( Scrobble ) するAndroidアプリです。
 [Google Play](https://play.google.com/store/apps/details?id=com.wa2c.android.medoly.plugin.action.lastfm)で配信中。
 
 ## Requirement

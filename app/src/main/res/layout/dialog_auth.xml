@@ -6,41 +6,42 @@
     android:padding="8dp">
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="@string/message_dialog_auth"
         android:id="@+id/dialogAuthMessageTextView"
-        android:layout_margin="8dp" />
-
-    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/label_dialog_auth_username"
+        android:layout_margin="8dp"
+        android:text="@string/message_dialog_auth"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
         android:id="@+id/dialogAuthUsernameTextView"
-        android:layout_marginTop="8dp" />
-
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/dialogAuthUsernameEditText"
-        android:singleLine="true"
-        android:lines="1" />
-
-    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/label_dialog_auth_password"
-        android:id="@+id/dialogAuthPasswordTextView"
-        android:layout_marginTop="8dp" />
+        android:layout_marginTop="8dp"
+        android:text="@string/label_dialog_auth_username" />
 
     <EditText
+        android:id="@+id/dialogAuthUsernameEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:inputType="text"
+        android:lines="1"
+        android:singleLine="true" />
+
+    <TextView
+        android:id="@+id/dialogAuthPasswordTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/label_dialog_auth_password" />
+
+    <EditText
         android:id="@+id/dialogAuthPasswordEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:inputType="textPassword"
-        android:singleLine="true"
-        android:lines="1" />
+        android:lines="1"
+        android:singleLine="true" />
 
 </LinearLayout>
