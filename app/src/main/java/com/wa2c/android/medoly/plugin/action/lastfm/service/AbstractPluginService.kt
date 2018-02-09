@@ -51,12 +51,12 @@ abstract class AbstractPluginService(name: String) : IntentService(name) {
     protected lateinit var propertyData: PropertyData
     /** Received class name.  */
     protected lateinit var receivedClassName: String
+    /** True if a result sent  */
+    private var resultSent = false
     /** Session.  */
     protected var session: Session? = null
     /** Username */
     protected var username: String? = null
-    /** True if a result sent  */
-    private var resultSent = false
 
 
 

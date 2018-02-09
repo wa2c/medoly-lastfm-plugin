@@ -38,5 +38,4 @@ class SettingsActivity : Activity() {
         return super.onOptionsItemSelected(item)
     }
 
-
 }

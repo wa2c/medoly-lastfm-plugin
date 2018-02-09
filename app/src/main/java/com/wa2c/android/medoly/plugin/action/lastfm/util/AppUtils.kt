@@ -20,8 +20,8 @@ import java.net.URL
  */
 object AppUtils {
 
-    private val SHARED_DIR_NAME = "download"
-    private val PROVIDER_AUTHORITIES = BuildConfig.APPLICATION_ID + ".fileprovider"
+    private const val SHARED_DIR_NAME = "download"
+    private const val PROVIDER_AUTHORITIES = BuildConfig.APPLICATION_ID + ".fileprovider"
 
     /**
      * Show message.
