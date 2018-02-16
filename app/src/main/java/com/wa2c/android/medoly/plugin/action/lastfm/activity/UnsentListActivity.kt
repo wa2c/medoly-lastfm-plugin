@@ -8,7 +8,9 @@ import android.text.format.DateUtils
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.ListView
 import com.wa2c.android.medoly.plugin.action.lastfm.R
 import com.wa2c.android.medoly.plugin.action.lastfm.dialog.ConfirmDialogFragment
 import com.wa2c.android.medoly.plugin.action.lastfm.util.AppUtils
@@ -16,6 +18,7 @@ import com.wa2c.android.medoly.plugin.action.lastfm.util.Logger
 import com.wa2c.android.medoly.plugin.action.lastfm.util.Prefs
 import de.umass.lastfm.scrobble.ScrobbleData
 import kotlinx.android.synthetic.main.activity_unsent_list.*
+import kotlinx.android.synthetic.main.layout_unsent_list_item.view.*
 import java.util.*
 
 
@@ -147,68 +150,71 @@ class UnsentListActivity : Activity() {
         }
 
         override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-            var view = convertView
-            val item = getItem(position)
+            val listView = parent as ListView
+            var itemView = convertView
             val holder: ListItemViewHolder
-
-            if (view == null) {
-                view = View.inflate(context, R.layout.layout_unsent_list_item, null)
-                holder = ListItemViewHolder()
-                holder.selectedCheckBox = view.findViewById(R.id.unsentSelectedCheckBox) as CheckBox
-                holder.titleTextView = view.findViewById(R.id.unsentTitleTextView) as TextView
-                holder.artistTextView = view.findViewById(R.id.unsentArtistTextView) as TextView
-                holder.timeTextView = view.findViewById(R.id.unsentTimeTextView) as TextView
-                view.tag = holder
+            if (itemView == null) {
+                holder =ListItemViewHolder(parent.context)
+                itemView = holder.itemView
             } else {
-                holder = view.tag as ListItemViewHolder
+                holder = itemView.tag as ListItemViewHolder
             }
 
-            // イベント更新
-            view!!.setOnClickListener {
-                v -> (parent as ListView).performItemClick(v, getPosition(item), v.id.toLong())
+            val item = getItem(position)
+            val listener : (View) -> Unit = {
+                listView.performItemClick(it, position, getItemId(position))
             }
-            //val tempView = view
-            holder.selectedCheckBox!!.setOnTouchListener { _, event ->
-                view!!.onTouchEvent(event)
-            }
+            holder.bind(item, position, listener)
 
-            // チェック状態更新
-            holder.selectedCheckBox!!.isChecked = checkedSet.contains(position)
-            // データ更新
-            val time = item!!.timestamp
-            if (time > 0) {
-                if (!item.track.isNullOrEmpty())
-                    holder.titleTextView!!.text = item.track
-                if (!item.artist.isNullOrEmpty())
-                    holder.artistTextView!!.text = item.artist
-                if (item.timestamp > 0)
-                    holder.timeTextView!!.text = context.getString(R.string.label_unsent_played_time, DateUtils.formatDateTime(context, java.lang.Long.valueOf(item.timestamp.toLong())!! * 1000, DateUtils.FORMAT_SHOW_TIME or DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_SHOW_YEAR or DateUtils.FORMAT_ABBREV_ALL))
-                view.isClickable = true
-            } else {
-                holder.titleTextView!!.text = item.track
-                holder.artistTextView!!.text = null
-                holder.timeTextView!!.text = null
-                holder.selectedCheckBox!!.visibility = View.INVISIBLE
-                view.isClickable = false
-            }
-
-            return view
+            return itemView
         }
 
-        /** リスト項目のビュー情報を保持するHolder。  */
-        internal class ListItemViewHolder {
-            var selectedCheckBox: CheckBox? = null
-            var titleTextView: TextView? = null
-            var artistTextView: TextView? = null
-            var timeTextView: TextView? = null
+        /** List item view holder  */
+        private inner class ListItemViewHolder(val context: Context) {
+            val itemView = View.inflate(context, R.layout.layout_unsent_list_item, null)!!
+            init {
+                itemView.tag = this
+            }
+
+            fun bind(item: ScrobbleData, position: Int, listener: (View) -> Unit) {
+                itemView.unsentSelectedCheckBox.setOnTouchListener { _, event ->
+                    itemView.onTouchEvent(event)
+                }
+
+                itemView.setOnClickListener(listener)
+                itemView.unsentSelectedCheckBox.setOnTouchListener { _, event ->
+                    itemView.onTouchEvent(event)
+                }
+
+                // チェック状態更新
+                itemView.unsentSelectedCheckBox.isChecked = checkedSet.contains(position)
+
+                // データ更新
+                val time = item.timestamp
+                if (time > 0) {
+                    if (!item.track.isNullOrEmpty())
+                        itemView.unsentTitleTextView.text = item.track
+                    if (!item.artist.isNullOrEmpty())
+                        itemView.unsentArtistTextView.text = item.artist
+                    if (item.timestamp > 0)
+                        itemView.unsentTimeTextView.text = context.getString(R.string.label_unsent_played_time, DateUtils.formatDateTime(context, java.lang.Long.valueOf(item.timestamp.toLong())!! * 1000, DateUtils.FORMAT_SHOW_TIME or DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_SHOW_YEAR or DateUtils.FORMAT_ABBREV_ALL))
+                    itemView.isClickable = true
+                } else {
+                    itemView.unsentTitleTextView.text = item.track
+                    itemView.unsentArtistTextView.text = null
+                    itemView.unsentTimeTextView.text = null
+                    itemView.unsentSelectedCheckBox.visibility = View.INVISIBLE
+                    itemView.isClickable = false
+                }
+            }
         }
     }
 
 
     /**
-     * オプションメニュー項目選択時の処理。
-     * @param item メニュー項目。
-     * @return メニューの表示/非表示。
+     * On option item selected.
+     * @param item A item
+     * @return option item selected.
      */
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
