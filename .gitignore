@@ -5,3 +5,14 @@
 .DS_Store
 /build
 /captures
+
+# App
+Token.java
+Token.kt
+syntax: glob
+*.iml
+.idea/libraries
+.idea/misc.xml
+.idea\modules.xml
+captures/
+.idea/caches/
