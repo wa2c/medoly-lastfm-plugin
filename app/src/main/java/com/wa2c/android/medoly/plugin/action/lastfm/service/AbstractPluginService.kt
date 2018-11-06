@@ -15,7 +15,7 @@ import com.wa2c.android.medoly.plugin.action.lastfm.R
 import com.wa2c.android.medoly.plugin.action.lastfm.Token
 import com.wa2c.android.medoly.plugin.action.lastfm.util.AppUtils
 import com.wa2c.android.medoly.plugin.action.lastfm.util.Logger
-import com.wa2c.android.medoly.plugin.action.lastfm.util.Prefs
+import com.wa2c.android.prefs.Prefs
 import de.umass.lastfm.Authenticator
 import de.umass.lastfm.Caller
 import de.umass.lastfm.Session

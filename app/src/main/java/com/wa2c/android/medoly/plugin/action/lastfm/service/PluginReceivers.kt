@@ -11,7 +11,7 @@ import com.wa2c.android.medoly.library.PluginTypeCategory
 import com.wa2c.android.medoly.plugin.action.lastfm.R
 import com.wa2c.android.medoly.plugin.action.lastfm.util.AppUtils
 import com.wa2c.android.medoly.plugin.action.lastfm.util.Logger
-import com.wa2c.android.medoly.plugin.action.lastfm.util.Prefs
+import com.wa2c.android.prefs.Prefs
 
 /**
  * Plugin receiver.
@@ -58,7 +58,7 @@ class PluginReceivers {
                     val mediaUriText = propertyData.mediaUri.toString()
                     val previousMediaUri = prefs.getString(AbstractPluginService.PREFKEY_PREVIOUS_MEDIA_URI)
                     val previousMediaEnabled = prefs.getBoolean(R.string.prefkey_previous_media_enabled)
-                    if (!previousMediaEnabled && !mediaUriText.isNullOrEmpty() && !previousMediaUri.isNullOrEmpty() && mediaUriText == previousMediaUri) {
+                    if (!previousMediaEnabled && !mediaUriText.isEmpty() && !previousMediaUri.isEmpty() && mediaUriText == previousMediaUri) {
                         return
                     }
                 }
@@ -83,7 +83,7 @@ class PluginReceivers {
                     return
                 }
                 // operation
-                val operation = try { PluginOperationCategory.valueOf(prefs.getString(R.string.prefkey_event_get_album_art_operation)!!) } catch (ignore : Exception) { null }
+                val operation = try { PluginOperationCategory.valueOf(prefs.getString(R.string.prefkey_event_get_album_art_operation)) } catch (ignore : Exception) { null }
                 if (!pluginIntent.hasCategory(PluginOperationCategory.OPERATION_EXECUTE) && !pluginIntent.hasCategory(operation)) {
                     AppUtils.sendResult(context, pluginIntent)
                     return

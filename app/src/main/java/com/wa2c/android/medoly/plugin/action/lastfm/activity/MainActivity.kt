@@ -12,7 +12,7 @@ import com.wa2c.android.medoly.plugin.action.lastfm.Token
 import com.wa2c.android.medoly.plugin.action.lastfm.dialog.AuthDialogFragment
 import com.wa2c.android.medoly.plugin.action.lastfm.util.AppUtils
 import com.wa2c.android.medoly.plugin.action.lastfm.util.Logger
-import com.wa2c.android.medoly.plugin.action.lastfm.util.Prefs
+import com.wa2c.android.prefs.Prefs
 import de.umass.lastfm.Authenticator
 import de.umass.lastfm.Caller
 import de.umass.lastfm.cache.FileSystemCache
@@ -153,8 +153,8 @@ class MainActivity : Activity() {
                 val context = weakActivity.get() ?: return
                 val prefs = Prefs(context)
                 if (result) {
-                    prefs.putValue(R.string.prefkey_auth_username, username)
-                    prefs.putValue(R.string.prefkey_auth_password, password)
+                    prefs.putString(R.string.prefkey_auth_username, username)
+                    prefs.putString(R.string.prefkey_auth_password, password)
                     AppUtils.showToast(context, R.string.message_auth_success) // Succeed
                 } else {
                     prefs.remove(R.string.prefkey_auth_username)

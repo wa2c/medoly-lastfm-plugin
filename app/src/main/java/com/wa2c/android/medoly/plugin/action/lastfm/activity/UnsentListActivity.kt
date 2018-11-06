@@ -15,7 +15,7 @@ import com.wa2c.android.medoly.plugin.action.lastfm.R
 import com.wa2c.android.medoly.plugin.action.lastfm.dialog.ConfirmDialogFragment
 import com.wa2c.android.medoly.plugin.action.lastfm.util.AppUtils
 import com.wa2c.android.medoly.plugin.action.lastfm.util.Logger
-import com.wa2c.android.medoly.plugin.action.lastfm.util.Prefs
+import com.wa2c.android.prefs.Prefs
 import de.umass.lastfm.scrobble.ScrobbleData
 import kotlinx.android.synthetic.main.activity_unsent_list.*
 import kotlinx.android.synthetic.main.layout_unsent_list_item.view.*
@@ -59,7 +59,7 @@ class UnsentListActivity : Activity() {
         }
 
         // not save
-        unsentNotSaveCheckBox.setOnCheckedChangeListener { _, isChecked ->  prefs.putValue(R.string.prefkey_unsent_scrobble_not_save, isChecked) }
+        unsentNotSaveCheckBox.setOnCheckedChangeListener { _, isChecked ->  prefs.putBoolean(R.string.prefkey_unsent_scrobble_not_save, isChecked) }
         unsentNotSaveCheckBox.isChecked = prefs.getBoolean(R.string.prefkey_unsent_scrobble_not_save)
 
         // check all
@@ -110,7 +110,7 @@ class UnsentListActivity : Activity() {
         })
 
         // items
-        items = prefs.getObject<Array<ScrobbleData>>(R.string.prefkey_unsent_scrobble_data)
+        items = prefs.getObjectOrNull<Array<ScrobbleData>>(R.string.prefkey_unsent_scrobble_data)
         initializeListView()
     }
 

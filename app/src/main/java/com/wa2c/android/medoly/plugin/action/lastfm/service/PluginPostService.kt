@@ -119,7 +119,7 @@ class PluginPostService : AbstractPluginService(PluginPostService::class.java.si
 
             // create scrobble list data
             var dataList: MutableList<ScrobbleData> = ArrayList()
-            val dataArray = prefs.getObject<Array<ScrobbleData>>(R.string.prefkey_unsent_scrobble_data)
+            val dataArray = prefs.getObjectOrNull<Array<ScrobbleData>>(R.string.prefkey_unsent_scrobble_data)
             if (dataArray != null)
                 dataList.addAll(Arrays.asList(*dataArray)) // load unsent data
             dataList.add(scrobbleData)
@@ -185,7 +185,7 @@ class PluginPostService : AbstractPluginService(PluginPostService::class.java.si
             result = CommandResult.FAILED
         } finally {
             // save previous media
-            prefs.putValue(PREFKEY_PREVIOUS_MEDIA_URI, propertyData.mediaUri.toString())
+            prefs.putString(PREFKEY_PREVIOUS_MEDIA_URI, propertyData.mediaUri.toString())
 
             if (result == CommandResult.AUTH_FAILED) {
                 AppUtils.showToast(context, R.string.message_account_not_auth)
