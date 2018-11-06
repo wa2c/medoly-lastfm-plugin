@@ -76,7 +76,7 @@ class MainActivity : Activity() {
 
         // Open Last.fm
         lastfmSiteButton.setOnClickListener {
-            val username = prefs.getString(R.string.prefkey_auth_username)
+            val username = prefs.getStringOrNull(R.string.prefkey_auth_username)
             val uri = if (username.isNullOrEmpty()) {
                 Uri.parse(getString(R.string.lastfm_url)) // Authorized
             } else {
@@ -109,8 +109,8 @@ class MainActivity : Activity() {
      */
     fun updateAuthMessage() {
         val prefs = Prefs(this)
-        val username = prefs.getString(R.string.prefkey_auth_username)
-        val password = prefs.getString(R.string.prefkey_auth_password)
+        val username = prefs.getStringOrNull(R.string.prefkey_auth_username)
+        val password = prefs.getStringOrNull(R.string.prefkey_auth_password)
 
         if (!username.isNullOrEmpty() && !password.isNullOrEmpty()) {
             accountAuthTextView.text = getString(R.string.message_account_auth)
