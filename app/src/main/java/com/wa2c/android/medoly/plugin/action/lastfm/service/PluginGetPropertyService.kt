@@ -47,22 +47,22 @@ class PluginGetPropertyService : AbstractPluginService(PluginGetPropertyService:
 
             // Property data
             resultProperty = PropertyData()
-            resultProperty.put(MediaProperty.TITLE, track.name)
-            resultProperty.put(MediaProperty.ARTIST, track.artist)
-            resultProperty.put(MediaProperty.ALBUM, track.album)
-            resultProperty.put(MediaProperty.MUSICBRAINZ_TRACK_ID, track.mbid)
-            resultProperty.put(MediaProperty.MUSICBRAINZ_ARTIST_ID, track.artistMbid)
-            resultProperty.put(MediaProperty.MUSICBRAINZ_RELEASE_ID, track.albumMbid)
+            resultProperty[MediaProperty.TITLE] = track.name
+            resultProperty[MediaProperty.ARTIST] = track.artist
+            resultProperty[MediaProperty.ALBUM] = track.album
+            resultProperty[MediaProperty.MUSICBRAINZ_TRACK_ID] = track.mbid
+            resultProperty[MediaProperty.MUSICBRAINZ_ARTIST_ID] = track.artistMbid
+            resultProperty[MediaProperty.MUSICBRAINZ_RELEASE_ID] = track.albumMbid
 
             // Extra data
             resultExtra = ExtraData()
             if (track.userPlaycount > 0)
-                resultExtra.put(getString(R.string.label_extra_data_user_play_count), track.userPlaycount.toString())
+                resultExtra[getString(R.string.label_extra_data_user_play_count)] = track.userPlaycount.toString()
             if (track.userPlaycount > 0)
-                resultExtra.put(getString(R.string.label_extra_data_play_count), track.playcount.toString())
+                resultExtra[getString(R.string.label_extra_data_play_count)] = track.playcount.toString()
             if (track.listeners > 0)
-                resultExtra.put(getString(R.string.label_extra_data_listener_count), track.listeners.toString())
-            resultExtra.put(getString(R.string.label_extra_data_lastfm_track_url), track.url)
+                resultExtra[getString(R.string.label_extra_data_listener_count)] = track.listeners.toString()
+            resultExtra[getString(R.string.label_extra_data_lastfm_track_url)] = track.url
             result = CommandResult.SUCCEEDED
         } catch (e: Exception) {
             Logger.e(e)

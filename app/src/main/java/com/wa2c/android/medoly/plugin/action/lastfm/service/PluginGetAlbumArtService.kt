@@ -113,9 +113,9 @@ class PluginGetAlbumArtService : AbstractPluginService(PluginGetAlbumArtService:
             }
 
             resultProperty = PropertyData()
-            resultProperty.put(AlbumArtProperty.DATA_URI, localUri.toString())
-            resultProperty.put(AlbumArtProperty.SOURCE_TITLE, getString(R.string.lastfm))
-            resultProperty.put(AlbumArtProperty.SOURCE_URI, remoteUri)
+            resultProperty[AlbumArtProperty.DATA_URI] = localUri.toString()
+            resultProperty[AlbumArtProperty.SOURCE_TITLE] = getString(R.string.lastfm)
+            resultProperty[AlbumArtProperty.SOURCE_URI] = remoteUri
             applicationContext.grantUriPermission(pluginIntent.srcPackage, localUri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
             result = CommandResult.SUCCEEDED
         } catch (e: Exception) {
