@@ -9,11 +9,11 @@ import com.wa2c.android.medoly.library.PropertyData
 import com.wa2c.android.medoly.plugin.action.lastfm.R
 import com.wa2c.android.medoly.plugin.action.lastfm.Token
 import com.wa2c.android.medoly.plugin.action.lastfm.util.AppUtils
-import com.wa2c.android.medoly.plugin.action.lastfm.util.Logger
 import de.umass.lastfm.Album
 import de.umass.lastfm.Artist
 import de.umass.lastfm.ImageSize
 import de.umass.lastfm.Track
+import timber.log.Timber
 import java.util.*
 
 
@@ -28,7 +28,7 @@ class PluginGetAlbumArtService : AbstractPluginService(PluginGetAlbumArtService:
         try {
             getAlbumArt()
         } catch (e: Exception) {
-            Logger.e(e)
+            Timber.e(e)
             //AppUtils.showToast(this, R.string.error_app);
         }
     }
@@ -119,7 +119,7 @@ class PluginGetAlbumArtService : AbstractPluginService(PluginGetAlbumArtService:
             applicationContext.grantUriPermission(pluginIntent.srcPackage, localUri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
             result = CommandResult.SUCCEEDED
         } catch (e: Exception) {
-            Logger.e(e)
+            Timber.e(e)
             resultProperty = null
             result = CommandResult.FAILED
         } finally {

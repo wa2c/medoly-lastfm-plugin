@@ -8,8 +8,8 @@ import com.wa2c.android.medoly.library.PropertyData
 import com.wa2c.android.medoly.plugin.action.lastfm.R
 import com.wa2c.android.medoly.plugin.action.lastfm.Token
 import com.wa2c.android.medoly.plugin.action.lastfm.util.AppUtils
-import com.wa2c.android.medoly.plugin.action.lastfm.util.Logger
 import de.umass.lastfm.Track
+import timber.log.Timber
 
 
 /**
@@ -23,7 +23,7 @@ class PluginGetPropertyService : AbstractPluginService(PluginGetPropertyService:
         try {
             getProperties()
         } catch (e: Exception) {
-            Logger.e(e)
+            Timber.e(e)
             //AppUtils.showToast(this, R.string.error_app);
         }
     }
@@ -65,7 +65,7 @@ class PluginGetPropertyService : AbstractPluginService(PluginGetPropertyService:
             resultExtra[getString(R.string.label_extra_data_lastfm_track_url)] = track.url
             result = CommandResult.SUCCEEDED
         } catch (e: Exception) {
-            Logger.e(e)
+            Timber.e(e)
             resultProperty = null
             resultExtra = null
             result = CommandResult.FAILED

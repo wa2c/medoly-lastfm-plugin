@@ -7,9 +7,9 @@ import com.wa2c.android.medoly.library.MediaProperty
 import com.wa2c.android.medoly.plugin.action.lastfm.R
 import com.wa2c.android.medoly.plugin.action.lastfm.Token
 import com.wa2c.android.medoly.plugin.action.lastfm.util.AppUtils
-import com.wa2c.android.medoly.plugin.action.lastfm.util.Logger
 import de.umass.lastfm.Session
 import de.umass.lastfm.Track
+import timber.log.Timber
 
 
 /**
@@ -26,7 +26,7 @@ class PluginRunService : AbstractPluginService(PluginRunService::class.java.simp
                 openLastfmPage(session)
             }
         } catch (e: Exception) {
-            Logger.e(e)
+            Timber.e(e)
             //AppUtils.showToast(this, R.string.error_app);
         }
     }
@@ -61,7 +61,7 @@ class PluginRunService : AbstractPluginService(PluginRunService::class.java.simp
             startPage(Uri.parse(track.url))
             result = CommandResult.SUCCEEDED
         } catch (e: Exception) {
-            Logger.e(e)
+            Timber.e(e)
             result = CommandResult.FAILED
         } finally {
             if (result == CommandResult.FAILED) {
@@ -87,7 +87,7 @@ class PluginRunService : AbstractPluginService(PluginRunService::class.java.simp
             startPage(siteUri)
             result = CommandResult.SUCCEEDED
         } catch (e: ActivityNotFoundException) {
-            Logger.d(e)
+            Timber.d(e)
             result = CommandResult.FAILED
         } finally {
             if (result == CommandResult.FAILED) {

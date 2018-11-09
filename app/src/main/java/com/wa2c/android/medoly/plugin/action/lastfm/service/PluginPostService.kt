@@ -5,11 +5,11 @@ import com.wa2c.android.medoly.library.MediaProperty
 import com.wa2c.android.medoly.library.PluginOperationCategory
 import com.wa2c.android.medoly.plugin.action.lastfm.R
 import com.wa2c.android.medoly.plugin.action.lastfm.util.AppUtils
-import com.wa2c.android.medoly.plugin.action.lastfm.util.Logger
 import de.umass.lastfm.Session
 import de.umass.lastfm.Track
 import de.umass.lastfm.scrobble.ScrobbleData
 import de.umass.lastfm.scrobble.ScrobbleResult
+import timber.log.Timber
 import java.util.*
 
 
@@ -36,7 +36,7 @@ class PluginPostService : AbstractPluginService(PluginPostService::class.java.si
                 unlove(session)
             }
         } catch (e: Exception) {
-            Logger.e(e)
+            Timber.e(e)
             //AppUtils.showToast(this, R.string.error_app);
         }
 
@@ -92,7 +92,7 @@ class PluginPostService : AbstractPluginService(PluginPostService::class.java.si
             else
                 CommandResult.FAILED
         } catch (e: Exception) {
-            Logger.e(e)
+            Timber.e(e)
             result = CommandResult.FAILED
         } finally {
             if (result == CommandResult.AUTH_FAILED) {
@@ -181,7 +181,7 @@ class PluginPostService : AbstractPluginService(PluginPostService::class.java.si
             // save unsent data
             prefs.putObject(R.string.prefkey_unsent_scrobble_data, dataList.toTypedArray())
         } catch (e: Exception) {
-            Logger.e(e)
+            Timber.e(e)
             result = CommandResult.FAILED
         } finally {
             // save previous media
@@ -220,7 +220,7 @@ class PluginPostService : AbstractPluginService(PluginPostService::class.java.si
             else
                 CommandResult.FAILED
         } catch (e: Exception) {
-            Logger.e(e)
+            Timber.e(e)
             result = CommandResult.FAILED
         } finally {
             if (result == CommandResult.AUTH_FAILED) {
@@ -257,7 +257,7 @@ class PluginPostService : AbstractPluginService(PluginPostService::class.java.si
             else
                 CommandResult.FAILED
         } catch (e: Exception) {
-            Logger.e(e)
+            Timber.e(e)
             result = CommandResult.FAILED
         } finally {
             if (result == CommandResult.AUTH_FAILED) {

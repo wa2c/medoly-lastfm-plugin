@@ -14,12 +14,12 @@ import com.wa2c.android.medoly.library.PropertyData
 import com.wa2c.android.medoly.plugin.action.lastfm.R
 import com.wa2c.android.medoly.plugin.action.lastfm.Token
 import com.wa2c.android.medoly.plugin.action.lastfm.util.AppUtils
-import com.wa2c.android.medoly.plugin.action.lastfm.util.Logger
 import com.wa2c.android.prefs.Prefs
 import de.umass.lastfm.Authenticator
 import de.umass.lastfm.Caller
 import de.umass.lastfm.Session
 import de.umass.lastfm.cache.FileSystemCache
+import timber.log.Timber
 import java.io.File
 
 
@@ -62,7 +62,7 @@ abstract class AbstractPluginService(name: String) : IntentService(name) {
 
     @SuppressLint("NewApi")
     override fun onHandleIntent(intent: Intent?) {
-        Logger.d("onHandleIntent")
+        Timber.d("onHandleIntent")
 
         var notificationManager : NotificationManager? = null
         try {
@@ -91,7 +91,7 @@ abstract class AbstractPluginService(name: String) : IntentService(name) {
             createSession()
 
         } catch (e: Exception) {
-            Logger.e(e)
+            Timber.e(e)
         } finally {
             if (notificationManager != null) {
                 notificationManager.deleteNotificationChannel(NOTIFICATION_CHANNEL_ID)
@@ -103,7 +103,7 @@ abstract class AbstractPluginService(name: String) : IntentService(name) {
 
     override fun onDestroy() {
         super.onDestroy()
-        Logger.d("onDestroy: " + this.javaClass.simpleName)
+        Timber.d("onDestroy: " + this.javaClass.simpleName)
         sendResult(null)
     }
 

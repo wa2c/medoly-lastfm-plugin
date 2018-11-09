@@ -14,11 +14,11 @@ import android.widget.ListView
 import com.wa2c.android.medoly.plugin.action.lastfm.R
 import com.wa2c.android.medoly.plugin.action.lastfm.dialog.ConfirmDialogFragment
 import com.wa2c.android.medoly.plugin.action.lastfm.util.AppUtils
-import com.wa2c.android.medoly.plugin.action.lastfm.util.Logger
 import com.wa2c.android.prefs.Prefs
 import de.umass.lastfm.scrobble.ScrobbleData
 import kotlinx.android.synthetic.main.activity_unsent_list.*
 import kotlinx.android.synthetic.main.layout_unsent_list_item.view.*
+import timber.log.Timber
 import java.util.*
 
 
@@ -99,7 +99,7 @@ class UnsentListActivity : Activity() {
                         items = dataArray
                         checkedSet.clear()
                     } catch (e: Exception) {
-                        Logger.e(e)
+                        Timber.e(e)
                         AppUtils.showToast(applicationContext, R.string.message_unsent_delete_failure)
                     }
 

@@ -42,9 +42,9 @@ dependencies {
     implementation 'com.wa2c.android:medolylibrary:1.2.4'
     // Prefs
     implementation 'com.wa2c.android:prefs:0.1.0'
-    // Support library
-    //implementation 'com.android.support:support-v4:26.1.0'
 
+    // https://mvnrepository.com/artifact/com.jakewharton.timber/timber
+    implementation group: 'com.jakewharton.timber', name: 'timber', version: '4.7.1'
     // https://mvnrepository.com/artifact/de.u-mass/lastfm-java
     //compile group: 'de.u-mass', name: 'lastfm-java', version: '0.1.2'
     implementation files('libs/lastfm-java-0.1.2-fix.jar')

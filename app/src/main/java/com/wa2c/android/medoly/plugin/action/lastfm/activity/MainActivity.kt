@@ -11,13 +11,13 @@ import com.wa2c.android.medoly.plugin.action.lastfm.R
 import com.wa2c.android.medoly.plugin.action.lastfm.Token
 import com.wa2c.android.medoly.plugin.action.lastfm.dialog.AuthDialogFragment
 import com.wa2c.android.medoly.plugin.action.lastfm.util.AppUtils
-import com.wa2c.android.medoly.plugin.action.lastfm.util.Logger
 import com.wa2c.android.prefs.Prefs
 import de.umass.lastfm.Authenticator
 import de.umass.lastfm.Caller
 import de.umass.lastfm.cache.FileSystemCache
 import de.umass.util.StringUtilities
 import kotlinx.android.synthetic.main.activity_main.*
+import timber.log.Timber
 import java.io.File
 import java.lang.ref.WeakReference
 
@@ -50,7 +50,7 @@ class MainActivity : Activity() {
                         val password = dialogFragment.password
                         AsyncAuthTask(this, username, password).execute()
                     } catch (e: Exception) {
-                        Logger.e(e)
+                        Timber.e(e)
                         // Failed
                         prefs.remove(R.string.prefkey_auth_username)
                         prefs.remove(R.string.prefkey_auth_password)
@@ -144,7 +144,7 @@ class MainActivity : Activity() {
                     val session = Authenticator.getMobileSession(username, password, Token.getConsumerKey(context), Token.getConsumerSecret(context))
                     return session != null
                 } catch (e: Exception) {
-                    Logger.e(e)
+                    Timber.e(e)
                     return false
                 }
             }
