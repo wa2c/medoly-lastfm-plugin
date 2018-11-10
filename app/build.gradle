@@ -28,6 +28,10 @@ android {
             options.compilerArgs << "-Xlint:deprecation"
         }
     }
+
+    packagingOptions {
+        exclude 'META-INF/LICENSE'
+    }
 }
 
 repositories {

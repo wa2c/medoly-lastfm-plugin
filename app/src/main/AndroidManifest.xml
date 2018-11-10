@@ -17,6 +17,7 @@
             android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
@@ -52,7 +53,7 @@
         <receiver
             android:name=".service.PluginReceivers$EventScrobbleReceiver"
             android:exported="true"
-            android:icon="@drawable/ic_action_post"
+            android:icon="@drawable/ic_post"
             android:label="@string/label_event_scrobble">
             <intent-filter>
                 <action android:name="com.wa2c.android.medoly.plugin.action.ACTION_MEDIA" />
@@ -67,7 +68,7 @@
         <receiver
             android:name=".service.PluginReceivers$EventNowPlayingReceiver"
             android:exported="true"
-            android:icon="@drawable/ic_action_post"
+            android:icon="@drawable/ic_post"
             android:label="@string/label_event_now_playing">
             <intent-filter>
                 <action android:name="com.wa2c.android.medoly.plugin.action.ACTION_MEDIA" />
@@ -82,7 +83,7 @@
         <receiver
             android:name=".service.PluginReceivers$EventGetAlbumArtReceiver"
             android:exported="true"
-            android:icon="@drawable/ic_action_image"
+            android:icon="@drawable/ic_image"
             android:label="@string/label_execute_get_album_art">
             <intent-filter>
                 <action android:name="com.wa2c.android.medoly.plugin.action.ACTION_MEDIA" />
@@ -98,7 +99,7 @@
         <receiver
             android:name=".service.PluginReceivers$EventGetPropertyReceiver"
             android:exported="true"
-            android:icon="@drawable/ic_action_property"
+            android:icon="@drawable/ic_info"
             android:label="@string/label_execute_get_property">
             <intent-filter>
                 <action android:name="com.wa2c.android.medoly.plugin.action.ACTION_MEDIA" />
@@ -117,7 +118,7 @@
         <receiver
             android:name=".service.PluginReceivers$ExecuteLoveReceiver"
             android:exported="true"
-            android:icon="@drawable/ic_action_love"
+            android:icon="@drawable/ic_love"
             android:label="@string/label_execute_love">
             <intent-filter>
                 <action android:name="com.wa2c.android.medoly.plugin.action.ACTION_MEDIA" />
@@ -131,7 +132,7 @@
         <receiver
             android:name=".service.PluginReceivers$ExecuteUnLoveReceiver"
             android:exported="true"
-            android:icon="@drawable/ic_action_unlove"
+            android:icon="@drawable/ic_unlove"
             android:label="@string/label_execute_unlove">
             <intent-filter>
                 <action android:name="com.wa2c.android.medoly.plugin.action.ACTION_MEDIA" />
@@ -145,7 +146,7 @@
         <receiver
             android:name=".service.PluginReceivers$ExecuteGetAlbumArtReceiver"
             android:exported="true"
-            android:icon="@drawable/ic_action_image"
+            android:icon="@drawable/ic_image"
             android:label="@string/label_execute_get_album_art">
             <intent-filter>
                 <action android:name="com.wa2c.android.medoly.plugin.action.ACTION_MEDIA" />
@@ -159,7 +160,7 @@
         <receiver
             android:name=".service.PluginReceivers$ExecuteGetPropertyReceiver"
             android:exported="true"
-            android:icon="@drawable/ic_action_property"
+            android:icon="@drawable/ic_info"
             android:label="@string/label_execute_get_property">
             <intent-filter>
                 <action android:name="com.wa2c.android.medoly.plugin.action.ACTION_MEDIA" />
@@ -173,7 +174,7 @@
         <receiver
             android:name=".service.PluginReceivers$ExecuteTrackPageReceiver"
             android:exported="true"
-            android:icon="@drawable/ic_action_page_track"
+            android:icon="@drawable/ic_track"
             android:label="@string/label_execute_page_track">
             <intent-filter>
                 <action android:name="com.wa2c.android.medoly.plugin.action.ACTION_MEDIA" />
@@ -187,7 +188,7 @@
         <receiver
             android:name=".service.PluginReceivers$ExecuteLastfmSiteReceiver"
             android:exported="true"
-            android:icon="@drawable/ic_action_lastfm"
+            android:icon="@drawable/ic_lastfm"
             android:label="@string/label_execute_site">
             <intent-filter>
                 <action android:name="com.wa2c.android.medoly.plugin.action.ACTION_MEDIA" />
