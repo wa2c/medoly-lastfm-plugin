@@ -22,9 +22,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_margin="@dimen/main_button_margin"
-                android:text="@string/label_button_account_auth"
+                android:drawableStart="@drawable/ic_account"
                 android:drawableLeft="@drawable/ic_account"
-                android:drawableStart="@drawable/ic_account" />
+                android:text="@string/label_button_account_auth" />
 
             <Button
                 android:id="@+id/unsentListButton"
@@ -32,9 +32,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_margin="@dimen/main_button_margin"
-                android:text="@string/title_activity_unsent_list"
+                android:drawableStart="@drawable/ic_list"
                 android:drawableLeft="@drawable/ic_list"
-                android:drawableStart="@drawable/ic_list" />
+                android:text="@string/title_activity_unsent_list" />
 
             <Button
                 android:id="@+id/settingsButton"
@@ -42,9 +42,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_margin="@dimen/main_button_margin"
-                android:text="@string/label_button_settings"
+                android:drawableStart="@drawable/ic_settings"
                 android:drawableLeft="@drawable/ic_settings"
-                android:drawableStart="@drawable/ic_settings"/>
+                android:text="@string/label_button_settings" />
 
             <Button
                 android:id="@+id/lastfmSiteButton"
@@ -52,9 +52,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_margin="@dimen/main_button_margin"
-                android:text="@string/label_button_lastfm_site"
+                android:drawableStart="@drawable/ic_lastfm"
                 android:drawableLeft="@drawable/ic_lastfm"
-                android:drawableStart="@drawable/ic_lastfm"/>
+                android:text="@string/label_button_lastfm_site" />
 
             <Button
                 android:id="@+id/launchMedolyButton"
@@ -62,6 +62,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_margin="@dimen/main_button_margin"
+                android:drawableStart="@drawable/ic_medoly"
+                android:drawableLeft="@drawable/ic_medoly"
                 android:text="@string/label_button_launch_medoly" />
 
             <TextView
