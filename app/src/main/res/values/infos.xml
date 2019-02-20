@@ -63,14 +63,14 @@
     <!-- Get property event -->
     <string-array name="event_get_property_operation_values">
         <item />
-        <item>OPERATION_MEDIA_OPEN</item>
-        <item>OPERATION_PLAY_START</item>
+        <item>com.wa2c.android.medoly.plugin.category.OPERATION_MEDIA_OPEN</item>
+        <item>com.wa2c.android.medoly.plugin.category.OPERATION_PLAY_START</item>
     </string-array>
     <!-- Get album art event -->
     <string-array name="event_get_album_art_operation_values">
         <item />
-        <item>OPERATION_MEDIA_OPEN</item>
-        <item>OPERATION_PLAY_START</item>
+        <item>com.wa2c.android.medoly.plugin.category.OPERATION_MEDIA_OPEN</item>
+        <item>com.wa2c.android.medoly.plugin.category.OPERATION_PLAY_START</item>
     </string-array>
 
 </resources>
