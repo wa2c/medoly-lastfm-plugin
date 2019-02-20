@@ -119,25 +119,11 @@
     <string name="pref_title_about">About</string>
     <string name="pref_summary_about">About</string>
 
-
     <!-- System -->
     <string name="error_app">エラーが発生したため、操作に失敗しました。</string>
     <string name="error_dialog_dismissed">ダイアログ操作に失敗しました。再度ダイアログを開いてください。</string>
 
-
     <!-- List -->
-
-    <!-- Get property event -->
-    <string-array name="event_get_property_operation_entries">
-        <item>イベント無効</item>
-        <item>@string/label_plugin_operation_media_open</item>
-        <item>@string/label_plugin_operation_play_start</item>
-    </string-array>
-    <!-- Get album art event -->
-    <string-array name="event_get_album_art_operation_entries">
-        <item>イベント無効</item>
-        <item>@string/label_plugin_operation_media_open</item>
-        <item>@string/label_plugin_operation_play_start</item>
-    </string-array>
+    <string name="label_plugin_operation_invalid">イベント無効</string>
 
 </resources>

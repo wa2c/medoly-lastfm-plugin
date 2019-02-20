@@ -47,6 +47,8 @@
     <string name="prefkey_application_details">application_details</string>
     <string name="prefkey_about">about</string>
 
+    <string name="prefkey_app_version_code">app_version_code</string>
+
     <!-- Default -->
     <bool name="pref_default_now_playing_enabled">true</bool>
     <bool name="pref_default_scrobble_enabled">true</bool>
@@ -66,11 +68,23 @@
         <item>com.wa2c.android.medoly.plugin.category.OPERATION_MEDIA_OPEN</item>
         <item>com.wa2c.android.medoly.plugin.category.OPERATION_PLAY_START</item>
     </string-array>
+    <string-array name="event_get_property_operation_entries">
+        <item>@string/label_plugin_operation_invalid</item>
+        <item>@string/label_plugin_operation_media_open</item>
+        <item>@string/label_plugin_operation_play_start</item>
+    </string-array>
+
     <!-- Get album art event -->
     <string-array name="event_get_album_art_operation_values">
         <item />
         <item>com.wa2c.android.medoly.plugin.category.OPERATION_MEDIA_OPEN</item>
         <item>com.wa2c.android.medoly.plugin.category.OPERATION_PLAY_START</item>
     </string-array>
+    <string-array name="event_get_album_art_operation_entries">
+        <item>@string/label_plugin_operation_invalid</item>
+        <item>@string/label_plugin_operation_media_open</item>
+        <item>@string/label_plugin_operation_play_start</item>
+    </string-array>
+
 
 </resources>
