@@ -36,21 +36,8 @@ abstract class AbstractDialogFragment : DialogFragment() {
         shownDialogMap[key]?.dismiss()
 
         super.show(activity.fragmentManager, key)
-        shownDialogMap.put(key, this)
+        shownDialogMap[key] = this
     }
-
-    /**
-     * Show dialog.
-     * @param fragment A fragment.
-     */
-    fun show(fragment: Fragment) {
-        val key = this.javaClass.name
-        shownDialogMap[key]?.dismiss()
-
-        super.show(fragment.fragmentManager, key)
-        shownDialogMap.put(key, this)
-    }
-
 
     /**
      * On create dialog event.
@@ -66,13 +53,6 @@ abstract class AbstractDialogFragment : DialogFragment() {
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         dialog?.cancel() // close on rotation
-    }
-
-    /**
-     * On start event.
-     */
-    override fun onStart() {
-        super.onStart()
     }
 
     /**

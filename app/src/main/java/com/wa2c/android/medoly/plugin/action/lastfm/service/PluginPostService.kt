@@ -190,10 +190,10 @@ class PluginPostService : AbstractPluginService(PluginPostService::class.java.si
             if (result == CommandResult.AUTH_FAILED) {
                 AppUtils.showToast(context, R.string.message_account_not_auth)
             } else if (result == CommandResult.SUCCEEDED) {
-                if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_EXECUTE) || prefs.getBoolean(R.string.prefkey_post_success_message_show))
+                if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_EXECUTE) || prefs.getBoolean(R.string.prefkey_post_success_message_show, defRes = R.bool.pref_default_post_success_message_show))
                     AppUtils.showToast(context, getString(R.string.message_post_success, propertyData.getFirst(MediaProperty.TITLE)))
             } else if (result == CommandResult.FAILED) {
-                if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_EXECUTE) || prefs.getBoolean(R.string.prefkey_post_failure_message_show, true))
+                if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_EXECUTE) || prefs.getBoolean(R.string.prefkey_post_failure_message_show, defRes = R.bool.pref_default_post_failure_message_show))
                     AppUtils.showToast(context, R.string.message_post_failure)
             }
         }

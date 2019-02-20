@@ -4,7 +4,6 @@ apply plugin: 'kotlin-android-extensions'
 
 android {
     compileSdkVersion 26
-    //buildToolsVersion '28.0.3'
 
     defaultConfig {
         applicationId "com.wa2c.android.medoly.plugin.action.lastfm"
@@ -43,9 +42,9 @@ repositories {
 
 dependencies {
     // Medoly library
-    implementation 'com.wa2c.android:medolylibrary:1.2.4'
+    implementation 'com.wa2c.android:medolylibrary:1.2.5'
     // Prefs
-    implementation 'com.wa2c.android:prefs:0.1.0'
+    implementation 'com.wa2c.android:prefs:0.1.1'
 
     // https://mvnrepository.com/artifact/com.jakewharton.timber/timber
     implementation group: 'com.jakewharton.timber', name: 'timber', version: '4.7.1'

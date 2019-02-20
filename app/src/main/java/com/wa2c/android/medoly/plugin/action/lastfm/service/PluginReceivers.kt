@@ -45,19 +45,19 @@ class PluginReceivers {
                 }
                 if (this is EventNowPlayingReceiver) {
                     // enabled
-                    if ( !prefs.getBoolean(R.string.prefkey_now_playing_enabled)) {
+                    if ( !prefs.getBoolean(R.string.prefkey_now_playing_enabled, defRes = R.bool.pref_default_now_playing_enabled) ) {
                         return
                     }
                 }
                 if (this is EventScrobbleReceiver) {
                     // enabled
-                    if (!prefs.getBoolean(R.string.prefkey_scrobble_enabled)) {
+                    if (!prefs.getBoolean(R.string.prefkey_scrobble_enabled, defRes = R.bool.pref_default_scrobble_enabled)) {
                         return
                     }
                     // previous media
                     val mediaUriText = propertyData.mediaUri.toString()
                     val previousMediaUri = prefs.getString(AbstractPluginService.PREFKEY_PREVIOUS_MEDIA_URI)
-                    val previousMediaEnabled = prefs.getBoolean(R.string.prefkey_previous_media_enabled)
+                    val previousMediaEnabled = prefs.getBoolean(R.string.prefkey_previous_media_enabled, defRes = R.bool.pref_default_previous_media_enabled)
                     if (!previousMediaEnabled && !mediaUriText.isEmpty() && !previousMediaUri.isEmpty() && mediaUriText == previousMediaUri) {
                         return
                     }
@@ -83,7 +83,7 @@ class PluginReceivers {
                     return
                 }
                 // operation
-                val operation = try { PluginOperationCategory.valueOf(prefs.getString(R.string.prefkey_event_get_album_art_operation)) } catch (ignore : Exception) { null }
+                val operation = prefs.getString(R.string.prefkey_event_get_album_art_operation, defRes = R.string.pref_default_event_get_album_art_operation)
                 if (!pluginIntent.hasCategory(PluginOperationCategory.OPERATION_EXECUTE) && !pluginIntent.hasCategory(operation)) {
                     AppUtils.sendResult(context, pluginIntent)
                     return
@@ -109,7 +109,7 @@ class PluginReceivers {
                     return
                 }
                 // operation
-                val operation = prefs.getString(R.string.prefkey_event_get_property_operation)
+                val operation = prefs.getString(R.string.prefkey_event_get_property_operation, defRes = R.string.pref_default_event_get_property_operation)
                 if (!pluginIntent.hasCategory(PluginOperationCategory.OPERATION_EXECUTE) && !pluginIntent.hasCategory(operation)) {
                     AppUtils.sendResult(context, pluginIntent)
                     return

@@ -109,8 +109,8 @@ class MainActivity : Activity() {
      */
     fun updateAuthMessage() {
         val prefs = Prefs(this)
-        val username = prefs.getStringOrNull(R.string.prefkey_auth_username)
-        val password = prefs.getStringOrNull(R.string.prefkey_auth_password)
+        val username: String? = prefs[R.string.prefkey_auth_username]
+        val password: String? = prefs[R.string.prefkey_auth_password]
 
         if (!username.isNullOrEmpty() && !password.isNullOrEmpty()) {
             accountAuthTextView.text = getString(R.string.message_account_auth)
@@ -153,8 +153,8 @@ class MainActivity : Activity() {
                 val context = weakActivity.get() ?: return
                 val prefs = Prefs(context)
                 if (result) {
-                    prefs.putString(R.string.prefkey_auth_username, username)
-                    prefs.putString(R.string.prefkey_auth_password, password)
+                    prefs[R.string.prefkey_auth_username] = username
+                    prefs[R.string.prefkey_auth_password] = password
                     AppUtils.showToast(context, R.string.message_auth_success) // Succeed
                 } else {
                     prefs.remove(R.string.prefkey_auth_username)

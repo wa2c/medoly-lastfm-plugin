@@ -48,7 +48,14 @@
     <string name="prefkey_about">about</string>
 
     <!-- Default -->
+    <bool name="pref_default_now_playing_enabled">true</bool>
+    <bool name="pref_default_scrobble_enabled">true</bool>
+    <string name="pref_default_event_get_property_operation">@string/empty_value</string>
+    <string name="pref_default_event_get_album_art_operation">@string/empty_value</string>
+    <bool name="pref_default_previous_media_enabled">true</bool>
     <integer name="pref_default_unsent_max">1000</integer>
+    <bool name="pref_default_post_success_message_show">false</bool>
+    <bool name="pref_default_post_failure_message_show">true</bool>
 
 
     <!-- List -->

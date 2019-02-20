@@ -4,25 +4,25 @@
     <PreferenceCategory android:title="@string/title_preference_category_event">
 
         <CheckBoxPreference
-            android:defaultValue="true"
+            android:defaultValue="@bool/pref_default_now_playing_enabled"
             android:key="@string/prefkey_now_playing_enabled"
             android:summary="@string/pref_summary_now_playing_enabled"
             android:title="@string/pref_title_now_playing_enabled" />
 
         <CheckBoxPreference
-            android:defaultValue="true"
+            android:defaultValue="@bool/pref_default_scrobble_enabled"
             android:key="@string/prefkey_scrobble_enabled"
             android:summary="@string/pref_summary_scrobble_enabled"
             android:title="@string/pref_title_scrobble_enabled" />
 
         <CheckBoxPreference
-            android:defaultValue="true"
+            android:defaultValue="@bool/pref_default_previous_media_enabled"
             android:key="@string/prefkey_previous_media_enabled"
             android:summary="@string/pref_summary_previous_media_enabled"
             android:title="@string/pref_title_previous_media_enabled" />
 
         <ListPreference
-            android:defaultValue="@string/empty_value"
+            android:defaultValue="@string/pref_default_event_get_property_operation"
             android:entries="@array/event_get_property_operation_entries"
             android:entryValues="@array/event_get_property_operation_values"
             android:key="@string/prefkey_event_get_property_operation"
@@ -30,7 +30,7 @@
             android:title="@string/pref_title_event_get_property_operation" />
 
         <ListPreference
-            android:defaultValue="@string/empty_value"
+            android:defaultValue="@string/pref_default_event_get_album_art_operation"
             android:entries="@array/event_get_album_art_operation_entries"
             android:entryValues="@array/event_get_album_art_operation_values"
             android:key="@string/prefkey_event_get_album_art_operation"
@@ -47,13 +47,13 @@
             android:title="@string/pref_title_unsent_max" />
 
         <CheckBoxPreference
-            android:defaultValue="false"
+            android:defaultValue="@bool/pref_default_post_success_message_show"
             android:key="@string/prefkey_post_success_message_show"
             android:summary="@string/pref_summary_post_success_message_show"
             android:title="@string/pref_title_post_success_message_show" />
 
         <CheckBoxPreference
-            android:defaultValue="true"
+            android:defaultValue="@bool/pref_default_post_failure_message_show"
             android:key="@string/prefkey_post_failure_message_show"
             android:summary="@string/pref_summary_post_failure_message_show"
             android:title="@string/pref_title_post_failure_message_show" />
