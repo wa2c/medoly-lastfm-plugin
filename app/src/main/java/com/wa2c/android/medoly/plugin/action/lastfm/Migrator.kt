@@ -1,6 +1,7 @@
 package com.wa2c.android.medoly.plugin.action.lastfm
 
 import android.content.Context
+import com.wa2c.android.medoly.library.PluginOperationCategory
 import com.wa2c.android.prefs.Prefs
 import timber.log.Timber
 
@@ -68,18 +69,18 @@ class Migrator(private val context: Context) {
             return
 
         // Get Property
-        val property: String? = prefs[R.string.pref_default_event_get_property_operation]
+        val property: String? = prefs[R.string.prefkey_event_get_property_operation]
         if (property == "OPERATION_MEDIA_OPEN")
-            prefs[R.string.pref_default_event_get_property_operation] = "com.wa2c.android.medoly.plugin.category.OPERATION_MEDIA_OPEN"
+            prefs[R.string.prefkey_event_get_property_operation] = PluginOperationCategory.OPERATION_MEDIA_OPEN.categoryValue
         else if (property == "OPERATION_PLAY_START")
-            prefs[R.string.pref_default_event_get_property_operation] = "com.wa2c.android.medoly.plugin.category.OPERATION_PLAY_START"
+            prefs[R.string.prefkey_event_get_property_operation] = PluginOperationCategory.OPERATION_PLAY_START.categoryValue
 
         // Get Album Art
-        val albumArt: String? = prefs[R.string.pref_default_event_get_album_art_operation]
+        val albumArt: String? = prefs[R.string.prefkey_event_get_album_art_operation]
         if (albumArt == "OPERATION_MEDIA_OPEN")
-            prefs[R.string.pref_default_event_get_album_art_operation] = "com.wa2c.android.medoly.plugin.category.OPERATION_MEDIA_OPEN"
+            prefs[R.string.prefkey_event_get_album_art_operation] = PluginOperationCategory.OPERATION_MEDIA_OPEN.categoryValue
         else if (albumArt == "OPERATION_PLAY_START")
-            prefs[R.string.pref_default_event_get_album_art_operation] = "com.wa2c.android.medoly.plugin.category.OPERATION_PLAY_START"
+            prefs[R.string.prefkey_event_get_album_art_operation] = PluginOperationCategory.OPERATION_PLAY_START.categoryValue
     }
 
 }
