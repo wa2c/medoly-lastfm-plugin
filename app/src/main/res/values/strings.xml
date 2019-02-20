@@ -41,8 +41,10 @@
     <string name="message_unban_success">\"%1$s\" was removed from ban tracks.</string>
     <string name="message_unban_failure">Failed to remove from ban tracks.</string>
     <string name="message_page_failure">Failed to open the page.</string>
-    <string name="message_get_data_success">Succeeded to get the data.</string>
-    <string name="message_get_data_failure">Failed to get the data.</string>
+    <string name="message_get_property_success">Succeeded to get the properties.</string>
+    <string name="message_get_property_failure">Failed to get the properties.</string>
+    <string name="message_get_album_art_success">Succeeded to get the album art.</string>
+    <string name="message_get_album_art_failure">Failed to get the album art.</string>
     <string name="message_auth_success">Succeeded to authenticate Last.fm.</string>
     <string name="message_auth_failure">Failed to authenticate Last.fm.</string>
 

@@ -187,15 +187,10 @@ class PluginPostService : AbstractPluginService(PluginPostService::class.java.si
             // save previous media
             prefs.putString(PREFKEY_PREVIOUS_MEDIA_URI, propertyData.mediaUri.toString())
 
-            if (result == CommandResult.AUTH_FAILED) {
-                AppUtils.showToast(context, R.string.message_account_not_auth)
-            } else if (result == CommandResult.SUCCEEDED) {
-                if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_EXECUTE) || prefs.getBoolean(R.string.prefkey_post_success_message_show, defRes = R.bool.pref_default_post_success_message_show))
-                    AppUtils.showToast(context, getString(R.string.message_post_success, propertyData.getFirst(MediaProperty.TITLE)))
-            } else if (result == CommandResult.FAILED) {
-                if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_EXECUTE) || prefs.getBoolean(R.string.prefkey_post_failure_message_show, defRes = R.bool.pref_default_post_failure_message_show))
-                    AppUtils.showToast(context, R.string.message_post_failure)
-            }
+            // show message
+            val succeeded = getString(R.string.message_post_success, propertyData.getFirst(MediaProperty.TITLE))
+            val failed = getString(R.string.message_post_failure)
+            showMessage(result, succeeded, failed)
         }
     }
 
@@ -223,15 +218,10 @@ class PluginPostService : AbstractPluginService(PluginPostService::class.java.si
             Timber.e(e)
             result = CommandResult.FAILED
         } finally {
-            if (result == CommandResult.AUTH_FAILED) {
-                AppUtils.showToast(context, R.string.message_account_not_auth)
-            } else if (result == CommandResult.SUCCEEDED) {
-                if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_EXECUTE) || prefs.getBoolean(R.string.prefkey_post_success_message_show))
-                    AppUtils.showToast(context, context.getString(R.string.message_love_success, propertyData.getFirst(MediaProperty.TITLE)))
-            } else if (result == CommandResult.FAILED) {
-                if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_EXECUTE) || prefs.getBoolean(R.string.prefkey_post_failure_message_show, true))
-                    AppUtils.showToast(context, R.string.message_love_failure)
-            }
+            // show message
+            val succeeded = getString(R.string.message_love_success, propertyData.getFirst(MediaProperty.TITLE))
+            val failed = getString(R.string.message_love_failure)
+            showMessage(result, succeeded, failed)
         }
     }
 
@@ -260,15 +250,10 @@ class PluginPostService : AbstractPluginService(PluginPostService::class.java.si
             Timber.e(e)
             result = CommandResult.FAILED
         } finally {
-            if (result == CommandResult.AUTH_FAILED) {
-                AppUtils.showToast(context, R.string.message_account_not_auth)
-            } else if (result == CommandResult.SUCCEEDED) {
-                if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_EXECUTE) || prefs.getBoolean(R.string.prefkey_post_success_message_show))
-                    AppUtils.showToast(context, context.getString(R.string.message_unlove_success, propertyData.getFirst(MediaProperty.TITLE)))
-            } else if (result == CommandResult.FAILED) {
-                if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_EXECUTE) || prefs.getBoolean(R.string.prefkey_post_failure_message_show, true))
-                    AppUtils.showToast(context, R.string.message_unlove_failure)
-            }
+            // show message
+            val succeeded = getString(R.string.message_unlove_success, propertyData.getFirst(MediaProperty.TITLE))
+            val failed = getString(R.string.message_unlove_failure)
+            showMessage(result, succeeded, failed)
         }
     }
 

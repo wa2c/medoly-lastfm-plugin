@@ -4,7 +4,6 @@ import android.content.Intent
 import android.net.Uri
 import com.wa2c.android.medoly.library.AlbumArtProperty
 import com.wa2c.android.medoly.library.MediaProperty
-import com.wa2c.android.medoly.library.PluginOperationCategory
 import com.wa2c.android.medoly.library.PropertyData
 import com.wa2c.android.medoly.plugin.action.lastfm.R
 import com.wa2c.android.medoly.plugin.action.lastfm.Token
@@ -124,13 +123,11 @@ class PluginGetAlbumArtService : AbstractPluginService(PluginGetAlbumArtService:
             result = CommandResult.FAILED
         } finally {
             sendResult(resultProperty)
-            if (result == CommandResult.SUCCEEDED) {
-                if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_EXECUTE) || prefs.getBoolean(R.string.prefkey_post_success_message_show))
-                    AppUtils.showToast(context, R.string.message_get_data_success)
-            } else if (result == CommandResult.FAILED) {
-                if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_EXECUTE) || prefs.getBoolean(R.string.prefkey_post_failure_message_show, true))
-                    AppUtils.showToast(context, R.string.message_get_data_failure)
-            }
+
+            // show message
+            val succeeded = getString(R.string.message_get_album_art_success)
+            val failed = getString(R.string.message_get_album_art_failure)
+            showMessage(result, succeeded, failed)
         }
     }
 

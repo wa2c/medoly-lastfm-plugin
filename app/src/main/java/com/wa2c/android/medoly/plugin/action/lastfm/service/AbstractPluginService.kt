@@ -8,9 +8,7 @@ import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import com.wa2c.android.medoly.library.ExtraData
-import com.wa2c.android.medoly.library.MediaPluginIntent
-import com.wa2c.android.medoly.library.PropertyData
+import com.wa2c.android.medoly.library.*
 import com.wa2c.android.medoly.plugin.action.lastfm.R
 import com.wa2c.android.medoly.plugin.action.lastfm.Token
 import com.wa2c.android.medoly.plugin.action.lastfm.util.AppUtils
@@ -120,6 +118,22 @@ abstract class AbstractPluginService(name: String) : IntentService(name) {
             username = prefs.getString(R.string.prefkey_auth_username)
             session = Authenticator.getMobileSession(username, prefs.getString(R.string.prefkey_auth_password), Token.getConsumerKey(context), Token.getConsumerSecret(context))
         } catch (e : Exception) {
+        }
+    }
+
+    fun showMessage(result: CommandResult, succeededMessage: String, failedMessage: String) {
+        if (result == CommandResult.AUTH_FAILED) {
+            AppUtils.showToast(context, R.string.message_account_not_auth)
+        } else if (result == CommandResult.NO_MEDIA) {
+            AppUtils.showToast(context, R.string.message_no_media)
+        } else if (result == CommandResult.SUCCEEDED) {
+            if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_EXECUTE) || prefs.getBoolean(R.string.prefkey_post_success_message_show, defRes = R.bool.pref_default_post_success_message_show)) {
+                AppUtils.showToast(context, succeededMessage)
+            }
+        } else if (result == CommandResult.FAILED) {
+            if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_EXECUTE) || prefs.getBoolean(R.string.prefkey_post_failure_message_show, defRes = R.bool.pref_default_post_failure_message_show)) {
+                AppUtils.showToast(context, failedMessage)
+            }
         }
     }
 

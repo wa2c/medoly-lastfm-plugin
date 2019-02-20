@@ -41,8 +41,10 @@
     <string name="message_unban_success">\"%1$s\" を禁止トラックから削除しました。</string>
     <string name="message_unban_failure">禁止トラックの削除に失敗しました。</string>
     <string name="message_page_failure">ページが開けません。</string>
-    <string name="message_get_data_success">データの取得に成功しました。</string>
-    <string name="message_get_data_failure">データの取得に失敗しました。</string>
+    <string name="message_get_property_success">プロパティの取得に成功しました。</string>
+    <string name="message_get_property_failure">プロパティの取得に失敗しました。</string>
+    <string name="message_get_album_art_success">アルバムアートの取得に成功しました。</string>
+    <string name="message_get_album_art_failure">アルバムアートの取得に失敗しました。</string>
     <string name="message_auth_success">Last.fmの認証に成功しました。</string>
     <string name="message_auth_failure">Last.fmの認証に失敗しました。</string>
 
