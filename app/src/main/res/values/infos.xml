@@ -20,9 +20,13 @@
     <!-- Library  -->
     <string-array name="about_library_names">
         <item>lastfm-java</item>
+        <item>Dynamic Toasts</item>
+        <item>Timber</item>
     </string-array>
     <string-array name="about_library_urls">
         <item>https://code.google.com/p/lastfm-java/</item>
+        <item>https://github.com/pranavpandey/dynamic-toasts</item>
+        <item>https://github.com/JakeWharton/timber</item>
     </string-array>
 
     <!-- Last.fm info -->
