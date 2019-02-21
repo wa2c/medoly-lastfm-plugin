@@ -66,4 +66,4 @@ fastlane/readme.md
 
 # app
 misc.xml
-Token.kt
+token.gradle

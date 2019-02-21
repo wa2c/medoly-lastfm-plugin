@@ -55,7 +55,7 @@ class PluginRunService : AbstractPluginService(PluginRunService::class.java.simp
             val track = if (session != null) {
                 Track.getInfo(artistText, trackText, null, session.username, session.apiKey)
             } else {
-                Track.getInfo(artistText, trackText, Token.getConsumerKey(context))
+                Track.getInfo(artistText, trackText, Token.getConsumerKey())
             }
 
             startPage(Uri.parse(track.url))

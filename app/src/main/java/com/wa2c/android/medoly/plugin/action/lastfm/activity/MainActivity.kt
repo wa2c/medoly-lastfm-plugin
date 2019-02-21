@@ -141,7 +141,7 @@ class MainActivity : Activity() {
                     Caller.getInstance().cache = FileSystemCache(File(context.externalCacheDir.path + File.separator + "last.fm"))
 
                     // 認証
-                    val session = Authenticator.getMobileSession(username, password, Token.getConsumerKey(context), Token.getConsumerSecret(context))
+                    val session = Authenticator.getMobileSession(username, password, Token.getConsumerKey(), Token.getConsumerSecret())
                     return session != null
                 } catch (e: Exception) {
                     Timber.e(e)

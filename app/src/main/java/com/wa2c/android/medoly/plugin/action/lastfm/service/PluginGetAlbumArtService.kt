@@ -51,7 +51,7 @@ class PluginGetAlbumArtService : AbstractPluginService(PluginGetAlbumArtService:
                 val album = if (session != null) {
                     Album.getInfo(artistText, albumText, session?.username, session?.apiKey)
                 } else {
-                    Album.getInfo(artistText, albumText, Token.getConsumerKey(context))
+                    Album.getInfo(artistText, albumText, Token.getConsumerKey())
                 }
 
                 if (album != null) {

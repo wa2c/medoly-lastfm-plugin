@@ -116,7 +116,7 @@ abstract class AbstractPluginService(name: String) : IntentService(name) {
             } catch (ignore: Exception) {
             }
             username = prefs.getString(R.string.prefkey_auth_username)
-            session = Authenticator.getMobileSession(username, prefs.getString(R.string.prefkey_auth_password), Token.getConsumerKey(context), Token.getConsumerSecret(context))
+            session = Authenticator.getMobileSession(username, prefs.getString(R.string.prefkey_auth_password), Token.getConsumerKey(), Token.getConsumerSecret())
         } catch (e : Exception) {
         }
     }

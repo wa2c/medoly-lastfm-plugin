@@ -1,6 +1,9 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+if (file('./token.gradle').exists()) {
+    apply from: 'token.gradle'
+}
 
 android {
     compileSdkVersion 26
@@ -11,6 +14,11 @@ android {
         targetSdkVersion 26
         versionCode 17
         versionName "2.1.0"
+
+        buildConfigField("String", "K1", "\"\"")
+        buildConfigField("String", "K2", "\"\"")
+        buildConfigField("String", "T1", "\"\"")
+        buildConfigField("String", "T2", "\"\"")
     }
     buildTypes {
         debug {
