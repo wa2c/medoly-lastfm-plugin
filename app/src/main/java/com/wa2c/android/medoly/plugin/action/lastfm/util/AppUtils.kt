@@ -76,7 +76,7 @@ object AppUtils {
                 return null
             }
 
-            val pathElements = url.path.split("/".toRegex()).dropLastWhile({ it.isEmpty() }).toTypedArray()
+            val pathElements = url.path.split("/".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
             val saveFileName = pathElements[pathElements.size - 1]
             val sharedFile = File(sharedDir, saveFileName)
 

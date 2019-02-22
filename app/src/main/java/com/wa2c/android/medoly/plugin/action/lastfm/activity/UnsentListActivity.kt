@@ -87,7 +87,7 @@ class UnsentListActivity : Activity() {
 
                     try {
                         // delete from list
-                        val checks = checkedSet.toTypedArray<Int>()
+                        val checks = checkedSet.toTypedArray()
                         val itemList =  ArrayList(items!!.toList())
                         for (i in checks.indices.reversed()) {
                             itemList.removeAt(checks[i])

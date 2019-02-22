@@ -38,7 +38,8 @@ class AboutDialogFragment : AbstractDialogFragment() {
         }
 
         // Email
-        content.dialogAboutEmailTextView.text = getString(R.string.app_mail_name) + "@" + getString(R.string.app_mail_domain)
+        val email = getString(R.string.app_mail_name) + "@" + getString(R.string.app_mail_domain)
+        content.dialogAboutEmailTextView.text = email
 
         // License
         Linkify.addLinks(

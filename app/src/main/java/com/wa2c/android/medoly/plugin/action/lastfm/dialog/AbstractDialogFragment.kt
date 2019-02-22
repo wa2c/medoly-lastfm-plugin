@@ -3,7 +3,6 @@ package com.wa2c.android.medoly.plugin.action.lastfm.dialog
 import android.app.Activity
 import android.app.Dialog
 import android.app.DialogFragment
-import android.app.Fragment
 import android.content.DialogInterface
 import android.content.res.Configuration
 import android.os.Bundle

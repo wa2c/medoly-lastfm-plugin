@@ -29,7 +29,7 @@
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <TextView
-            android:id="@+id/abountAppDescriptionTextView"
+            android:id="@+id/aboutAppDescriptionTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignLeft="@+id/aboutAppNameTextView"
@@ -42,7 +42,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignLeft="@+id/aboutAppNameTextView"
-            android:layout_below="@+id/abountAppDescriptionTextView" />
+            android:layout_below="@+id/aboutAppDescriptionTextView" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -118,97 +118,8 @@
             android:text="mail" />
     </RelativeLayout>
 
-    <RelativeLayout
-        android:id="@+id/aboutLibraryRelativeLayout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/aboutDeveloperRelativeLayout"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="16dp"
-        android:gravity="center"
-        android:visibility="gone">
-
-        <TextView
-            android:id="@+id/aboutLibraryTextView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:lines="1"
-            android:text="[Library]"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/aboutLibraryJaudiotaggerTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_below="@+id/aboutLibraryTextView"
-            android:layout_marginTop="8dp"
-            android:lines="1"
-            android:text="Jaudiotagger"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/aboutLibraryJaudiotaggerUrlTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignRight="@+id/aboutLibraryJuniversalchardetUrlTextView"
-            android:layout_below="@+id/aboutLibraryJaudiotaggerTextView"
-            android:autoLink="web"
-            android:ellipsize="end"
-            android:lines="1"
-            android:text="http://www.jthink.net/jaudiotagger/" />
-
-        <TextView
-            android:id="@+id/aboutLibraryJuniversalchardetTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_below="@+id/aboutLibraryJaudiotaggerUrlTextView"
-            android:layout_marginTop="8dp"
-            android:lines="1"
-            android:text="juniversalchardet"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/aboutLibraryJuniversalchardetUrlTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentRight="true"
-            android:layout_below="@+id/aboutLibraryJuniversalchardetTextView"
-            android:autoLink="web"
-            android:ellipsize="end"
-            android:lines="1"
-            android:text="http://code.google.com/p/juniversalchardet/" />
-
-        <TextView
-            android:id="@+id/aboutLibraryDragSortListViewTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_below="@+id/aboutLibraryJuniversalchardetUrlTextView"
-            android:layout_marginTop="8dp"
-            android:lines="1"
-            android:text="DragSortListView"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/aboutLibraryDragSortListViewUrlTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentRight="true"
-            android:layout_below="@+id/aboutLibraryDragSortListViewTextView"
-            android:autoLink="web"
-            android:ellipsize="end"
-            android:lines="1"
-            android:text="https://github.com/bauerca/drag-sort-listview" />
-    </RelativeLayout>
-
     <LinearLayout
-        android:id="@+id/abountLibraryLayout"
+        android:id="@+id/aboutLibraryLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/aboutDeveloperRelativeLayout"

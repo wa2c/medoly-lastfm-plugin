@@ -8,7 +8,10 @@ import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import com.wa2c.android.medoly.library.*
+import com.wa2c.android.medoly.library.ExtraData
+import com.wa2c.android.medoly.library.MediaPluginIntent
+import com.wa2c.android.medoly.library.PluginOperationCategory
+import com.wa2c.android.medoly.library.PropertyData
 import com.wa2c.android.medoly.plugin.action.lastfm.R
 import com.wa2c.android.medoly.plugin.action.lastfm.Token
 import com.wa2c.android.medoly.plugin.action.lastfm.util.AppUtils
@@ -101,7 +104,7 @@ abstract class AbstractPluginService(name: String) : IntentService(name) {
 
     override fun onDestroy() {
         super.onDestroy()
-        Timber.d("onDestroy: " + this.javaClass.simpleName)
+        Timber.d("onDestroy: %s", this.javaClass.simpleName)
         sendResult(null)
     }
 

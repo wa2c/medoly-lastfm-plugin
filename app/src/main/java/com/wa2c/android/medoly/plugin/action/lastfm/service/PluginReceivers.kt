@@ -20,7 +20,7 @@ class PluginReceivers {
 
     abstract class AbstractPluginReceiver : BroadcastReceiver() {
         @Synchronized override fun onReceive(context: Context, intent: Intent) {
-            Timber.d("onReceive: " + this.javaClass.simpleName)
+            Timber.d("onReceive: %s", this.javaClass.simpleName)
 
             val pluginIntent = MediaPluginIntent(intent)
             val propertyData = pluginIntent.propertyData ?: return

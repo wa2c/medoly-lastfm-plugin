@@ -2,9 +2,7 @@ package com.wa2c.android.medoly.plugin.action.lastfm.service
 
 import android.content.Intent
 import com.wa2c.android.medoly.library.MediaProperty
-import com.wa2c.android.medoly.library.PluginOperationCategory
 import com.wa2c.android.medoly.plugin.action.lastfm.R
-import com.wa2c.android.medoly.plugin.action.lastfm.util.AppUtils
 import de.umass.lastfm.Session
 import de.umass.lastfm.Track
 import de.umass.lastfm.scrobble.ScrobbleData
@@ -22,18 +20,15 @@ class PluginPostService : AbstractPluginService(PluginPostService::class.java.si
         super.onHandleIntent(intent)
 
         try {
-            if (receivedClassName == PluginReceivers.EventNowPlayingReceiver::class.java.name) {
-                // Now Playing
-                updateNowPlaying(session)
-            } else if (receivedClassName == PluginReceivers.EventScrobbleReceiver::class.java.name) {
-                // Scrobble
-                scrobble(session)
-            } else if (receivedClassName == PluginReceivers.ExecuteLoveReceiver::class.java.name) {
-                // Love
-                love(session)
-            } else if (receivedClassName == PluginReceivers.ExecuteUnLoveReceiver::class.java.name) {
-                // Unlove
-                unlove(session)
+            when (receivedClassName) {
+                PluginReceivers.EventNowPlayingReceiver::class.java.name -> // Now Playing
+                    updateNowPlaying(session)
+                PluginReceivers.EventScrobbleReceiver::class.java.name -> // Scrobble
+                    scrobble(session)
+                PluginReceivers.ExecuteLoveReceiver::class.java.name -> // Love
+                    love(session)
+                PluginReceivers.ExecuteUnLoveReceiver::class.java.name -> // Unlove
+                    unlove(session)
             }
         } catch (e: Exception) {
             Timber.e(e)
@@ -95,15 +90,7 @@ class PluginPostService : AbstractPluginService(PluginPostService::class.java.si
             Timber.e(e)
             result = CommandResult.FAILED
         } finally {
-            if (result == CommandResult.AUTH_FAILED) {
-//                AppUtils.showToast(context, R.string.message_account_not_auth)
-            } else if (result == CommandResult.SUCCEEDED) {
-//                if (preferences.getBoolean(context.getString(R.string.prefkey_post_success_message_show), true))
-//                    AppUtils.showToast(context, R.string.message_post_success)
-            } else if (result == CommandResult.FAILED) {
-//                if (preferences.getBoolean(context.getString(R.string.prefkey_post_failure_message_show), true))
-//                    AppUtils.showToast(context, R.string.message_post_failure)
-            }
+            //showMessage(result, getString(R.string.message_post_success), getString(R.string.message_post_failure))
         }
     }
 
