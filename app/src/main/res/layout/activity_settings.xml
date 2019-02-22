@@ -1,5 +1,10 @@
-<fragment xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/activity_settings"
-    android:name="com.wa2c.android.medoly.plugin.action.lastfm.activity.SettingsFragment"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent" />
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <fragment
+        android:id="@+id/activity_settings"
+        android:name="com.wa2c.android.medoly.plugin.action.lastfm.activity.SettingsFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</layout>

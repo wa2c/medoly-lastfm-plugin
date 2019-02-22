@@ -1,58 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.wa2c.android.medoly.plugin.action.lastfm.activity.UnsentListActivity">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <ListView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/unsentListView"
-        android:layout_above="@+id/linearLayout"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="@string/message_unsent_no_data"
-        android:id="@+id/unsentNoDataTextView"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_above="@+id/linearLayout"
-        android:gravity="center" />
-
-    <LinearLayout
-        android:orientation="horizontal"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="64dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="false"
-        android:id="@+id/linearLayout"
-        android:layout_alignParentRight="false"
-        android:gravity="center">
+        android:layout_height="match_parent"
+        tools:context="com.wa2c.android.medoly.plugin.action.lastfm.activity.UnsentListActivity">
 
-        <CheckBox
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="@string/label_unsent_save_disabled"
-            android:id="@+id/unsentNotSaveCheckBox"
-            android:layout_weight="1" />
-
-        <Button
+        <ListView
+            android:id="@+id/unsentListView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/label_unsent_check_all"
-            android:id="@+id/unsentCheckAllButton" />
+            android:layout_above="@+id/linearLayout"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true" />
 
-        <Button
-            android:layout_width="100dp"
+        <TextView
+            android:id="@+id/unsentNoDataTextView"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/label_unsent_delete"
-            android:id="@+id/unsentDeleteButton" />
-    </LinearLayout>
-</RelativeLayout>
+            android:layout_above="@+id/linearLayout"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:gravity="center"
+            android:text="@string/message_unsent_no_data"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <LinearLayout
+            android:id="@+id/linearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="64dp"
+            android:layout_alignParentLeft="false"
+            android:layout_alignParentRight="false"
+            android:layout_alignParentBottom="true"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <CheckBox
+                android:id="@+id/unsentNotSaveCheckBox"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/label_unsent_save_disabled" />
+
+            <Button
+                android:id="@+id/unsentCheckAllButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/label_unsent_check_all" />
+
+            <Button
+                android:id="@+id/unsentDeleteButton"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:text="@string/label_unsent_delete" />
+        </LinearLayout>
+    </RelativeLayout>
+
+</layout>
