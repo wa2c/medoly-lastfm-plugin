@@ -5,7 +5,6 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.databinding.DataBindingUtil
 import android.net.Uri
-import android.os.AsyncTask
 import android.os.Bundle
 import com.wa2c.android.medoly.library.MedolyEnvironment
 import com.wa2c.android.medoly.plugin.action.lastfm.R
@@ -17,14 +16,12 @@ import com.wa2c.android.prefs.Prefs
 import de.umass.lastfm.Authenticator
 import de.umass.lastfm.Caller
 import de.umass.lastfm.cache.FileSystemCache
-import de.umass.util.StringUtilities
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
 import timber.log.Timber
 import java.io.File
-import java.lang.ref.WeakReference
 
 /**
  * Main activity.
