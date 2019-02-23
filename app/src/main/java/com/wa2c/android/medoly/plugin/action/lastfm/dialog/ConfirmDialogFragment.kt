@@ -21,25 +21,26 @@ class ConfirmDialogFragment : AbstractDialogFragment() {
         builder.setTitle(args.getCharSequence(ARG_TITLE))
         builder.setMessage(args.getCharSequence(ARG_MESSAGE))
 
+
         // button
         if (args.getBoolean(ARG_IS_BUTTON_DEFAULT)) {
-            builder.setPositiveButton(android.R.string.ok, clickListener)
-            builder.setNeutralButton(android.R.string.cancel, clickListener)
+            builder.setPositiveButton(android.R.string.ok, null)
+            builder.setNeutralButton(android.R.string.cancel, null)
         } else {
             // Positive button
             val positive = args.getString(ARG_POSITIVE_BUTTON)
             if (!positive.isNullOrEmpty()) {
-                builder.setPositiveButton(positive, clickListener)
+                builder.setPositiveButton(positive, null)
             }
             // Neutral button
             val neutral = args.getString(ARG_NEUTRAL_BUTTON)
             if (!neutral.isNullOrEmpty()) {
-                builder.setNeutralButton(neutral, clickListener)
+                builder.setNeutralButton(neutral, null)
             }
             // Negative button
             val negative = args.getString(ARG_NEGATIVE_BUTTON)
             if (!negative.isNullOrEmpty()) {
-                builder.setNegativeButton(negative, clickListener)
+                builder.setNegativeButton(negative, null)
             }
         }
 

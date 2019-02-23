@@ -16,6 +16,7 @@ import com.wa2c.android.medoly.plugin.action.lastfm.R
 import com.wa2c.android.medoly.plugin.action.lastfm.databinding.ActivityUnsentListBinding
 import com.wa2c.android.medoly.plugin.action.lastfm.databinding.LayoutUnsentListItemBinding
 import com.wa2c.android.medoly.plugin.action.lastfm.dialog.ConfirmDialogFragment
+import com.wa2c.android.medoly.plugin.action.lastfm.dialog.DialogClickListener
 import com.wa2c.android.medoly.plugin.action.lastfm.util.AppUtils
 import com.wa2c.android.prefs.Prefs
 import de.umass.lastfm.scrobble.ScrobbleData
@@ -62,38 +63,41 @@ class UnsentListActivity : Activity() {
         }
 
         // delete
-        binding.unsentDeleteButton.setOnClickListener(View.OnClickListener {
+        binding.unsentDeleteButton.setOnClickListener {
             if (adapter.itemList.isEmpty()) {
                 AppUtils.showToast(applicationContext, R.string.message_unsent_check_data)
             } else {
                 val dialogFragment = ConfirmDialogFragment.newInstance(getString(R.string.message_dialog_unsent_delete_confirm), getString(R.string.title_dialog_unsent_delete_confirm))
-                dialogFragment.clickListener = DialogInterface.OnClickListener { _, which ->
-                    if (which != DialogInterface.BUTTON_POSITIVE)
-                        return@OnClickListener
+                dialogFragment.clickListener = object: DialogClickListener {
+                    override fun onClick(dialog: DialogInterface?, which: Int, bundle: Bundle?) {
+                        if (which != DialogInterface.BUTTON_POSITIVE)
+                            return
 
-                    try {
-                        // delete from list
-                        val checks = adapter.checkedSet.toTypedArray()
-                        val itemList =  ArrayList(items.toList())
-                        for (i in checks.indices.reversed()) {
-                            itemList.removeAt(checks[i])
+                        try {
+                            // delete from list
+                            val checks = adapter.checkedSet.toTypedArray()
+                            val itemList =  ArrayList(items.toList())
+                            for (i in checks.indices.reversed()) {
+                                itemList.removeAt(checks[i])
+                            }
+
+                            // save result
+                            val dataArray = itemList.toTypedArray<ScrobbleData>()
+                            prefs.putObject(R.string.prefkey_unsent_scrobble_data, dataArray)
+                            items = dataArray
+                            adapter.checkedSet.clear()
+                        } catch (e: Exception) {
+                            Timber.e(e)
+                            AppUtils.showToast(applicationContext, R.string.message_unsent_delete_failure)
                         }
 
-                        // save result
-                        val dataArray = itemList.toTypedArray<ScrobbleData>()
-                        prefs.putObject(R.string.prefkey_unsent_scrobble_data, dataArray)
-                        items = dataArray
-                        adapter.checkedSet.clear()
-                    } catch (e: Exception) {
-                        Timber.e(e)
-                        AppUtils.showToast(applicationContext, R.string.message_unsent_delete_failure)
+                        initializeListView()
                     }
-
-                    initializeListView()
                 }
+
                 dialogFragment.show(this)
             }
-        })
+        }
 
         // items
         initializeListView()

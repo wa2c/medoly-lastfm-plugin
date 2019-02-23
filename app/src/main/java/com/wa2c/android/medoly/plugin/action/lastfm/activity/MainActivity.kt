@@ -11,6 +11,7 @@ import com.wa2c.android.medoly.plugin.action.lastfm.R
 import com.wa2c.android.medoly.plugin.action.lastfm.Token
 import com.wa2c.android.medoly.plugin.action.lastfm.databinding.ActivityMainBinding
 import com.wa2c.android.medoly.plugin.action.lastfm.dialog.AuthDialogFragment
+import com.wa2c.android.medoly.plugin.action.lastfm.dialog.DialogClickListener
 import com.wa2c.android.medoly.plugin.action.lastfm.util.AppUtils
 import com.wa2c.android.prefs.Prefs
 import de.umass.lastfm.Authenticator
@@ -19,7 +20,7 @@ import de.umass.lastfm.cache.FileSystemCache
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.io.File
 
@@ -44,11 +45,15 @@ class MainActivity : Activity() {
         // Account Auth
         binding.accountAuthButton.setOnClickListener {
             val dialogFragment = AuthDialogFragment.newInstance()
-            dialogFragment.clickListener = DialogInterface.OnClickListener { _, which ->
-                if (which == DialogInterface.BUTTON_POSITIVE) {
-                    authUser(dialogFragment.username, dialogFragment.password)
-                } else if (which == DialogInterface.BUTTON_NEGATIVE) {
-                    clearUser()
+            dialogFragment.clickListener = object: DialogClickListener {
+                override fun onClick(dialog: DialogInterface?, which: Int, bundle: Bundle?) {
+                    if (which == DialogInterface.BUTTON_POSITIVE) {
+                        val username = bundle?.getString(AuthDialogFragment.RESULT_USERNAME) ?: ""
+                        val password = bundle?.getString(AuthDialogFragment.RESULT_PASSWORD) ?: ""
+                        authUser(username, password)
+                    } else if (which == DialogInterface.BUTTON_NEGATIVE) {
+                        clearUser()
+                    }
                 }
             }
             dialogFragment.show(this)
@@ -110,7 +115,7 @@ class MainActivity : Activity() {
      * @param password Password
      */
     private fun authUser(username: String, password: String) {
-        runBlocking {
+        GlobalScope.launch(Dispatchers.Main) {
             // Auth
             val session = GlobalScope.async(Dispatchers.Default) {
                 try {

@@ -88,7 +88,7 @@ class SettingsFragment : PreferenceFragment() {
             if (summary.toString().lastIndexOf("\n") != 0) p.summary = summary.toString() + "\n" // add break
             summaryLengthMap[p] = p.summary.length
         } else {
-            summaryLengthMap.put(p, 0)
+            summaryLengthMap[p] = 0
         }
 
         // update summary
@@ -156,21 +156,21 @@ class SettingsFragment : PreferenceFragment() {
                     if (inputType and InputType.TYPE_CLASS_NUMBER > 0) {
                         if (inputType and InputType.TYPE_NUMBER_FLAG_DECIMAL > 0) {
                             // float
-                            var `val` = java.lang.Float.valueOf(text)!!
-                            if (inputType and InputType.TYPE_NUMBER_FLAG_SIGNED == 0 && `val` < 0) {
-                                `val` = 0f
+                            var value = text.toFloat()
+                            if (inputType and InputType.TYPE_NUMBER_FLAG_SIGNED == 0 && value < 0) {
+                                value = 0f
                             }
-                            text = `val`.toString()
+                            text = value.toString()
                         } else {
                             // integer
-                            var `val` = Integer.valueOf(text)!!
-                            if (inputType and InputType.TYPE_NUMBER_FLAG_SIGNED == 0 && `val` < 0) {
-                                `val` = 0
+                            var value = text.toInt()
+                            if (inputType and InputType.TYPE_NUMBER_FLAG_SIGNED == 0 && value < 0) {
+                                value = 0
                             }
-                            text = `val`.toString()
+                            text = value.toString()
                         }
                     }
-                } catch (e: NumberFormatException) {
+                } catch (e: Exception) {
                     text = "0"
                 }
 
