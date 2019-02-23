@@ -22,6 +22,10 @@ class SettingsActivity : Activity() {
         actionBar.setDisplayHomeAsUpEnabled(true)
         actionBar.setDisplayShowTitleEnabled(true)
         actionBar.setTitle(R.string.title_activity_settings)
+
+        if (savedInstanceState == null) {
+            fragmentManager.beginTransaction().add(R.id.settingsContent, SettingsFragment()).commit()
+        }
     }
 
     /**

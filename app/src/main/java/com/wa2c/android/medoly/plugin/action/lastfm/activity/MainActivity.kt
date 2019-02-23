@@ -114,7 +114,7 @@ class MainActivity : Activity() {
             // Auth
             val session = GlobalScope.async(Dispatchers.Default) {
                 try {
-                    Caller.getInstance().cache = FileSystemCache(File(externalCacheDir.path + File.separator + "last.fm"))
+                    Caller.getInstance().cache = FileSystemCache(File(cacheDir.path + File.separator + "last.fm"))
                     return@async Authenticator.getMobileSession(username, password, Token.getConsumerKey(), Token.getConsumerSecret())
                 } catch (e: Exception) {
                     Timber.e(e)

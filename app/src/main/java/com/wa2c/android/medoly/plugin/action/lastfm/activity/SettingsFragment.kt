@@ -22,8 +22,6 @@ class SettingsFragment : PreferenceFragment() {
         private val summaryLengthMap = LinkedHashMap<Preference, Int>()
     }
 
-
-
     /**
      * App info.
      */

@@ -115,7 +115,7 @@ abstract class AbstractPluginService(name: String) : IntentService(name) {
         try {
             // Initialize last.fm library
             try {
-                Caller.getInstance().cache = FileSystemCache(File(context.externalCacheDir, "last.fm"))
+                Caller.getInstance().cache = FileSystemCache(File(context.cacheDir, "last.fm"))
             } catch (ignore: Exception) {
             }
             username = prefs.getString(R.string.prefkey_auth_username)
