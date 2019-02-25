@@ -63,21 +63,20 @@ class ConfirmDialogFragment : AbstractDialogFragment() {
         /** Negative button key.  */
         private const val ARG_NEGATIVE_BUTTON = "NEGATIVE_BUTTON"
 
-
         /**
          * Create dialog instance. (OK/Cancel)
          * @param message A message.
          * @param title A title.
          * @return New dialog instance.
          */
-        fun newInstance(message: CharSequence, title: CharSequence): ConfirmDialogFragment {
-            val fragment = ConfirmDialogFragment()
+        fun newInstance(message: CharSequence, title: CharSequence?): ConfirmDialogFragment {
             val args = Bundle()
             args.putCharSequence(ARG_MESSAGE, message)
             args.putCharSequence(ARG_TITLE, title)
             args.putBoolean(ARG_IS_BUTTON_DEFAULT, true)
-            fragment.arguments = args
 
+            val fragment = ConfirmDialogFragment()
+            fragment.arguments = args
             return fragment
         }
 
@@ -90,8 +89,7 @@ class ConfirmDialogFragment : AbstractDialogFragment() {
          * @param negativeButton Negative button. None if null.
          * @return New dialog instance.
          */
-        fun newInstance(message: String, title: String, positiveButton: String, neutralButton: String, negativeButton: String): ConfirmDialogFragment {
-            val fragment = ConfirmDialogFragment()
+        fun newInstance(message: CharSequence, title: CharSequence?, positiveButton: String?, neutralButton: String?, negativeButton: String?): ConfirmDialogFragment {
             val args = Bundle()
             args.putCharSequence(ARG_MESSAGE, message)
             args.putCharSequence(ARG_TITLE, title)
@@ -99,10 +97,12 @@ class ConfirmDialogFragment : AbstractDialogFragment() {
             args.putString(ARG_NEUTRAL_BUTTON, neutralButton)
             args.putString(ARG_NEGATIVE_BUTTON, negativeButton)
             args.putBoolean(ARG_IS_BUTTON_DEFAULT, false)
-            fragment.arguments = args
 
+            val fragment = ConfirmDialogFragment()
+            fragment.arguments = args
             return fragment
         }
+
     }
 
 }

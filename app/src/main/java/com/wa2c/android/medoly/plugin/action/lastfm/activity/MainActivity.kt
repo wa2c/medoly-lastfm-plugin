@@ -11,7 +11,6 @@ import com.wa2c.android.medoly.plugin.action.lastfm.R
 import com.wa2c.android.medoly.plugin.action.lastfm.Token
 import com.wa2c.android.medoly.plugin.action.lastfm.databinding.ActivityMainBinding
 import com.wa2c.android.medoly.plugin.action.lastfm.dialog.AuthDialogFragment
-import com.wa2c.android.medoly.plugin.action.lastfm.dialog.DialogClickListener
 import com.wa2c.android.medoly.plugin.action.lastfm.util.AppUtils
 import com.wa2c.android.prefs.Prefs
 import de.umass.lastfm.Authenticator
@@ -45,15 +44,13 @@ class MainActivity : Activity() {
         // Account Auth
         binding.accountAuthButton.setOnClickListener {
             val dialogFragment = AuthDialogFragment.newInstance()
-            dialogFragment.clickListener = object: DialogClickListener {
-                override fun onClick(dialog: DialogInterface?, which: Int, bundle: Bundle?) {
-                    if (which == DialogInterface.BUTTON_POSITIVE) {
-                        val username = bundle?.getString(AuthDialogFragment.RESULT_USERNAME) ?: ""
-                        val password = bundle?.getString(AuthDialogFragment.RESULT_PASSWORD) ?: ""
-                        authUser(username, password)
-                    } else if (which == DialogInterface.BUTTON_NEGATIVE) {
-                        clearUser()
-                    }
+            dialogFragment.clickListener = { _, which, bundle ->
+                if (which == DialogInterface.BUTTON_POSITIVE) {
+                    val username = bundle?.getString(AuthDialogFragment.RESULT_USERNAME) ?: ""
+                    val password = bundle?.getString(AuthDialogFragment.RESULT_PASSWORD) ?: ""
+                    authUser(username, password)
+                } else if (which == DialogInterface.BUTTON_NEGATIVE) {
+                    clearUser()
                 }
             }
             dialogFragment.show(this)

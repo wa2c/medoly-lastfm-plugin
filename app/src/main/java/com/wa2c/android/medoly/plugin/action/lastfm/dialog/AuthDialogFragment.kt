@@ -2,6 +2,7 @@ package com.wa2c.android.medoly.plugin.action.lastfm.dialog
 
 import android.app.AlertDialog
 import android.app.Dialog
+import android.content.DialogInterface
 import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -54,7 +55,7 @@ class AuthDialogFragment : AbstractDialogFragment() {
             val bundle = Bundle()
             bundle.putString(RESULT_USERNAME, binding.dialogAuthUsernameEditText.text.toString())
             bundle.putString(RESULT_PASSWORD, binding.dialogAuthPasswordEditText.text.toString())
-            clickListener?.onClick(dialog, DialogClickListener.BUTTON_POSITIVE, bundle)
+            clickListener?.invoke(dialog, DialogInterface.BUTTON_POSITIVE, bundle)
             dialog.dismiss()
         }
     }

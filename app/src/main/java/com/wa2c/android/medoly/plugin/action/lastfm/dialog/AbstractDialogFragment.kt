@@ -9,14 +9,18 @@ import android.content.res.Configuration
 import android.os.Bundle
 import android.widget.Button
 import com.wa2c.android.prefs.Prefs
-import java.util.*
 
 /**
  * Abstract dialog class.
  */
 abstract class AbstractDialogFragment : DialogFragment() {
 
+    /** Prefs */
     protected lateinit var prefs: Prefs
+    /** Click listener. */
+    //var clickListener: DialogClickListener? = null
+    var clickListener: ((dialog: Dialog?, which: Int, bundle: Bundle?) -> Unit)? = null
+
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog? {
         prefs = Prefs(activity)
@@ -46,19 +50,12 @@ abstract class AbstractDialogFragment : DialogFragment() {
         dialog?.cancel()
     }
 
-    override fun onDismiss(dialog: DialogInterface) {
-        super.onDismiss(dialog)
-        shownDialogMap.remove(this.javaClass.name)
-    }
-
-
-
     /**
      * Set positive button
      */
     protected open fun setPositiveButton(dialog: AlertDialog, button: Button) {
         button.setOnClickListener {
-            clickListener?.onClick(dialog, DialogClickListener.BUTTON_POSITIVE, null)
+            clickListener?.invoke(dialog, DialogInterface.BUTTON_POSITIVE, null)
             dialog.dismiss()
         }
     }
@@ -68,7 +65,7 @@ abstract class AbstractDialogFragment : DialogFragment() {
      */
     protected open fun setNegativeButton(dialog: AlertDialog, button: Button) {
         button.setOnClickListener {
-            clickListener?.onClick(dialog, DialogClickListener.BUTTON_NEGATIVE, null)
+            clickListener?.invoke(dialog, DialogInterface.BUTTON_NEGATIVE, null)
             dialog.dismiss()
         }
     }
@@ -78,32 +75,25 @@ abstract class AbstractDialogFragment : DialogFragment() {
      */
     protected open fun setNeutralButton(dialog: AlertDialog, button: Button) {
         button.setOnClickListener {
-            clickListener?.onClick(dialog, DialogClickListener.BUTTON_NEUTRAL, null)
+            clickListener?.invoke(dialog, DialogInterface.BUTTON_NEUTRAL, null)
             dialog.dismiss()
         }
     }
 
+    /**
+     * Fragment tag.
+     */
+    private val fragmentTag: String by lazy { this.javaClass.name }
 
     /***
      * Show dialog.
      * @param activity A activity.
      */
     fun show(activity: Activity) {
-        val key = this.javaClass.name
-        shownDialogMap[key]?.dismiss()
-
-        super.show(activity.fragmentManager, key)
-        shownDialogMap[key] = this
-    }
-
-
-    /** Click listener. */
-    var clickListener: DialogClickListener? = null
-
-
-
-    companion object {
-        private val shownDialogMap = HashMap<String, DialogFragment>()
+        val manager = activity.fragmentManager
+        val fragment = manager.findFragmentByTag(fragmentTag) as? AbstractDialogFragment
+        fragment?.dismiss()
+        super.show(activity.fragmentManager, fragmentTag)
     }
 
 }
