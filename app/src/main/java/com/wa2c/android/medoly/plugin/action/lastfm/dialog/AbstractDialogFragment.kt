@@ -18,7 +18,6 @@ abstract class AbstractDialogFragment : DialogFragment() {
     /** Prefs */
     protected lateinit var prefs: Prefs
     /** Click listener. */
-    //var clickListener: DialogClickListener? = null
     var clickListener: ((dialog: Dialog?, which: Int, bundle: Bundle?) -> Unit)? = null
 
 
