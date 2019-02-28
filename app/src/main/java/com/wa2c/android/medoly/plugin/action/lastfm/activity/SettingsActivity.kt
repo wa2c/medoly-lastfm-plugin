@@ -16,7 +16,6 @@ class SettingsActivity : Activity() {
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_settings)
 
         actionBar.setDisplayShowHomeEnabled(true)
         actionBar.setDisplayHomeAsUpEnabled(true)
@@ -24,7 +23,7 @@ class SettingsActivity : Activity() {
         actionBar.setTitle(R.string.title_activity_settings)
 
         if (savedInstanceState == null) {
-            fragmentManager.beginTransaction().add(R.id.settingsContent, SettingsFragment()).commit()
+            fragmentManager.beginTransaction().add(android.R.id.content, SettingsFragment()).commit()
         }
     }
 

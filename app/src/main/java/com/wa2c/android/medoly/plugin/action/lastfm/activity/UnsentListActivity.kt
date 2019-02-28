@@ -151,7 +151,7 @@ class UnsentListActivity : Activity() {
     /**
      * Unsent list adapter
      */
-    inner class UnsentListAdapter(val itemList: Array<ScrobbleData>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    private class UnsentListAdapter(val itemList: Array<ScrobbleData>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
         val checkedSet: TreeSet<Int> = TreeSet()
 

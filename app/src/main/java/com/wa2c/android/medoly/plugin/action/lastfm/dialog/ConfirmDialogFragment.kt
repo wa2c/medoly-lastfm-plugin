@@ -9,9 +9,6 @@ import android.os.Bundle
  */
 class ConfirmDialogFragment : AbstractDialogFragment() {
 
-    /**
-     * onCreateDialog
-     */
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         super.onCreateDialog(savedInstanceState)
         val args = arguments

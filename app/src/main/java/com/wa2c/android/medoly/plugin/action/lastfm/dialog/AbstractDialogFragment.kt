@@ -18,7 +18,7 @@ abstract class AbstractDialogFragment : DialogFragment() {
     /** Prefs */
     protected lateinit var prefs: Prefs
     /** Click listener. */
-    var clickListener: ((dialog: Dialog?, which: Int, bundle: Bundle?) -> Unit)? = null
+    var clickListener: ((dialog: DialogInterface?, which: Int, bundle: Bundle?) -> Unit)? = null
 
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog? {
