@@ -54,7 +54,6 @@
     <string name="label_spinner_event">実行イベント</string>
     <string name="label_spinner_event_none">イベント無効</string>
     <string name="label_button_account_auth">アカウント認証</string>
-    <string name="label_button_auto_start">自動起動</string>
     <string name="label_button_lastfm_site">Last.fm サイト</string>
     <string name="label_button_settings">設定</string>
     <string name="label_button_launch_medoly">Medoly 起動</string>
@@ -62,7 +61,6 @@
     <string name="message_account_auth">Last.fmアカウントの認証が完了しています。</string>
     <string name="message_account_not_auth">Last.fmアカウントが認証されていません。</string>
     <string name="message_account_clear">Last.fmアカウント認証をクリアしました。</string>
-    <string name="message_unsupported_device">このデバイスではサポートされていません。</string>
 
     <!-- Unsent List Activity -->
     <string name="label_unsent_played_time">再生日時: %1$s</string>
@@ -77,6 +75,7 @@
 
     <!-- Settings Activity -->
     <string name="settings_summary_current_value">[現在の値: %1$s]</string>
+    <string name="message_unsupported_device">このデバイスではサポートされていません。</string>
 
 
 
@@ -118,6 +117,9 @@
     <string name="pref_summary_post_success_message_show">送信に成功した際にメッセージを表示します。</string>
     <string name="pref_title_post_failure_message_show">失敗メッセージ表示</string>
     <string name="pref_summary_post_failure_message_show">送信に失敗した際にメッセージを表示します。</string>
+
+    <string name="pref_title_device_auto_start">自動起動管理</string>
+    <string name="pref_summary_device_auto_start">デバイスの自動起動マネージャを起動します。</string>
     <string name="pref_title_application_details">アプリ情報</string>
     <string name="pref_summary_application_details">アプリ情報を表示します。</string>
     <string name="pref_title_about">About</string>
