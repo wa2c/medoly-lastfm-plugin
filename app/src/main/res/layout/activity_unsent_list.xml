@@ -12,27 +12,21 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_above="@+id/linearLayout"
+            android:layout_alignParentStart="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true" />
-        <!--
-        <ListView
-            android:id="@+id/unsentListView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/linearLayout"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentRight="true" />
-        -->
 
         <TextView
             android:id="@+id/unsentNoDataTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_above="@+id/linearLayout"
+            android:layout_alignParentStart="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:gravity="center"
             android:text="@string/message_unsent_no_data"
@@ -42,7 +36,9 @@
             android:id="@+id/linearLayout"
             android:layout_width="match_parent"
             android:layout_height="64dp"
+            android:layout_alignParentStart="false"
             android:layout_alignParentLeft="false"
+            android:layout_alignParentEnd="false"
             android:layout_alignParentRight="false"
             android:layout_alignParentBottom="true"
             android:gravity="center"

@@ -6,6 +6,8 @@ import android.content.Intent
 import android.databinding.DataBindingUtil
 import android.net.Uri
 import android.os.Bundle
+import android.view.View
+import com.thelittlefireman.appkillermanager.managers.KillerManager
 import com.wa2c.android.medoly.library.MedolyEnvironment
 import com.wa2c.android.medoly.plugin.action.lastfm.R
 import com.wa2c.android.medoly.plugin.action.lastfm.Token
@@ -54,6 +56,22 @@ class MainActivity : Activity() {
             }
             dialogFragment.show(this)
         }
+
+        // Power settings
+        KillerManager.init(this)
+        val managerAction = when {
+            KillerManager.isActionAvailable(applicationContext, KillerManager.Actions.ACTION_POWERSAVING) -> KillerManager.Actions.ACTION_POWERSAVING
+            KillerManager.isActionAvailable(applicationContext, KillerManager.Actions.ACTION_AUTOSTART) -> KillerManager.Actions.ACTION_AUTOSTART
+            KillerManager.isActionAvailable(applicationContext, KillerManager.Actions.ACTION_NOTIFICATIONS) -> KillerManager.Actions.ACTION_NOTIFICATIONS
+            else -> null
+        }
+        binding.deviceSetButton.setOnClickListener {
+            if (!KillerManager.doAction(this, managerAction)) {
+                AppUtils.showToast(this, R.string.message_unsupported_device)
+            }
+        }
+        if (managerAction == null)
+            binding.deviceSetButton.visibility = View.GONE
 
         // Unsent List
         binding.unsentListButton.setOnClickListener {

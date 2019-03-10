@@ -131,11 +131,6 @@ class UnsentListActivity : Activity() {
         adapter.notifyDataSetChanged()
     }
 
-    /**
-     * On option item selected.
-     * @param item A item
-     * @return option item selected.
-     */
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             android.R.id.home -> {

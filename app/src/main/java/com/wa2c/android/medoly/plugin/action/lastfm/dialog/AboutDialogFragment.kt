@@ -25,9 +25,6 @@ class AboutDialogFragment : AbstractDialogFragment() {
 
     private lateinit var binding: DialogAboutBinding
 
-    /**
-     * onCreateDialog
-     */
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog? {
         super.onCreateDialog(savedInstanceState)
         binding = DataBindingUtil.inflate(LayoutInflater.from(activity), R.layout.dialog_about, null, false)
@@ -92,7 +89,6 @@ class AboutDialogFragment : AbstractDialogFragment() {
     }
 
     companion object {
-
         /**
          * Create dialog instance.
          * @return Dialog instance.

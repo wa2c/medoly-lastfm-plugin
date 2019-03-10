@@ -54,6 +54,7 @@
     <string name="label_spinner_event">Event</string>
     <string name="label_spinner_event_none">Invalidate event</string>
     <string name="label_button_account_auth">Account Auth</string>
+    <string name="label_button_auto_start">Auto Start</string>
     <string name="label_button_lastfm_site">Last.fm Site</string>
     <string name="label_button_settings">Settings</string>
     <string name="label_button_launch_medoly">Launch Medoly</string>
@@ -61,6 +62,7 @@
     <string name="message_account_auth">Last.fm account authentication completed.</string>
     <string name="message_account_not_auth">Last.fm account is not been authenticated.</string>
     <string name="message_account_clear">Last.fm account auth cleared.</string>
+    <string name="message_unsupported_device">This device is unsupported.</string>
 
     <!-- Unsent List Activity -->
     <string name="label_unsent_played_time">Played time: %1$s</string>

@@ -19,7 +19,9 @@ object Token {
      */
     private const val AES = "AES"
 
-
+    /**
+     * Get api key.
+     */
     fun getConsumerKey(): String? {
         return try {
             val k = BuildConfig.K1 + "__" + BuildConfig.K2
@@ -27,9 +29,11 @@ object Token {
         } catch (e: Exception) {
             null
         }
-
     }
 
+    /**
+     * Get secret key.
+     */
     fun getConsumerSecret(): String? {
         return try {
             val k = BuildConfig.K1 + "__" + BuildConfig.K2
@@ -37,11 +41,10 @@ object Token {
         } catch (e: Exception) {
             null
         }
-
     }
 
     /**
-     * 文字列を16文字の秘密鍵でAES暗号化してBase64した文字列で返す。
+     * Encrypt key.
      */
     @Throws(NoSuchAlgorithmException::class, NoSuchPaddingException::class, InvalidKeyException::class, IllegalBlockSizeException::class, BadPaddingException::class)
     private fun encrypt(originalString: String, secretKey: String): String {
@@ -58,7 +61,7 @@ object Token {
     }
 
     /**
-     * Base64されたAES暗号化文字列を元の文字列に復元する。
+     * Decrypt key.
      */
     @Throws(NoSuchAlgorithmException::class, NoSuchPaddingException::class, InvalidKeyException::class, IllegalBlockSizeException::class, BadPaddingException::class)
     private fun decrypt(encryptBytesBase64String: String, secretKey: String): String {

@@ -29,6 +29,17 @@
                     android:drawableLeft="@drawable/ic_account"
                     android:text="@string/label_button_account_auth" />
 
+
+                <Button
+                    android:id="@+id/deviceSetButton"
+                    android:layout_width="@dimen/main_button_width"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_margin="@dimen/main_button_margin"
+                    android:drawableStart="@drawable/ic_power"
+                    android:drawableLeft="@drawable/ic_power"
+                    android:text="@string/label_button_auto_start" />
+
                 <Button
                     android:id="@+id/unsentListButton"
                     android:layout_width="@dimen/main_button_width"

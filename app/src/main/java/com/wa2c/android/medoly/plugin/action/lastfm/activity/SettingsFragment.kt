@@ -46,9 +46,6 @@ class SettingsFragment : PreferenceFragment() {
      */
     private val listener = SharedPreferences.OnSharedPreferenceChangeListener { _, key -> updatePrefSummary(findPreference(key)) }
 
-    /**
-     * onCreate event.
-     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         addPreferencesFromResource(R.xml.pref_settings)
@@ -61,17 +58,11 @@ class SettingsFragment : PreferenceFragment() {
         initSummary(preferenceScreen)
     }
 
-    /**
-     * onResume event.
-     */
     override fun onResume() {
         super.onResume()
         preferenceScreen.sharedPreferences.registerOnSharedPreferenceChangeListener(listener)
     }
 
-    /**
-     * onPause event.
-     */
     override fun onPause() {
         super.onPause()
         preferenceScreen.sharedPreferences.unregisterOnSharedPreferenceChangeListener(listener)
