@@ -54,9 +54,7 @@ class SettingsFragment : PreferenceFragment() {
         true
     }
 
-    /**
-     * On change settings.
-     */
+    /** On change settings. */
     private val listener = SharedPreferences.OnSharedPreferenceChangeListener { _, key -> updatePrefSummary(findPreference(key)) }
 
     /** KillerManager action */
