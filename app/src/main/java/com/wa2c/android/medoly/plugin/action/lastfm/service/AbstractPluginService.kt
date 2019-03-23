@@ -106,6 +106,19 @@ abstract class AbstractPluginService(name: String) : IntentService(name) {
         }
     }
 
+
+    /**
+     * Send result
+     * @param resultProperty A result property data.
+     * @param resultExtra A result extra data.
+     */
+    protected fun sendResult(resultProperty: PropertyData?, resultExtra: ExtraData? = null) {
+        if (!resultSent && (this is PluginGetPropertyService || this is PluginGetAlbumArtService)) {
+            AppUtils.sendResult(this, pluginIntent, resultProperty, resultExtra)
+            resultSent = true
+        }
+    }
+
     /**
      * Show message.
      */
@@ -122,20 +135,6 @@ abstract class AbstractPluginService(name: String) : IntentService(name) {
             if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_EXECUTE) || prefs.getBoolean(R.string.prefkey_post_failure_message_show, defRes = R.bool.pref_default_post_failure_message_show)) {
                 AppUtils.showToast(context, failedMessage)
             }
-        }
-    }
-
-
-
-    /**
-     * Send result
-     * @param resultProperty A result property data.
-     * @param resultExtra A result extra data.
-     */
-    protected fun sendResult(resultProperty: PropertyData?, resultExtra: ExtraData? = null) {
-        if (!resultSent && (this is PluginGetPropertyService || this is PluginGetAlbumArtService)) {
-            AppUtils.sendResult(this, pluginIntent, resultProperty, resultExtra)
-            resultSent = true
         }
     }
 
