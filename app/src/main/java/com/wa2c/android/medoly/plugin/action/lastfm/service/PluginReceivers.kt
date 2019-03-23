@@ -26,10 +26,12 @@ class PluginReceivers {
         }
 
         /**
-         * Receive receive process.
+         * Receive data.
          */
         private fun receive(context: Context, pluginIntent: MediaPluginIntent): PluginBroadcastResult  {
-            val propertyData = pluginIntent.propertyData ?: return PluginBroadcastResult.CANCEL
+            var result =  PluginBroadcastResult.CANCEL
+
+            val propertyData = pluginIntent.propertyData ?: return result
             val prefs = Prefs(context)
 
             if (this is EventScrobbleReceiver ||
@@ -38,109 +40,105 @@ class PluginReceivers {
                     this is ExecuteUnLoveReceiver) {
                 // category
                 if (!pluginIntent.hasCategory(PluginTypeCategory.TYPE_POST_MESSAGE)) {
-                    return PluginBroadcastResult.CANCEL
+                    return result
                 }
                 // media
                 if (propertyData.isMediaEmpty) {
                     AppUtils.showToast(context, R.string.message_no_media)
-                    return PluginBroadcastResult.CANCEL
+                    return result
                 }
                 // property
                 if (propertyData.getFirst(MediaProperty.TITLE).isNullOrEmpty() || propertyData.getFirst(MediaProperty.ARTIST).isNullOrEmpty()) {
-                    return PluginBroadcastResult.CANCEL
+                    return result
                 }
                 if (this is EventNowPlayingReceiver) {
                     // enabled
                     if ( !prefs.getBoolean(R.string.prefkey_now_playing_enabled, defRes = R.bool.pref_default_now_playing_enabled) ) {
-                        return PluginBroadcastResult.CANCEL
+                        return result
                     }
                 } else  if (this is EventScrobbleReceiver) {
                     // enabled
                     if (!prefs.getBoolean(R.string.prefkey_scrobble_enabled, defRes = R.bool.pref_default_scrobble_enabled)) {
-                        return PluginBroadcastResult.CANCEL
+                        return result
                     }
                     // previous media
                     val mediaUriText = propertyData.mediaUri.toString()
                     val previousMediaUri = prefs.getString(AbstractPluginService.PREFKEY_PREVIOUS_MEDIA_URI)
                     val previousMediaEnabled = prefs.getBoolean(R.string.prefkey_previous_media_enabled, defRes = R.bool.pref_default_previous_media_enabled)
                     if (!previousMediaEnabled && !mediaUriText.isEmpty() && !previousMediaUri.isEmpty() && mediaUriText == previousMediaUri) {
-                        return PluginBroadcastResult.CANCEL
+                        return result
                     }
                 }
 
                 // service
                 pluginIntent.setClass(context, PluginPostService::class.java)
+                result = PluginBroadcastResult.COMPLETE
             } else if (this is EventGetAlbumArtReceiver || this is ExecuteGetAlbumArtReceiver) {
                 // category
                 if (!pluginIntent.hasCategory(PluginTypeCategory.TYPE_GET_ALBUM_ART)) {
-                    //AppUtils.sendResult(context, pluginIntent)
-                    return PluginBroadcastResult.CANCEL
+                    return result
                 }
                 // media
                 if (propertyData.isMediaEmpty) {
                     AppUtils.showToast(context, R.string.message_no_media)
-                    //AppUtils.sendResult(context, pluginIntent)
-                    return PluginBroadcastResult.CANCEL
+                    return result
                 }
                 // property
                 if (propertyData.getFirst(MediaProperty.TITLE).isNullOrEmpty() || propertyData.getFirst(MediaProperty.ARTIST).isNullOrEmpty()) {
-                    //AppUtils.sendResult(context, pluginIntent)
-                    return PluginBroadcastResult.CANCEL
+                    return result
                 }
                 // operation
                 val operation = prefs.getString(R.string.prefkey_event_get_album_art_operation, defRes = R.string.pref_default_event_get_album_art_operation)
                 if (!pluginIntent.hasCategory(PluginOperationCategory.OPERATION_EXECUTE) && !pluginIntent.hasCategory(operation)) {
-                    //AppUtils.sendResult(context, pluginIntent)
-                    return PluginBroadcastResult.CANCEL
+                    return result
                 }
 
                 // service
                 pluginIntent.setClass(context, PluginGetAlbumArtService::class.java)
+                result = PluginBroadcastResult.PROCESSING
             } else if (this is EventGetPropertyReceiver || this is ExecuteGetPropertyReceiver) {
                 // category
                 if (!pluginIntent.hasCategory(PluginTypeCategory.TYPE_GET_PROPERTY)) {
-                    //AppUtils.sendResult(context, pluginIntent)
-                    return PluginBroadcastResult.CANCEL
+                    return result
                 }
                 // media
                 if (propertyData.isMediaEmpty) {
                     AppUtils.showToast(context, R.string.message_no_media)
-                    //AppUtils.sendResult(context, pluginIntent)
-                    return PluginBroadcastResult.CANCEL
+                    return result
                 }
                 // property
                 if (propertyData.getFirst(MediaProperty.TITLE).isNullOrEmpty() || propertyData.getFirst(MediaProperty.ARTIST).isNullOrEmpty()) {
-                    //AppUtils.sendResult(context, pluginIntent)
-                    return PluginBroadcastResult.CANCEL
+                    return result
                 }
                 // operation
                 val operation = prefs.getString(R.string.prefkey_event_get_property_operation, defRes = R.string.pref_default_event_get_property_operation)
                 if (!pluginIntent.hasCategory(PluginOperationCategory.OPERATION_EXECUTE) && !pluginIntent.hasCategory(operation)) {
-                    //AppUtils.sendResult(context, pluginIntent)
-                    return PluginBroadcastResult.CANCEL
+                    return result
                 }
 
                 // service
                 pluginIntent.setClass(context, PluginGetPropertyService::class.java)
+                result = PluginBroadcastResult.PROCESSING
             } else if (this is ExecuteTrackPageReceiver || this is ExecuteLastfmSiteReceiver) {
                 // category
                 if (!pluginIntent.hasCategory(PluginTypeCategory.TYPE_RUN)) {
-                    return PluginBroadcastResult.CANCEL
+                    return result
                 }
                 if (this is ExecuteTrackPageReceiver) {
                     // media
                     if (propertyData.isMediaEmpty) {
                         AppUtils.showToast(context, R.string.message_no_media)
-                        return PluginBroadcastResult.CANCEL
+                        return result
                     }
                     // property
                     if (propertyData.getFirst(MediaProperty.TITLE).isNullOrEmpty() || propertyData.getFirst(MediaProperty.ARTIST).isNullOrEmpty()) {
-                        return PluginBroadcastResult.CANCEL
+                        return result
                     }
                 }
 
                 // service
                 pluginIntent.setClass(context, PluginRunService::class.java)
+                result = PluginBroadcastResult.COMPLETE
             }
 
             pluginIntent.putExtra(AbstractPluginService.RECEIVED_CLASS_NAME, this.javaClass.name)
@@ -150,7 +148,7 @@ class PluginReceivers {
             } else {
                 context.startService(pluginIntent)
             }
-            return PluginBroadcastResult.PROCESSING
+            return result
         }
 
     }

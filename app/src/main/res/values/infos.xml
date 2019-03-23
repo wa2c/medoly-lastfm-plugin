@@ -75,7 +75,7 @@
         <item>com.wa2c.android.medoly.plugin.category.OPERATION_PLAY_START</item>
     </string-array>
     <string-array name="event_get_property_operation_entries">
-        <item>@string/label_plugin_operation_invalid</item>
+        <item>@string/label_plugin_operation_disabled</item>
         <item>@string/label_plugin_operation_media_open</item>
         <item>@string/label_plugin_operation_play_start</item>
     </string-array>
@@ -87,7 +87,7 @@
         <item>com.wa2c.android.medoly.plugin.category.OPERATION_PLAY_START</item>
     </string-array>
     <string-array name="event_get_album_art_operation_entries">
-        <item>@string/label_plugin_operation_invalid</item>
+        <item>@string/label_plugin_operation_disabled</item>
         <item>@string/label_plugin_operation_media_open</item>
         <item>@string/label_plugin_operation_play_start</item>
     </string-array>

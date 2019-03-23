@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.preference.*
 import android.provider.Settings
 import android.text.InputType
-import android.view.View
 import com.thelittlefireman.appkillermanager.managers.KillerManager
 import com.wa2c.android.medoly.plugin.action.lastfm.R
 import com.wa2c.android.medoly.plugin.action.lastfm.dialog.AboutDialogFragment
