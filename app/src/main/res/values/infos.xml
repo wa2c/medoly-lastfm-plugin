@@ -10,8 +10,8 @@
     <string name="app_mail_domain">wa2c.com</string>
     <string name="app_author">wa2c</string>
     <string name="app_license">MIT License</string>
-    <string name="app_license_url">https://bitbucket.org/wa2c/medoly-last.fm-scrobbler-plugin/raw/32e65be2e0492e3323a9b540d44a5381cbee919d/LICENSE.txt</string>
-    <string name="app_privacy_policy_url">https://wa2c.sakura.ne.jp/wa2c.com/documents/dokuwiki/doku.php?id=medoly_last.fm_plugin:privacy_policy</string>
+    <string name="app_license_url">https://github.com/wa2c/medoly-lastfm-plugin/blob/master/LICENSE</string>
+    <string name="app_privacy_policy_url">https://www.wa2c.com/documents/dokuwiki/doku.php?id=en:medoly_last.fm_plugin:privacy_policy</string>
     <string name="app_market">market://details?id=com.wa2c.android.medoly.plugin.action.lastfm</string>
     <string name="app_market_web">https://play.google.com/store/apps/details?id=com.wa2c.android.medoly.plugin.action.lastfm</string>
 
@@ -20,11 +20,13 @@
     <!-- Library  -->
     <string-array name="about_library_names">
         <item>lastfm-java</item>
+        <item>AppKillerManager</item>
         <item>Dynamic Toasts</item>
         <item>Timber</item>
     </string-array>
     <string-array name="about_library_urls">
         <item>https://code.google.com/p/lastfm-java/</item>
+        <item>https://github.com/thelittlefireman/AppKillerManager</item>
         <item>https://github.com/pranavpandey/dynamic-toasts</item>
         <item>https://github.com/JakeWharton/timber</item>
     </string-array>

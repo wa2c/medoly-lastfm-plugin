@@ -10,12 +10,12 @@ See the following site to see details.
   * [Medoly Last.fm Plugin (EN)](https://www.wa2c.com/documents/dokuwiki/doku.php?id=en:medoly_last.fm_plugin:start)
   * [Medoly Last.fm Plugin (JA)](https://www.wa2c.com/documents/dokuwiki/doku.php?id=ja:medoly_last.fm_plugin:start)
 
-
 ## Public Site
 
 * [Google Play](https://play.google.com/store/apps/details?id=com.wa2c.android.medoly.plugin.action.lastfm)
 * [APK Files](https://wa2c.com/android/medoly/apk/)
 * [Source Code (GitHub)](https://github.com/wa2c/medoly-lastfm-plugin)
+* [CI (Bitrise)](https://app.bitrise.io/app/fb2506da5aba204a)
 
 ## Requirement
 
