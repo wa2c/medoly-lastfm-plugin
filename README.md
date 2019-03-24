@@ -15,7 +15,7 @@ See the following site to see details.
 
 * [Google Play](https://play.google.com/store/apps/details?id=com.wa2c.android.medoly.plugin.action.lastfm)
 * [APK Files](https://wa2c.com/android/medoly/apk/)
-* [Source Code(GitHub)](https://github.com/wa2c/medoly-lastfm-plugin)
+* [Source Code (GitHub)](https://github.com/wa2c/medoly-lastfm-plugin)
 
 ## Requirement
 
@@ -28,7 +28,7 @@ See the following site to see details.
 2. Import the source code to Android Studio.
 3. Build the source code on Android Studio.
 
-* Needs the API key and API Secret from Last.fm Site (http://www.last.fm/) to use this app . And set these keys to K1 and K2 on build.gradle.
+* Needs the API key and API Secret from Last.fm site (http://www.last.fm/) to use this app . And set these keys to K1 and K2 on build.gradle.
 
 ## Licence
 
