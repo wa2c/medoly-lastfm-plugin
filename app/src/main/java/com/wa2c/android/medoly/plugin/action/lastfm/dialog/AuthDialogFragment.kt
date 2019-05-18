@@ -6,6 +6,7 @@ import android.content.DialogInterface
 import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.Button
 import com.wa2c.android.medoly.plugin.action.lastfm.R
 import com.wa2c.android.medoly.plugin.action.lastfm.databinding.DialogAuthBinding
@@ -43,21 +44,13 @@ class AuthDialogFragment : AbstractDialogFragment() {
 
     override fun onStart() {
         super.onStart()
-        val dialog = dialog as AlertDialog?
-        if (dialog != null) {
-            // Default positive Button
-
-        }
-    }
-
-    override fun setPositiveButton(dialog: AlertDialog, button: Button) {
-        button.setOnClickListener {
+        setDialogButtonEvent(DialogInterface.BUTTON_POSITIVE, View.OnClickListener {
             val bundle = Bundle()
             bundle.putString(RESULT_USERNAME, binding.dialogAuthUsernameEditText.text.toString())
             bundle.putString(RESULT_PASSWORD, binding.dialogAuthPasswordEditText.text.toString())
             clickListener?.invoke(dialog, DialogInterface.BUTTON_POSITIVE, bundle)
             dialog.dismiss()
-        }
+        })
     }
 
     companion object {
