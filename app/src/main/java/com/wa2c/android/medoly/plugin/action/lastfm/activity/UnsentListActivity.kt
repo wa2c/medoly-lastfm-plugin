@@ -1,12 +1,12 @@
 package com.wa2c.android.medoly.plugin.action.lastfm.activity
 
 import android.annotation.SuppressLint
-import android.app.Activity
+import androidx.appcompat.app.AppCompatActivity
 import android.content.DialogInterface
-import android.databinding.DataBindingUtil
+import androidx.databinding.DataBindingUtil
 import android.os.Bundle
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.text.format.DateUtils
 import android.view.LayoutInflater
 import android.view.MenuItem
@@ -26,7 +26,7 @@ import java.util.*
 /**
  * Unsent list activity.
  */
-class UnsentListActivity : Activity() {
+class UnsentListActivity : AppCompatActivity() {
     private lateinit var prefs: Prefs
     private lateinit var binding: ActivityUnsentListBinding
 
@@ -41,10 +41,12 @@ class UnsentListActivity : Activity() {
         prefs = Prefs(this)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_unsent_list)
 
-        actionBar.setDisplayShowHomeEnabled(true)
-        actionBar.setDisplayHomeAsUpEnabled(true)
-        actionBar.setDisplayShowTitleEnabled(true)
-        actionBar.setTitle(R.string.title_activity_unsent_list)
+        supportActionBar?.let {
+            it.setDisplayShowHomeEnabled(true)
+            it.setDisplayHomeAsUpEnabled(true)
+            it.setDisplayShowTitleEnabled(true)
+            it.setTitle(R.string.title_activity_unsent_list)
+        }
 
         // not save
         binding.unsentNotSaveCheckBox.setOnCheckedChangeListener { _, isChecked ->  prefs.putBoolean(R.string.prefkey_unsent_scrobble_not_save, isChecked) }

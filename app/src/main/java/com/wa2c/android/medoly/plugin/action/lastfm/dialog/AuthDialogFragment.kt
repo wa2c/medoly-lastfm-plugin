@@ -1,13 +1,12 @@
 package com.wa2c.android.medoly.plugin.action.lastfm.dialog
 
-import android.app.AlertDialog
+import androidx.appcompat.app.AlertDialog
 import android.app.Dialog
 import android.content.DialogInterface
-import android.databinding.DataBindingUtil
+import androidx.databinding.DataBindingUtil
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.Button
 import com.wa2c.android.medoly.plugin.action.lastfm.R
 import com.wa2c.android.medoly.plugin.action.lastfm.databinding.DialogAuthBinding
 
@@ -18,7 +17,7 @@ class AuthDialogFragment : AbstractDialogFragment() {
 
     private lateinit var binding: DialogAuthBinding
 
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog? {
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         super.onCreateDialog(savedInstanceState)
         binding = DataBindingUtil.inflate(LayoutInflater.from(activity), R.layout.dialog_auth, null, false)
 
@@ -26,7 +25,7 @@ class AuthDialogFragment : AbstractDialogFragment() {
         binding.dialogAuthUsernameEditText.setText(username)
 
         // Dialog build
-        val builder = AlertDialog.Builder(activity)
+        val builder = AlertDialog.Builder(context)
         builder.setView(binding.root)
         builder.setTitle(R.string.title_dialog_auth)
 

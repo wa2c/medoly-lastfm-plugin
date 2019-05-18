@@ -1,9 +1,9 @@
 package com.wa2c.android.medoly.plugin.action.lastfm.activity
 
-import android.app.Activity
+import androidx.appcompat.app.AppCompatActivity
 import android.content.DialogInterface
 import android.content.Intent
-import android.databinding.DataBindingUtil
+import androidx.databinding.DataBindingUtil
 import android.net.Uri
 import android.os.Bundle
 import com.wa2c.android.medoly.library.MedolyEnvironment
@@ -26,7 +26,7 @@ import java.io.File
 /**
  * Main activity.
  */
-class MainActivity : Activity() {
+class MainActivity : AppCompatActivity() {
 
     private lateinit var prefs: Prefs
     private lateinit var binding: ActivityMainBinding
@@ -37,8 +37,11 @@ class MainActivity : Activity() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
 
         // ActionBar
-        actionBar.setDisplayShowHomeEnabled(true)
-        actionBar.setDisplayShowTitleEnabled(true)
+        supportActionBar?.let {
+            it.setDisplayShowHomeEnabled(true)
+            it.setDisplayShowTitleEnabled(true)
+            it.setIcon(R.drawable.ic_launcher)
+        }
 
         // Account Auth
         binding.accountAuthButton.setOnClickListener {

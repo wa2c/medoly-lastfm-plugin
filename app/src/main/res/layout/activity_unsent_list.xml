@@ -7,7 +7,7 @@
         android:layout_height="match_parent"
         tools:context=".activity.UnsentListActivity">
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/unsentListView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

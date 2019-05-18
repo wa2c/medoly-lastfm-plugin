@@ -3,7 +3,7 @@ package com.wa2c.android.medoly.plugin.action.lastfm.util
 import android.content.ContentResolver
 import android.content.Context
 import android.net.Uri
-import android.support.v4.content.FileProvider
+import androidx.core.content.FileProvider
 import com.wa2c.android.medoly.library.ExtraData
 import com.wa2c.android.medoly.library.MediaPluginIntent
 import com.wa2c.android.medoly.library.PropertyData

@@ -90,7 +90,7 @@ class PluginPostService : AbstractPluginService(PluginPostService::class.java.si
             Timber.e(e)
             result = CommandResult.FAILED
         } finally {
-            //showMessage(result, getString(R.string.message_post_success), getString(R.string.message_post_failure))
+            Timber.d(result.toString())
         }
     }
 
