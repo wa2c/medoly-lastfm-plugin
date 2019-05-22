@@ -14,7 +14,8 @@ class App : Application() {
         super.onCreate()
 
         if (BuildConfig.DEBUG) {
-            Timber.plant(Timber.DebugTree())
+            //Timber.plant(Timber.DebugTree())
+            Timber.plant(CrashlyticsTree())
         } else {
             Timber.plant(CrashlyticsTree())
         }
