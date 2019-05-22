@@ -63,6 +63,11 @@ class MainActivity : AppCompatActivity() {
             startActivity(Intent(this, UnsentListActivity::class.java))
         }
 
+        // Settings
+        binding.settingsButton.setOnClickListener {
+            startActivity(Intent(this, SettingsActivity::class.java))
+        }
+
         // Open Last.fm
         binding.lastfmSiteButton.setOnClickListener {
             val username = prefs.getStringOrNull(R.string.prefkey_auth_username)
@@ -73,11 +78,6 @@ class MainActivity : AppCompatActivity() {
             }
             val i = Intent(Intent.ACTION_VIEW, uri)
             startActivity(i)
-        }
-
-        // Settings
-        binding.settingsButton.setOnClickListener {
-            startActivity(Intent(this, SettingsActivity::class.java))
         }
 
         // Launch Medoly
