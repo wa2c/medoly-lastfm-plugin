@@ -6,7 +6,6 @@ import android.content.DialogInterface
 import androidx.databinding.DataBindingUtil
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.View
 import com.wa2c.android.medoly.plugin.action.lastfm.R
 import com.wa2c.android.medoly.plugin.action.lastfm.databinding.DialogAuthBinding
 
@@ -39,17 +38,13 @@ class AuthDialogFragment : AbstractDialogFragment() {
         return builder.create()
     }
 
-
-
-    override fun onStart() {
-        super.onStart()
-        setDialogButtonEvent(DialogInterface.BUTTON_POSITIVE, View.OnClickListener {
-            val bundle = Bundle()
-            bundle.putString(RESULT_USERNAME, binding.dialogAuthUsernameEditText.text.toString())
-            bundle.putString(RESULT_PASSWORD, binding.dialogAuthPasswordEditText.text.toString())
-            clickListener?.invoke(dialog, DialogInterface.BUTTON_POSITIVE, bundle)
-            dialog.dismiss()
-        })
+    override fun invokeListener(which: Int, bundle: Bundle?, close: Boolean) {
+        val result = bundle ?: Bundle()
+        if (which == DialogInterface.BUTTON_POSITIVE) {
+            result.putString(RESULT_USERNAME, binding.dialogAuthUsernameEditText.text.toString())
+            result.putString(RESULT_PASSWORD, binding.dialogAuthPasswordEditText.text.toString())
+        }
+        super.invokeListener(which, result, close)
     }
 
     companion object {

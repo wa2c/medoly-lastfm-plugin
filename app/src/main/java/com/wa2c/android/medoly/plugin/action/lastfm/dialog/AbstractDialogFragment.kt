@@ -36,9 +36,9 @@ abstract class AbstractDialogFragment : DialogFragment() {
 
     override fun onStart() {
         super.onStart()
-        setDialogButtonEvent(DialogInterface.BUTTON_POSITIVE, null)
-        setDialogButtonEvent(DialogInterface.BUTTON_NEGATIVE, null)
-        setDialogButtonEvent(DialogInterface.BUTTON_NEUTRAL, null)
+        setDefaultListener(DialogInterface.BUTTON_POSITIVE)
+        setDefaultListener(DialogInterface.BUTTON_NEGATIVE)
+        setDefaultListener(DialogInterface.BUTTON_NEUTRAL)
     }
 
     override fun onStop() {
@@ -49,17 +49,22 @@ abstract class AbstractDialogFragment : DialogFragment() {
     /**
      * Set button event. Use this onStart or later.
      * @param which The button id.
-     * @param listener The event listener. null set default.
      */
-    protected fun setDialogButtonEvent(which: Int, listener: View.OnClickListener?) {
-        if (listener != null) {
-            (dialog as AlertDialog?)?.getButton(which)?.setOnClickListener(listener)
-        } else {
-            (dialog as AlertDialog?)?.getButton(which)?.setOnClickListener {
-                clickListener?.invoke(dialog, which, null)
-                dialog?.dismiss()
-            }
+    private fun setDefaultListener(which: Int) {
+        (dialog as AlertDialog?)?.getButton(which)?.setOnClickListener {
+            invokeListener(which)
         }
+    }
+
+    /**
+     * Invoke click listener.
+     * @param which The button id.
+     * @param close True if this dialog close.
+     */
+    protected open fun invokeListener(which: Int, bundle: Bundle? = null, close: Boolean = true) {
+        clickListener?.invoke(dialog, which, bundle)
+        if (close)
+            dialog?.dismiss()
     }
 
     /**

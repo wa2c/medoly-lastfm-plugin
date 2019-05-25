@@ -18,7 +18,7 @@ android {
     defaultConfig {
         applicationId "com.wa2c.android.medoly.plugin.action.lastfm"
         minSdkVersion 16
-        targetSdkVersion 27
+        targetSdkVersion 28
         versionCode 19
         versionName "2.3.0"
 
@@ -26,6 +26,8 @@ android {
         buildConfigField("String", "K2", "\"\"")
         buildConfigField("String", "T1", "\"\"")
         buildConfigField("String", "T2", "\"\"")
+
+        vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
         debug {
@@ -65,18 +67,18 @@ dependencies {
     // Prefs
     implementation 'com.wa2c.android:prefs:0.1.1'
 
-    // Android X
+    // Support Library
     implementation 'androidx.appcompat:appcompat:1.0.2'
     implementation "androidx.preference:preference:1.0.0"
-    implementation group: 'androidx.recyclerview', name: 'recyclerview', version: '1.0.0'
+    implementation 'androidx.recyclerview:recyclerview:1.0.0'
 
     // Kotlin
     implementation group: 'org.jetbrains.kotlinx', name: 'kotlinx-coroutines-core', version: '1.2.1'
-    implementation group: 'org.jetbrains.kotlinx', name: 'kotlinx-coroutines-android', version: '1.1.1'
+    implementation group: 'org.jetbrains.kotlinx', name: 'kotlinx-coroutines-android', version: '1.2.1'
 
     // Firebase
     implementation 'com.google.firebase:firebase-core:16.0.9'
-    implementation 'com.crashlytics.sdk.android:crashlytics:2.10.0'
+    implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
 
     // https://mvnrepository.com/artifact/com.jakewharton.timber/timber
     implementation group: 'com.jakewharton.timber', name: 'timber', version: '4.7.1'
