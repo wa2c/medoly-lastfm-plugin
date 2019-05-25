@@ -45,6 +45,12 @@ android {
         }
     }
 
+    signingConfigs {
+        debug {
+            storeFile file("../debug.keystore")
+        }
+    }
+
     packagingOptions {
         exclude 'META-INF/LICENSE'
     }
