@@ -4,7 +4,6 @@ import android.app.Dialog
 import android.content.DialogInterface
 import android.content.res.Configuration
 import android.os.Bundle
-import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentActivity
@@ -80,8 +79,7 @@ abstract class AbstractDialogFragment : DialogFragment() {
         if (activity == null)
             return
         val manager = activity.supportFragmentManager
-        val fragment = manager.findFragmentByTag(fragmentTag) as? AbstractDialogFragment
-        fragment?.dismiss()
+        (manager.findFragmentByTag(fragmentTag) as? AbstractDialogFragment)?.dismiss()
         super.show(manager, fragmentTag)
     }
 
