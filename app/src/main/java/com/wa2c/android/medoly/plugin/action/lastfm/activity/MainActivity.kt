@@ -1,11 +1,11 @@
 package com.wa2c.android.medoly.plugin.action.lastfm.activity
 
-import androidx.appcompat.app.AppCompatActivity
 import android.content.DialogInterface
 import android.content.Intent
-import androidx.databinding.DataBindingUtil
 import android.net.Uri
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
+import androidx.databinding.DataBindingUtil
 import com.wa2c.android.medoly.library.MedolyEnvironment
 import com.wa2c.android.medoly.plugin.action.lastfm.R
 import com.wa2c.android.medoly.plugin.action.lastfm.Token
@@ -37,10 +37,10 @@ class MainActivity : AppCompatActivity() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
 
         // ActionBar
-        supportActionBar?.let {
-            it.setDisplayShowHomeEnabled(true)
-            it.setDisplayShowTitleEnabled(true)
-            it.setIcon(R.drawable.ic_launcher)
+        supportActionBar?.apply {
+            setDisplayShowHomeEnabled(true)
+            setDisplayShowTitleEnabled(true)
+            setIcon(R.drawable.ic_launcher)
         }
 
         // Account Auth

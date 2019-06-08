@@ -1,8 +1,8 @@
 package com.wa2c.android.medoly.plugin.action.lastfm.activity
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
+import androidx.appcompat.app.AppCompatActivity
 import com.wa2c.android.medoly.plugin.action.lastfm.R
 
 
@@ -14,11 +14,11 @@ class SettingsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        supportActionBar?.let {
-            it.setDisplayShowHomeEnabled(true)
-            it.setDisplayHomeAsUpEnabled(true)
-            it.setDisplayShowTitleEnabled(true)
-            it.setTitle(R.string.title_activity_settings)
+        supportActionBar?.apply {
+            setDisplayShowHomeEnabled(true)
+            setDisplayHomeAsUpEnabled(true)
+            setDisplayShowTitleEnabled(true)
+            setTitle(R.string.title_activity_settings)
         }
 
         if (savedInstanceState == null) {

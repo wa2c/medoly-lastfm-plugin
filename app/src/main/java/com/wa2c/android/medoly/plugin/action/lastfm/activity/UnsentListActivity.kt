@@ -1,17 +1,17 @@
 package com.wa2c.android.medoly.plugin.action.lastfm.activity
 
 import android.annotation.SuppressLint
-import androidx.appcompat.app.AppCompatActivity
 import android.content.DialogInterface
-import androidx.databinding.DataBindingUtil
 import android.os.Bundle
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import android.text.format.DateUtils
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
+import androidx.databinding.DataBindingUtil
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.wa2c.android.medoly.plugin.action.lastfm.R
 import com.wa2c.android.medoly.plugin.action.lastfm.databinding.ActivityUnsentListBinding
 import com.wa2c.android.medoly.plugin.action.lastfm.databinding.LayoutUnsentListItemBinding
@@ -40,11 +40,11 @@ class UnsentListActivity : AppCompatActivity() {
         prefs = Prefs(this)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_unsent_list)
 
-        supportActionBar?.let {
-            it.setDisplayShowHomeEnabled(true)
-            it.setDisplayHomeAsUpEnabled(true)
-            it.setDisplayShowTitleEnabled(true)
-            it.setTitle(R.string.title_activity_unsent_list)
+        supportActionBar?.apply {
+            setDisplayShowHomeEnabled(true)
+            setDisplayHomeAsUpEnabled(true)
+            setDisplayShowTitleEnabled(true)
+            setTitle(R.string.title_activity_unsent_list)
         }
 
         // not save

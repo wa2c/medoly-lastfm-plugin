@@ -1,11 +1,11 @@
 package com.wa2c.android.medoly.plugin.action.lastfm.dialog
 
-import androidx.appcompat.app.AlertDialog
 import android.app.Dialog
 import android.content.DialogInterface
-import androidx.databinding.DataBindingUtil
 import android.os.Bundle
 import android.view.LayoutInflater
+import androidx.appcompat.app.AlertDialog
+import androidx.databinding.DataBindingUtil
 import com.wa2c.android.medoly.plugin.action.lastfm.R
 import com.wa2c.android.medoly.plugin.action.lastfm.databinding.DialogAuthBinding
 
@@ -24,18 +24,13 @@ class AuthDialogFragment : AbstractDialogFragment() {
         binding.dialogAuthUsernameEditText.setText(username)
 
         // Dialog build
-        val builder = AlertDialog.Builder(context)
-        builder.setView(binding.root)
-        builder.setTitle(R.string.title_dialog_auth)
-
-        // Auth
-        builder.setPositiveButton(R.string.label_dialog_auth_auth, null)
-        // Clear
-        builder.setNegativeButton(R.string.label_dialog_auth_clear, null)
-        // Cancel
-        builder.setNeutralButton(android.R.string.cancel, null)
-
-        return builder.create()
+        return AlertDialog.Builder(context).apply {
+            setView(binding.root)
+            setTitle(R.string.title_dialog_auth)
+            setPositiveButton(R.string.label_dialog_auth_auth, null) // Auth
+            setNegativeButton(R.string.label_dialog_auth_clear, null) // Clear
+            setNeutralButton(android.R.string.cancel, null)// Cancel
+        }.create()
     }
 
     override fun invokeListener(which: Int, bundle: Bundle?, close: Boolean) {
@@ -55,11 +50,9 @@ class AuthDialogFragment : AbstractDialogFragment() {
          * Create dialog instance
          */
         fun newInstance(): AuthDialogFragment {
-            val args = Bundle()
-
-            val fragment = AuthDialogFragment()
-            fragment.arguments = args
-            return fragment
+            return AuthDialogFragment().apply {
+                arguments = Bundle()
+            }
         }
     }
 
