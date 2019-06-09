@@ -69,9 +69,9 @@ repositories {
 
 dependencies {
     // Medoly library
-    implementation 'com.wa2c.android:medolylibrary:1.2.6'
+    implementation 'com.wa2c.android:medolylibrary:1.2.7'
     // Prefs
-    implementation 'com.wa2c.android:prefs:0.1.1'
+    implementation 'com.wa2c.android:prefs:0.1.2'
 
     // Support Library
     implementation 'androidx.appcompat:appcompat:1.0.2'
@@ -79,8 +79,8 @@ dependencies {
     implementation 'androidx.recyclerview:recyclerview:1.0.0'
 
     // Kotlin
-    implementation group: 'org.jetbrains.kotlinx', name: 'kotlinx-coroutines-core', version: '1.2.1'
     implementation group: 'org.jetbrains.kotlinx', name: 'kotlinx-coroutines-android', version: '1.2.1'
+    implementation group: 'org.jetbrains.kotlinx', name: 'kotlinx-coroutines-core', version: '1.2.1'
 
     // Firebase
     implementation 'com.google.firebase:firebase-core:16.0.9'
