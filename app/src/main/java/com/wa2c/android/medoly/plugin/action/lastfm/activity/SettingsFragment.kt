@@ -31,6 +31,15 @@ class SettingsFragment : PreferenceFragmentCompat() {
     }
 
     /**
+     * Privacy policy
+     */
+    private val privacyPolicyPreferenceClickListener = Preference.OnPreferenceClickListener {
+        val url = Uri.parse(getString(R.string.app_privacy_policy_url))
+        startActivity(Intent(Intent.ACTION_VIEW, url))
+        true
+    }
+
+    /**
      * App info.
      */
     private val applicationDetailsPreferenceClickListener = Preference.OnPreferenceClickListener {
@@ -79,6 +88,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
         } else {
             findPreference(getString(R.string.prefkey_device_auto_start)).isEnabled = false
         }
+        // Privacy Policy
+        findPreference(getString(R.string.prefkey_privacy_policy)).onPreferenceClickListener = privacyPolicyPreferenceClickListener
         // App info
         findPreference(getString(R.string.prefkey_application_details)).onPreferenceClickListener = applicationDetailsPreferenceClickListener
         // About
