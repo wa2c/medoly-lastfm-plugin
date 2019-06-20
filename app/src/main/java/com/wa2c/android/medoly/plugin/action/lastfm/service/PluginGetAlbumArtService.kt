@@ -22,9 +22,8 @@ import java.util.*
 class PluginGetAlbumArtService : AbstractPluginService(PluginGetAlbumArtService::class.java.simpleName) {
 
     override fun onHandleIntent(intent: Intent?) {
-        super.onHandleIntent(intent)
-
         try {
+            super.onHandleIntent(intent)
             getAlbumArt()
         } catch (e: Exception) {
             Timber.e(e)

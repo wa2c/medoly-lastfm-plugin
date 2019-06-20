@@ -81,7 +81,7 @@ class UnsentListActivity : AppCompatActivity() {
                         }
 
                         // save result
-                        val dataArray = itemList.toTypedArray<ScrobbleData>()
+                        val dataArray = itemList.toTypedArray()
                         prefs.putObject(R.string.prefkey_unsent_scrobble_data, dataArray)
                         items = dataArray
                         adapter.checkedSet.clear()

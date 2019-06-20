@@ -3,7 +3,7 @@ package com.wa2c.android.medoly.plugin.action.lastfm.service
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.os.Build
+import androidx.core.content.ContextCompat
 import com.wa2c.android.medoly.library.*
 import com.wa2c.android.medoly.plugin.action.lastfm.R
 import com.wa2c.android.medoly.plugin.action.lastfm.util.AppUtils
@@ -65,7 +65,7 @@ class PluginReceivers {
                     val mediaUriText = propertyData.mediaUri.toString()
                     val previousMediaUri = prefs.getString(AbstractPluginService.PREFKEY_PREVIOUS_MEDIA_URI)
                     val previousMediaEnabled = prefs.getBoolean(R.string.prefkey_previous_media_enabled, defRes = R.bool.pref_default_previous_media_enabled)
-                    if (!previousMediaEnabled && !mediaUriText.isEmpty() && !previousMediaUri.isEmpty() && mediaUriText == previousMediaUri) {
+                    if (!previousMediaEnabled && mediaUriText.isNotEmpty() && previousMediaUri.isNotEmpty() && mediaUriText == previousMediaUri) {
                         return result
                     }
                 }
@@ -142,11 +142,7 @@ class PluginReceivers {
             }
 
             pluginIntent.putExtra(AbstractPluginService.RECEIVED_CLASS_NAME, this.javaClass.name)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                context.startForegroundService(pluginIntent)
-            } else {
-                context.startService(pluginIntent)
-            }
+            ContextCompat.startForegroundService(context, pluginIntent)
             return result
         }
 

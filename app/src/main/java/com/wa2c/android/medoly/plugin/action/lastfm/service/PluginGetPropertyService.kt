@@ -16,9 +16,8 @@ import timber.log.Timber
 class PluginGetPropertyService : AbstractPluginService(PluginGetPropertyService::class.java.simpleName) {
 
     override fun onHandleIntent(intent: Intent?) {
-        super.onHandleIntent(intent)
-
         try {
+            super.onHandleIntent(intent)
             getProperties()
         } catch (e: Exception) {
             Timber.e(e)

@@ -22,6 +22,7 @@ import de.umass.lastfm.Session
 import de.umass.lastfm.cache.FileSystemCache
 import timber.log.Timber
 import java.io.File
+import java.io.InvalidObjectException
 
 
 /**
@@ -45,47 +46,42 @@ abstract class AbstractPluginService(name: String) : IntentService(name) {
     protected var session: Session? = null
     /** Username */
     protected var username: String? = null
-
+    /** Notification manager. */
+    private var notificationManager : NotificationManager? = null
 
 
     @SuppressLint("NewApi")
     override fun onHandleIntent(intent: Intent?) {
         Timber.d("onHandleIntent")
 
-        var notificationManager : NotificationManager? = null
-        try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-                val notification = NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID).apply {
-                    setContentTitle(getString(R.string.app_name))
-                    setSmallIcon(R.drawable.ic_notification)
-                }.build()
-                startForeground(NOTIFICATION_ID, notification)
-            }
-
-            if (intent == null)
-                return
-
-            resultSent = false
-            context = applicationContext
-            prefs = Prefs(this)
-            pluginIntent = MediaPluginIntent(intent)
-            propertyData = pluginIntent.propertyData ?: PropertyData()
-            receivedClassName = pluginIntent.getStringExtra(RECEIVED_CLASS_NAME)
-
-            createSession()
-        } catch (e: Exception) {
-            Timber.e(e)
-        } finally {
-            if (notificationManager != null) {
-                notificationManager.cancel(NOTIFICATION_ID)
-                stopForeground(true)
-            }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            val notification = NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID).apply {
+                setContentTitle(getString(R.string.app_name))
+                setSmallIcon(R.drawable.ic_notification)
+            }.build()
+            startForeground(NOTIFICATION_ID, notification)
         }
+
+        if (intent == null)
+            throw InvalidObjectException("Null intent")
+
+        resultSent = false
+        context = applicationContext
+        prefs = Prefs(this)
+        pluginIntent = MediaPluginIntent(intent)
+        propertyData = pluginIntent.propertyData ?: PropertyData()
+        receivedClassName = pluginIntent.getStringExtra(RECEIVED_CLASS_NAME)
+
+        createSession()
     }
 
     override fun onDestroy() {
         super.onDestroy()
+        notificationManager?.let {
+            it.cancel(NOTIFICATION_ID)
+            stopForeground(true)
+        }
         Timber.d("onDestroy: %s", this.javaClass.simpleName)
         sendResult(null)
     }

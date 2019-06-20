@@ -9,6 +9,7 @@ import de.umass.lastfm.scrobble.ScrobbleData
 import de.umass.lastfm.scrobble.ScrobbleResult
 import timber.log.Timber
 import java.util.*
+import kotlin.math.min
 
 
 /**
@@ -17,9 +18,8 @@ import java.util.*
 class PluginPostService : AbstractPluginService(PluginPostService::class.java.simpleName) {
 
     override fun onHandleIntent(intent: Intent?) {
-        super.onHandleIntent(intent)
-
         try {
+            super.onHandleIntent(intent)
             when (receivedClassName) {
                 PluginReceivers.EventNowPlayingReceiver::class.java.name -> // Now Playing
                     updateNowPlaying(session)
@@ -108,7 +108,7 @@ class PluginPostService : AbstractPluginService(PluginPostService::class.java.si
             var dataList: MutableList<ScrobbleData> = ArrayList()
             val dataArray = prefs.getObjectOrNull<Array<ScrobbleData>>(R.string.prefkey_unsent_scrobble_data)
             if (dataArray != null)
-                dataList.addAll(Arrays.asList(*dataArray)) // load unsent data
+                dataList.addAll(listOf(*dataArray)) // load unsent data
             dataList.add(scrobbleData)
 
             // send if session is not null
@@ -118,7 +118,7 @@ class PluginPostService : AbstractPluginService(PluginPostService::class.java.si
                 var from = 0
                 var cancelSending = true
                 while (from < dataList.size) {
-                    val to = Math.min(from + maxSize, dataList.size)
+                    val to = min(from + maxSize, dataList.size)
                     val subDataList = dataList.subList(from, to)
                     resultList.addAll(Track.scrobble(subDataList, session))
                     for (r in resultList) {

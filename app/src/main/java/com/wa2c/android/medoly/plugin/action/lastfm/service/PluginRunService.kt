@@ -18,8 +18,8 @@ import timber.log.Timber
 class PluginRunService : AbstractPluginService(PluginRunService::class.java.simpleName) {
 
     override fun onHandleIntent(intent: Intent?) {
-        super.onHandleIntent(intent)
         try {
+            super.onHandleIntent(intent)
             if (receivedClassName == PluginReceivers.ExecuteTrackPageReceiver::class.java.name) {
                 openTrackPage(session)
             } else if (receivedClassName == PluginReceivers.ExecuteLastfmSiteReceiver::class.java.name) {
