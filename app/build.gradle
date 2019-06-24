@@ -26,8 +26,6 @@ android {
         buildConfigField("String", "K2", "\"\"")
         buildConfigField("String", "T1", "\"\"")
         buildConfigField("String", "T2", "\"\"")
-
-        vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
         debug {
@@ -98,8 +96,8 @@ dependencies {
     implementation 'com.wa2c.android:prefs:0.1.2'
 
     // Support Library
-    implementation 'androidx.appcompat:appcompat:1.0.2'
-    implementation "androidx.preference:preference:1.0.0"
+    implementation 'androidx.appcompat:appcompat:1.1.0-beta01'
+    implementation "androidx.preference:preference:1.1.0-beta01"
     implementation 'androidx.recyclerview:recyclerview:1.0.0'
 
     // Kotlin

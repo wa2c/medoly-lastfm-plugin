@@ -5,12 +5,16 @@ import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
+import android.text.InputType
+import android.text.method.DigitsKeyListener
 import androidx.preference.*
 import com.thelittlefireman.appkillermanager.managers.KillerManager
 import com.wa2c.android.medoly.plugin.action.lastfm.R
 import com.wa2c.android.medoly.plugin.action.lastfm.dialog.AboutDialogFragment
 import com.wa2c.android.medoly.plugin.action.lastfm.util.AppUtils
 import java.util.*
+import android.text.InputFilter
+
 
 
 /**
@@ -67,11 +71,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
     private var managerAction: KillerManager.Actions? = null
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
-    }
-
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         addPreferencesFromResource(R.xml.pref_settings)
 
         KillerManager.init(activity)
@@ -82,19 +81,30 @@ class SettingsFragment : PreferenceFragmentCompat() {
             else -> null
         }
 
+        // Unsent Max
+        (findPreference(getString(R.string.prefkey_unsent_max)) as? EditTextPreference)?.setOnBindEditTextListener {
+            it.inputType = InputType.TYPE_NUMBER_FLAG_DECIMAL
+            it.keyListener = DigitsKeyListener.getInstance("0123456789")
+            it.filters = arrayOf<InputFilter>(InputFilter.LengthFilter(5))
+        }
+
         // Device auto start
         if (managerAction != null) {
-            findPreference(getString(R.string.prefkey_device_auto_start)).onPreferenceClickListener = deviceAutoStartPreferenceClickListener
+            (findPreference(getString(R.string.prefkey_device_auto_start)) as? Preference)?.onPreferenceClickListener = deviceAutoStartPreferenceClickListener
         } else {
-            findPreference(getString(R.string.prefkey_device_auto_start)).isEnabled = false
+            (findPreference(getString(R.string.prefkey_device_auto_start)) as? Preference)?.isEnabled = false
         }
         // Privacy Policy
-        findPreference(getString(R.string.prefkey_privacy_policy)).onPreferenceClickListener = privacyPolicyPreferenceClickListener
+        (findPreference(getString(R.string.prefkey_privacy_policy)) as? Preference)?.onPreferenceClickListener = privacyPolicyPreferenceClickListener
         // App info
-        findPreference(getString(R.string.prefkey_application_details)).onPreferenceClickListener = applicationDetailsPreferenceClickListener
+        (findPreference(getString(R.string.prefkey_application_details)) as? Preference)?.onPreferenceClickListener = applicationDetailsPreferenceClickListener
         // About
-        findPreference(getString(R.string.prefkey_about)).onPreferenceClickListener = aboutPreferenceClickListener
+        (findPreference(getString(R.string.prefkey_about)) as? Preference)?.onPreferenceClickListener = aboutPreferenceClickListener
+    }
 
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         initSummary(preferenceScreen)
     }
 
@@ -142,7 +152,10 @@ class SettingsFragment : PreferenceFragmentCompat() {
      * Update summary.
      * @param p target preference.
      */
-    private fun updatePrefSummary(p: Preference) {
+    private fun updatePrefSummary(p: Preference?) {
+        if (p == null)
+            return
+
         val key = p.key
         var summary = p.summary
         if (key.isNullOrEmpty())
