@@ -37,6 +37,10 @@ android {
         }
     }
 
+    dexOptions {
+        javaMaxHeapSize "2g"
+    }
+
     gradle.projectsEvaluated {
         tasks.withType(JavaCompile) {
             options.compilerArgs << "-Xlint:deprecation"
