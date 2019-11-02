@@ -14,7 +14,7 @@ import androidx.core.text.HtmlCompat
 import androidx.databinding.DataBindingUtil
 import com.wa2c.android.medoly.plugin.action.lastfm.R
 import com.wa2c.android.medoly.plugin.action.lastfm.databinding.DialogAboutBinding
-import timber.log.Timber
+import com.wa2c.android.medoly.plugin.action.lastfm.util.logE
 import java.util.regex.Pattern
 
 /**
@@ -33,7 +33,7 @@ class AboutDialogFragment : AbstractDialogFragment() {
             val packageInfo = context.packageManager.getPackageInfo(context.packageName, PackageManager.GET_ACTIVITIES)
             binding.dialogAboutAppVersionTextView.text = getString(R.string.label_dialog_about_ver, packageInfo.versionName)
         } catch (e: PackageManager.NameNotFoundException) {
-            Timber.e(e)
+            logE(e)
         }
 
         // Email

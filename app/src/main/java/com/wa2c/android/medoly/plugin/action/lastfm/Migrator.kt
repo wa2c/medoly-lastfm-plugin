@@ -3,8 +3,8 @@ package com.wa2c.android.medoly.plugin.action.lastfm
 import android.content.Context
 import androidx.core.content.pm.PackageInfoCompat
 import com.wa2c.android.medoly.library.PluginOperationCategory
+import com.wa2c.android.medoly.plugin.action.lastfm.util.logD
 import com.wa2c.android.prefs.Prefs
-import timber.log.Timber
 
 /**
  * Migrator
@@ -22,7 +22,7 @@ class Migrator(private val context: Context) {
                 val packageInfo = context.packageManager.getPackageInfo(context.packageName, 0)
                 PackageInfoCompat.getLongVersionCode(packageInfo).toInt()
             } catch (e: Exception) {
-                Timber.d(e)
+                logD(e)
                 0
             }
         }

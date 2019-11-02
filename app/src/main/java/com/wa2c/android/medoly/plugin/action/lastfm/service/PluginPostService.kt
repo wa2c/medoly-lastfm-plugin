@@ -1,13 +1,14 @@
 package com.wa2c.android.medoly.plugin.action.lastfm.service
 
 import android.content.Intent
+import com.softartdev.lastfm.Session
+import com.softartdev.lastfm.Track
+import com.softartdev.lastfm.scrobble.ScrobbleData
+import com.softartdev.lastfm.scrobble.ScrobbleResult
 import com.wa2c.android.medoly.library.MediaProperty
 import com.wa2c.android.medoly.plugin.action.lastfm.R
-import de.umass.lastfm.Session
-import de.umass.lastfm.Track
-import de.umass.lastfm.scrobble.ScrobbleData
-import de.umass.lastfm.scrobble.ScrobbleResult
-import timber.log.Timber
+import com.wa2c.android.medoly.plugin.action.lastfm.util.logD
+import com.wa2c.android.medoly.plugin.action.lastfm.util.logE
 import java.util.*
 import kotlin.math.min
 
@@ -31,8 +32,7 @@ class PluginPostService : AbstractPluginService(PluginPostService::class.java.si
                     unlove(session)
             }
         } catch (e: Exception) {
-            Timber.e(e)
-            //AppUtils.showToast(this, R.string.error_app);
+            logE(e)
         }
 
     }
@@ -87,10 +87,10 @@ class PluginPostService : AbstractPluginService(PluginPostService::class.java.si
             else
                 CommandResult.FAILED
         } catch (e: Exception) {
-            Timber.e(e)
+            logE(e)
             result = CommandResult.FAILED
         } finally {
-            Timber.d(result.toString())
+            logD(result.toString())
         }
     }
 
@@ -168,7 +168,7 @@ class PluginPostService : AbstractPluginService(PluginPostService::class.java.si
             // save unsent data
             prefs.putObject(R.string.prefkey_unsent_scrobble_data, dataList.toTypedArray())
         } catch (e: Exception) {
-            Timber.e(e)
+            logE(e)
             result = CommandResult.FAILED
         } finally {
             // save previous media
@@ -202,7 +202,7 @@ class PluginPostService : AbstractPluginService(PluginPostService::class.java.si
             else
                 CommandResult.FAILED
         } catch (e: Exception) {
-            Timber.e(e)
+            logE(e)
             result = CommandResult.FAILED
         } finally {
             // show message
@@ -234,7 +234,7 @@ class PluginPostService : AbstractPluginService(PluginPostService::class.java.si
             else
                 CommandResult.FAILED
         } catch (e: Exception) {
-            Timber.e(e)
+            logE(e)
             result = CommandResult.FAILED
         } finally {
             // show message

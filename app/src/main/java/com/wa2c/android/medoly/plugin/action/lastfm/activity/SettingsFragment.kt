@@ -5,16 +5,15 @@ import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
+import android.text.InputFilter
 import android.text.InputType
 import android.text.method.DigitsKeyListener
 import androidx.preference.*
 import com.thelittlefireman.appkillermanager.managers.KillerManager
 import com.wa2c.android.medoly.plugin.action.lastfm.R
 import com.wa2c.android.medoly.plugin.action.lastfm.dialog.AboutDialogFragment
-import com.wa2c.android.medoly.plugin.action.lastfm.util.AppUtils
+import com.wa2c.android.medoly.plugin.action.lastfm.util.toast
 import java.util.*
-import android.text.InputFilter
-
 
 
 /**
@@ -28,7 +27,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
     private val deviceAutoStartPreferenceClickListener = Preference.OnPreferenceClickListener {
         activity?.let {
             if (!KillerManager.doAction(it, managerAction)) {
-                AppUtils.showToast(it, R.string.message_unsupported_device)
+                it.toast(R.string.message_unsupported_device)
             }
         }
         true
@@ -179,7 +178,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 if (stringSet != null && stringSet.size > 0) {
                     p.values = stringSet // update value once
                     val builder = StringBuilder()
-                    (0 until p.entries.size)
+                    (p.entries.indices)
                             .filter { stringSet.contains(p.entryValues[it]) }
                             .forEach { builder.append(p.entries[it]).append(",") }
                     if (builder.isNotEmpty()) {

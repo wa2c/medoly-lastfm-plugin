@@ -2,17 +2,17 @@ package com.wa2c.android.medoly.plugin.action.lastfm.service
 
 import android.content.Intent
 import android.net.Uri
+import com.softartdev.lastfm.Album
+import com.softartdev.lastfm.Artist
+import com.softartdev.lastfm.ImageSize
+import com.softartdev.lastfm.Track
 import com.wa2c.android.medoly.library.AlbumArtProperty
 import com.wa2c.android.medoly.library.MediaProperty
 import com.wa2c.android.medoly.library.PropertyData
 import com.wa2c.android.medoly.plugin.action.lastfm.R
 import com.wa2c.android.medoly.plugin.action.lastfm.Token
 import com.wa2c.android.medoly.plugin.action.lastfm.util.AppUtils
-import de.umass.lastfm.Album
-import de.umass.lastfm.Artist
-import de.umass.lastfm.ImageSize
-import de.umass.lastfm.Track
-import timber.log.Timber
+import com.wa2c.android.medoly.plugin.action.lastfm.util.logE
 import java.util.*
 
 
@@ -26,8 +26,7 @@ class PluginGetAlbumArtService : AbstractPluginService(PluginGetAlbumArtService:
             super.onHandleIntent(intent)
             getAlbumArt()
         } catch (e: Exception) {
-            Timber.e(e)
-            //AppUtils.showToast(this, R.string.error_app);
+            logE(e)
         }
     }
 
@@ -117,7 +116,7 @@ class PluginGetAlbumArtService : AbstractPluginService(PluginGetAlbumArtService:
             applicationContext.grantUriPermission(pluginIntent.srcPackage, localUri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
             result = CommandResult.SUCCEEDED
         } catch (e: Exception) {
-            Timber.e(e)
+            logE(e)
             resultProperty = null
             result = CommandResult.FAILED
         } finally {

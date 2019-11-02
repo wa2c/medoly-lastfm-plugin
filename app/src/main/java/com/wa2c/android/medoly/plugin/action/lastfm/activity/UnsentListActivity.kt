@@ -12,14 +12,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.softartdev.lastfm.scrobble.ScrobbleData
 import com.wa2c.android.medoly.plugin.action.lastfm.R
 import com.wa2c.android.medoly.plugin.action.lastfm.databinding.ActivityUnsentListBinding
 import com.wa2c.android.medoly.plugin.action.lastfm.databinding.LayoutUnsentListItemBinding
 import com.wa2c.android.medoly.plugin.action.lastfm.dialog.ConfirmDialogFragment
-import com.wa2c.android.medoly.plugin.action.lastfm.util.AppUtils
+import com.wa2c.android.medoly.plugin.action.lastfm.util.logE
+import com.wa2c.android.medoly.plugin.action.lastfm.util.toast
 import com.wa2c.android.prefs.Prefs
-import de.umass.lastfm.scrobble.ScrobbleData
-import timber.log.Timber
 import java.util.*
 
 
@@ -65,7 +65,7 @@ class UnsentListActivity : AppCompatActivity() {
         // delete
         binding.unsentDeleteButton.setOnClickListener {
             if (adapter.itemList.isEmpty()) {
-                AppUtils.showToast(applicationContext, R.string.message_unsent_check_data)
+                toast(R.string.message_unsent_check_data)
             } else {
                 val dialogFragment = ConfirmDialogFragment.newInstance(getString(R.string.message_dialog_unsent_delete_confirm), getString(R.string.title_dialog_unsent_delete_confirm))
                 dialogFragment.clickListener = listener@{ _, which, _ ->
@@ -86,8 +86,8 @@ class UnsentListActivity : AppCompatActivity() {
                         items = dataArray
                         adapter.checkedSet.clear()
                     } catch (e: Exception) {
-                        Timber.e(e)
-                        AppUtils.showToast(applicationContext, R.string.message_unsent_delete_failure)
+                        logE(e)
+                        toast(R.string.message_unsent_delete_failure)
                     }
 
                     initializeListView()

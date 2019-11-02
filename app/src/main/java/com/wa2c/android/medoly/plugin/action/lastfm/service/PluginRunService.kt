@@ -3,13 +3,14 @@ package com.wa2c.android.medoly.plugin.action.lastfm.service
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
+import com.softartdev.lastfm.Session
+import com.softartdev.lastfm.Track
 import com.wa2c.android.medoly.library.MediaProperty
 import com.wa2c.android.medoly.plugin.action.lastfm.R
 import com.wa2c.android.medoly.plugin.action.lastfm.Token
-import com.wa2c.android.medoly.plugin.action.lastfm.util.AppUtils
-import de.umass.lastfm.Session
-import de.umass.lastfm.Track
-import timber.log.Timber
+import com.wa2c.android.medoly.plugin.action.lastfm.util.logD
+import com.wa2c.android.medoly.plugin.action.lastfm.util.logE
+import com.wa2c.android.medoly.plugin.action.lastfm.util.toast
 
 
 /**
@@ -26,8 +27,7 @@ class PluginRunService : AbstractPluginService(PluginRunService::class.java.simp
                 openLastfmPage(session)
             }
         } catch (e: Exception) {
-            Timber.e(e)
-            //AppUtils.showToast(this, R.string.error_app);
+            logE(e)
         }
     }
 
@@ -61,11 +61,11 @@ class PluginRunService : AbstractPluginService(PluginRunService::class.java.simp
             startPage(Uri.parse(track.url))
             result = CommandResult.SUCCEEDED
         } catch (e: Exception) {
-            Timber.e(e)
+            logE(e)
             result = CommandResult.FAILED
         } finally {
             if (result == CommandResult.FAILED) {
-                AppUtils.showToast(context, R.string.message_page_failure)
+                toast(R.string.message_page_failure)
             }
         }
     }
@@ -87,11 +87,11 @@ class PluginRunService : AbstractPluginService(PluginRunService::class.java.simp
             startPage(siteUri)
             result = CommandResult.SUCCEEDED
         } catch (e: ActivityNotFoundException) {
-            Timber.d(e)
+            logD(e)
             result = CommandResult.FAILED
         } finally {
             if (result == CommandResult.FAILED) {
-                AppUtils.showToast(context, R.string.message_page_failure)
+                toast(R.string.message_page_failure)
             }
         }
     }

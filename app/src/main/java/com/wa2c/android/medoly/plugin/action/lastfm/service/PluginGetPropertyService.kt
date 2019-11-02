@@ -1,13 +1,13 @@
 package com.wa2c.android.medoly.plugin.action.lastfm.service
 
 import android.content.Intent
+import com.softartdev.lastfm.Track
 import com.wa2c.android.medoly.library.ExtraData
 import com.wa2c.android.medoly.library.MediaProperty
 import com.wa2c.android.medoly.library.PropertyData
 import com.wa2c.android.medoly.plugin.action.lastfm.R
 import com.wa2c.android.medoly.plugin.action.lastfm.Token
-import de.umass.lastfm.Track
-import timber.log.Timber
+import com.wa2c.android.medoly.plugin.action.lastfm.util.logE
 
 
 /**
@@ -20,8 +20,7 @@ class PluginGetPropertyService : AbstractPluginService(PluginGetPropertyService:
             super.onHandleIntent(intent)
             getProperties()
         } catch (e: Exception) {
-            Timber.e(e)
-            //AppUtils.showToast(this, R.string.error_app);
+            logE(e)
         }
     }
 
@@ -62,7 +61,7 @@ class PluginGetPropertyService : AbstractPluginService(PluginGetPropertyService:
             resultExtra[getString(R.string.label_extra_data_lastfm_track_url)] = track.url
             result = CommandResult.SUCCEEDED
         } catch (e: Exception) {
-            Timber.e(e)
+            logE(e)
             resultProperty = null
             resultExtra = null
             result = CommandResult.FAILED

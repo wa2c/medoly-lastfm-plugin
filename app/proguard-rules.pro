@@ -17,8 +17,8 @@
 #}
 
 -keepattributes *Annotation*
--keep class de.umass.** { *; }
--dontwarn de.umass.**
+-keep class com.softartdev.** { *; }
+-dontwarn com.softartdev.**
 
 # Crashlytics
 -keepattributes SourceFile,LineNumberTable

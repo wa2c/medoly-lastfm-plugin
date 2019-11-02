@@ -8,6 +8,10 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import androidx.core.app.NotificationCompat
+import com.softartdev.lastfm.Authenticator
+import com.softartdev.lastfm.Caller
+import com.softartdev.lastfm.Session
+import com.softartdev.lastfm.cache.FileSystemCache
 import com.wa2c.android.medoly.library.ExtraData
 import com.wa2c.android.medoly.library.MediaPluginIntent
 import com.wa2c.android.medoly.library.PluginOperationCategory
@@ -15,12 +19,9 @@ import com.wa2c.android.medoly.library.PropertyData
 import com.wa2c.android.medoly.plugin.action.lastfm.R
 import com.wa2c.android.medoly.plugin.action.lastfm.Token
 import com.wa2c.android.medoly.plugin.action.lastfm.util.AppUtils
+import com.wa2c.android.medoly.plugin.action.lastfm.util.logD
+import com.wa2c.android.medoly.plugin.action.lastfm.util.toast
 import com.wa2c.android.prefs.Prefs
-import de.umass.lastfm.Authenticator
-import de.umass.lastfm.Caller
-import de.umass.lastfm.Session
-import de.umass.lastfm.cache.FileSystemCache
-import timber.log.Timber
 import java.io.File
 import java.io.InvalidObjectException
 
@@ -52,7 +53,7 @@ abstract class AbstractPluginService(name: String) : IntentService(name) {
 
     @SuppressLint("NewApi")
     override fun onHandleIntent(intent: Intent?) {
-        Timber.d("onHandleIntent")
+        logD("onHandleIntent")
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -82,7 +83,7 @@ abstract class AbstractPluginService(name: String) : IntentService(name) {
             it.cancel(NOTIFICATION_ID)
             stopForeground(true)
         }
-        Timber.d("onDestroy: %s", this.javaClass.simpleName)
+        logD("onDestroy: %s", this.javaClass.simpleName)
         sendResult(null)
     }
 
@@ -120,16 +121,16 @@ abstract class AbstractPluginService(name: String) : IntentService(name) {
      */
     fun showMessage(result: CommandResult, succeededMessage: String?, failedMessage: String?) {
         if (result == CommandResult.AUTH_FAILED) {
-            AppUtils.showToast(context, R.string.message_account_not_auth)
+            toast(R.string.message_account_not_auth)
         } else if (result == CommandResult.NO_MEDIA) {
-            AppUtils.showToast(context, R.string.message_no_media)
+            toast(R.string.message_no_media)
         } else if (result == CommandResult.SUCCEEDED && !succeededMessage.isNullOrEmpty()) {
             if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_EXECUTE) || prefs.getBoolean(R.string.prefkey_post_success_message_show, defRes = R.bool.pref_default_post_success_message_show)) {
-                AppUtils.showToast(context, succeededMessage)
+                toast(succeededMessage)
             }
         } else if (result == CommandResult.FAILED && !failedMessage.isNullOrEmpty()) {
             if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_EXECUTE) || prefs.getBoolean(R.string.prefkey_post_failure_message_show, defRes = R.bool.pref_default_post_failure_message_show)) {
-                AppUtils.showToast(context, failedMessage)
+                toast(failedMessage)
             }
         }
     }

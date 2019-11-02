@@ -6,21 +6,21 @@ import android.net.Uri
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import com.softartdev.lastfm.Authenticator
+import com.softartdev.lastfm.Caller
+import com.softartdev.lastfm.cache.FileSystemCache
 import com.wa2c.android.medoly.library.MedolyEnvironment
 import com.wa2c.android.medoly.plugin.action.lastfm.R
 import com.wa2c.android.medoly.plugin.action.lastfm.Token
 import com.wa2c.android.medoly.plugin.action.lastfm.databinding.ActivityMainBinding
 import com.wa2c.android.medoly.plugin.action.lastfm.dialog.AuthDialogFragment
-import com.wa2c.android.medoly.plugin.action.lastfm.util.AppUtils
+import com.wa2c.android.medoly.plugin.action.lastfm.util.logE
+import com.wa2c.android.medoly.plugin.action.lastfm.util.toast
 import com.wa2c.android.prefs.Prefs
-import de.umass.lastfm.Authenticator
-import de.umass.lastfm.Caller
-import de.umass.lastfm.cache.FileSystemCache
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import java.io.File
 
 /**
@@ -84,7 +84,7 @@ class MainActivity : AppCompatActivity() {
         binding.launchMedolyButton.setOnClickListener {
             val intent = packageManager.getLaunchIntentForPackage(MedolyEnvironment.MEDOLY_PACKAGE)
             if (intent == null) {
-                AppUtils.showToast(this, R.string.message_no_medoly)
+                toast(R.string.message_no_medoly)
                 return@setOnClickListener
             }
             startActivity(intent)
@@ -121,7 +121,7 @@ class MainActivity : AppCompatActivity() {
                     Caller.getInstance().cache = FileSystemCache(File(cacheDir.path + File.separator + "last.fm"))
                     return@async Authenticator.getMobileSession(username, password, Token.getConsumerKey(), Token.getConsumerSecret())
                 } catch (e: Exception) {
-                    Timber.e(e)
+                    logE(e)
                     return@async null
                 }
             }.await()
@@ -129,11 +129,11 @@ class MainActivity : AppCompatActivity() {
             if (session != null) {
                 prefs[R.string.prefkey_auth_username] = username
                 prefs[R.string.prefkey_auth_password] = password
-                AppUtils.showToast(this@MainActivity, R.string.message_auth_success) // Succeed
+                toast(R.string.message_auth_success) // Succeed
             } else {
                 prefs.remove(R.string.prefkey_auth_username)
                 prefs.remove(R.string.prefkey_auth_password)
-                AppUtils.showToast(this@MainActivity, R.string.message_auth_failure) // Failed
+                toast(R.string.message_auth_failure) // Failed
             }
 
             updateAuthMessage()
@@ -146,7 +146,7 @@ class MainActivity : AppCompatActivity() {
     private fun clearUser() {
         prefs.remove(R.string.prefkey_auth_username)
         prefs.remove(R.string.prefkey_auth_password)
-        AppUtils.showToast(applicationContext, R.string.message_account_clear)
+        toast(R.string.message_account_clear)
 
         updateAuthMessage()
     }

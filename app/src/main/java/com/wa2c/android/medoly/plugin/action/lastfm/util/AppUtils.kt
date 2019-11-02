@@ -24,25 +24,6 @@ object AppUtils {
     private const val PROVIDER_AUTHORITIES = BuildConfig.APPLICATION_ID + ".fileprovider"
 
     /**
-     * Show message.
-     * @param context context.
-     * @param text message.
-     */
-    fun showToast(context: Context, text: String) {
-        ToastReceiver.showToast(context, text)
-    }
-
-    /**
-     * Show message.
-     * @param context context
-     * @param stringId resource id.
-     */
-    fun showToast(context: Context, stringId: Int) {
-        ToastReceiver.showToast(context, stringId)
-    }
-
-
-    /**
      * Download URI data.
      * @param context A context.
      * @param downloadUrl Download URI.
