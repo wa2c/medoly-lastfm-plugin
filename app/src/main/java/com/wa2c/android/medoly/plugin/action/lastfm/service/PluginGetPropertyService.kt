@@ -35,11 +35,13 @@ class PluginGetPropertyService : AbstractPluginService(PluginGetPropertyService:
             val trackText = propertyData.getFirst(MediaProperty.TITLE)
             val artistText = propertyData.getFirst(MediaProperty.ARTIST)
 
-            val track = if (session != null) {
-                Track.getInfo(artistText, trackText, null, session?.username, session?.apiKey)
-            } else {
-                Track.getInfo(artistText, trackText, Token.getConsumerKey())
-            }
+//            val track = if (session != null) {
+//                Track.getInfo(artistText, trackText, null, session?.username, session?.apiKey)
+//            } else {
+//                Track.getInfo(artistText, trackText, Token.getConsumerKey())
+//            }
+
+            val track = Track.getInfo(artistText, trackText, Token.getConsumerKey()) // TODO: Error occurred with session
 
             // Property data
             resultProperty = PropertyData()
@@ -52,8 +54,8 @@ class PluginGetPropertyService : AbstractPluginService(PluginGetPropertyService:
 
             // Extra data
             resultExtra = ExtraData()
-            if (track.userPlaycount > 0)
-                resultExtra[getString(R.string.label_extra_data_user_play_count)] = track.userPlaycount.toString()
+//            if (track.userPlaycount > 0)
+//                resultExtra[getString(R.string.label_extra_data_user_play_count)] = track.userPlaycount.toString()
             if (track.playcount > 0)
                 resultExtra[getString(R.string.label_extra_data_play_count)] = track.playcount.toString()
             if (track.listeners > 0)

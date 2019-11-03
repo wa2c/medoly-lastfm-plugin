@@ -46,11 +46,12 @@ class PluginGetAlbumArtService : AbstractPluginService(PluginGetAlbumArtService:
 
             // Album image
             if (!artistText.isNullOrEmpty() && !albumText.isNullOrEmpty()) {
-                val album = if (session != null) {
-                    Album.getInfo(artistText, albumText, session?.username, session?.apiKey)
-                } else {
-                    Album.getInfo(artistText, albumText, Token.getConsumerKey())
-                }
+//                val album = if (session != null) {
+//                    Album.getInfo(artistText, albumText, session?.username, session?.apiKey)
+//                } else {
+//                    Album.getInfo(artistText, albumText, Token.getConsumerKey())
+//                }
+                val album = Album.getInfo(artistText, albumText, Token.getConsumerKey()) // TODO: Error occurred with session
 
                 if (album != null) {
                     val imageSizes = ImageSize.values()
