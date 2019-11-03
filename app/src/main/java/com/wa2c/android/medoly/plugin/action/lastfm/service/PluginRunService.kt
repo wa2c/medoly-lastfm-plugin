@@ -52,11 +52,12 @@ class PluginRunService : AbstractPluginService(PluginRunService::class.java.simp
         try {
             val trackText = propertyData.getFirst(MediaProperty.TITLE)
             val artistText = propertyData.getFirst(MediaProperty.ARTIST)
-            val track = if (session != null) {
-                Track.getInfo(artistText, trackText, null, session.username, session.apiKey)
-            } else {
-                Track.getInfo(artistText, trackText, Token.getConsumerKey())
-            }
+//            val track = if (session != null) {
+//                Track.getInfo(artistText, trackText, null, session.username, session.apiKey)
+//            } else {
+//                Track.getInfo(artistText, trackText, Token.getConsumerKey())
+//            }
+            val track = Track.getInfo(artistText, trackText, Token.getConsumerKey())
 
             startPage(Uri.parse(track.url))
             result = CommandResult.SUCCEEDED

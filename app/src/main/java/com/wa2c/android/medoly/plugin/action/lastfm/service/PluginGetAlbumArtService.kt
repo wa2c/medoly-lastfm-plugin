@@ -67,11 +67,12 @@ class PluginGetAlbumArtService : AbstractPluginService(PluginGetAlbumArtService:
 
             // Track image
             if (localUri == null && !artistText.isNullOrEmpty() && !trackText.isNullOrEmpty()) {
-                val track = if (session != null) {
-                    Track.getInfo(artistText, trackText, Locale.getDefault(), session?.username, session?.apiKey)
-                } else {
-                    Track.getInfo(artistText, trackText, session?.apiKey)
-                }
+//                val track = if (session != null) {
+//                    Track.getInfo(artistText, trackText, Locale.getDefault(), session?.username, session?.apiKey)
+//                } else {
+//                    Track.getInfo(artistText, trackText, Token.getConsumerKey())
+//                }
+                val track = Track.getInfo(artistText, trackText, Token.getConsumerKey())
 
                 if (track != null) {
                     val imageSizes = ImageSize.values()
@@ -87,11 +88,12 @@ class PluginGetAlbumArtService : AbstractPluginService(PluginGetAlbumArtService:
 
             // Artist image
             if (localUri == null && !artistText.isNullOrEmpty()) {
-                val artist = if (session != null) {
-                    Artist.getInfo(artistText, Locale.getDefault(), session?.username, session?.apiKey)
-                } else {
-                    Artist.getInfo(artistText, session?.apiKey)
-                }
+//                val artist = if (session != null) {
+//                    Artist.getInfo(artistText, Locale.getDefault(), session?.username, session?.apiKey)
+//                } else {
+//                    Artist.getInfo(artistText, Token.getConsumerKey())
+//                }
+                val artist =  Artist.getInfo(artistText, Token.getConsumerKey())
 
                 if (artist != null) {
                     val imageSizes = ImageSize.values()
