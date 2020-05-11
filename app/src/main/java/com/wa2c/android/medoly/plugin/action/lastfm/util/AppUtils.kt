@@ -2,6 +2,7 @@ package com.wa2c.android.medoly.plugin.action.lastfm.util
 
 import android.content.ContentResolver
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import androidx.core.content.FileProvider
 import com.wa2c.android.medoly.library.ExtraData
@@ -92,5 +93,14 @@ object AppUtils {
      */
     fun sendResult(context: Context, pluginIntent: MediaPluginIntent, resultProperty: PropertyData? = null, resultExtra: ExtraData? = null) {
         context.sendBroadcast(pluginIntent.createResultIntent(resultProperty, resultExtra))
+    }
+
+    /**
+     * Start web page.
+     * @param uri Open url.
+     */
+    fun Context.startPage(uri: Uri) {
+        val launchIntent = Intent(Intent.ACTION_VIEW, uri)
+        startActivity(launchIntent)
     }
 }

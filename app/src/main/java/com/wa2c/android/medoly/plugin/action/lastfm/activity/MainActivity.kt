@@ -1,15 +1,10 @@
 package com.wa2c.android.medoly.plugin.action.lastfm.activity
 
-import android.annotation.SuppressLint
 import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
-import android.os.PowerManager
-import android.provider.Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import com.softartdev.lastfm.Authenticator
 import com.softartdev.lastfm.Caller
@@ -28,7 +23,6 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import java.io.File
 
-
 /**
  * Main activity.
  */
@@ -37,7 +31,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var prefs: Prefs
     private lateinit var binding: ActivityMainBinding
 
-    @SuppressLint("BatteryLife")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         prefs = Prefs(this)
@@ -98,17 +91,6 @@ class MainActivity : AppCompatActivity() {
         }
 
         updateAuthMessage()
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            ContextCompat.getSystemService(this, PowerManager::class.java)?.let { pm ->
-                if (!pm.isIgnoringBatteryOptimizations(packageName)) {
-                    val intent = Intent(ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS)
-                    intent.data = Uri.parse("package:$packageName")
-                    startActivity(intent)
-                }
-            }
-
-        }
     }
 
     /**
