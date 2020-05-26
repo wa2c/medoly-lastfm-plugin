@@ -33,3 +33,13 @@ class ToastReceiver : BroadcastReceiver() {
     }
 
 }
+
+/** Show toast message */
+fun Context.toast(@StringRes messageRes: Int) {
+    ToastReceiver.showToast(this.applicationContext, messageRes)
+}
+
+/** Show toast message */
+fun Context.toast(message: Any?) {
+    ToastReceiver.showToast(this.applicationContext, message.toString())
+}
