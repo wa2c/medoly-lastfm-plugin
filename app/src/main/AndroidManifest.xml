@@ -40,12 +40,11 @@
         <!-- Track page open activity -->
         <activity
             android:name=".activity.TrackPageActivity"
-            android:launchMode="standard"
-            android:exported="true">
-            <intent-filter
-                android:icon="@drawable/ic_track"
-                android:label="@string/label_execute_page_track"
-                android:priority="102">
+            android:exported="true"
+            android:icon="@drawable/ic_track"
+            android:label="@string/label_execute_page_track"
+            android:launchMode="standard">
+            <intent-filter android:priority="102">
                 <action android:name="com.wa2c.android.medoly.plugin.action.ACTION_MEDIA" />
 
                 <category android:name="com.wa2c.android.medoly.plugin.category.TYPE_RUN" />
@@ -56,12 +55,11 @@
         <!-- Last.fm page open activity -->
         <activity
             android:name=".activity.LastfmPageActivity"
-            android:launchMode="standard"
-            android:exported="true">
-            <intent-filter
-                android:icon="@drawable/ic_lastfm"
-                android:label="@string/label_execute_site"
-                android:priority="101">
+            android:exported="true"
+            android:icon="@drawable/ic_lastfm"
+            android:label="@string/label_execute_site"
+            android:launchMode="standard">
+            <intent-filter android:priority="101">
                 <action android:name="com.wa2c.android.medoly.plugin.action.ACTION_MEDIA" />
 
                 <category android:name="com.wa2c.android.medoly.plugin.category.TYPE_RUN" />
@@ -79,9 +77,6 @@
             android:exported="false" />
         <service
             android:name=".service.PluginGetPropertyService"
-            android:exported="false" />
-        <service
-            android:name=".service.PluginRunService"
             android:exported="false" />
 
         <!-- Plugin event action -->

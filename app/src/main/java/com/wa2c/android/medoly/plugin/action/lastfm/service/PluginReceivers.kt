@@ -119,26 +119,6 @@ class PluginReceivers {
                 // service
                 pluginIntent.setClass(context, PluginGetPropertyService::class.java)
                 result = PluginBroadcastResult.PROCESSING
-            } else if (this is ExecuteTrackPageReceiver || this is ExecuteLastfmSiteReceiver) {
-                // category
-                if (!pluginIntent.hasCategory(PluginTypeCategory.TYPE_RUN)) {
-                    return result
-                }
-                if (this is ExecuteTrackPageReceiver) {
-                    // media
-                    if (propertyData.isMediaEmpty) {
-                        context.toast(R.string.message_no_media)
-                        return result
-                    }
-                    // property
-                    if (propertyData.getFirst(MediaProperty.TITLE).isNullOrEmpty() || propertyData.getFirst(MediaProperty.ARTIST).isNullOrEmpty()) {
-                        return result
-                    }
-                }
-
-                // service
-                pluginIntent.setClass(context, PluginRunService::class.java)
-                result = PluginBroadcastResult.COMPLETE
             }
 
             pluginIntent.putExtra(AbstractPluginService.RECEIVED_CLASS_NAME, this.javaClass.name)
@@ -167,9 +147,5 @@ class PluginReceivers {
     class ExecuteGetAlbumArtReceiver : AbstractPluginReceiver()
 
     class ExecuteGetPropertyReceiver : AbstractPluginReceiver()
-
-    class ExecuteTrackPageReceiver : AbstractPluginReceiver()
-
-    class ExecuteLastfmSiteReceiver : AbstractPluginReceiver()
 
 }
