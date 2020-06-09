@@ -7,10 +7,7 @@
     <string name="label_event_now_playing">Now Playing</string>
     <string name="label_execute_love">Love</string>
     <string name="label_execute_unlove">Unlove</string>
-    <string name="label_execute_ban">Ban</string>
-    <string name="label_execute_unban">Unban</string>
     <string name="label_execute_page_track">トラックページ</string>
-    <string name="label_execute_page_artist">アーティストページ</string>
     <string name="label_execute_site">Last.fmを開く</string>
     <string name="label_execute_get_property">プロパティ取得</string>
     <string name="label_execute_get_album_art">アルバムアート取得</string>
@@ -37,10 +34,6 @@
     <string name="message_love_failure">Loveトラックへの追加に失敗しました。</string>
     <string name="message_unlove_success">\"%1$s\" をLoveトラックから削除しました。</string>
     <string name="message_unlove_failure">Loveトラックの削除に失敗しました。</string>
-    <string name="message_ban_success">\"%1$s\" を禁止トラックに追加しました。</string>
-    <string name="message_ban_failure">禁止トラックへの追加に失敗しました。</string>
-    <string name="message_unban_success">\"%1$s\" を禁止トラックから削除しました。</string>
-    <string name="message_unban_failure">禁止トラックの削除に失敗しました。</string>
     <string name="message_page_failure">ページが開けません。</string>
     <string name="message_get_property_success">プロパティの取得に成功しました。</string>
     <string name="message_get_property_failure">プロパティの取得に失敗しました。</string>
@@ -52,8 +45,6 @@
 
 
     <!-- Main Activity -->
-    <string name="label_spinner_event">実行イベント</string>
-    <string name="label_spinner_event_none">イベント無効</string>
     <string name="label_button_account_auth">アカウント認証</string>
     <string name="label_button_lastfm_site">Last.fm サイト</string>
     <string name="label_button_settings">設定</string>
@@ -88,15 +79,6 @@
     <string name="label_dialog_auth_username">ユーザ名</string>
     <string name="label_dialog_auth_password">パスワード</string>
 
-    <!-- About Dialog -->
-    <string name="label_dialog_about_ver">Ver. %1$s</string>
-    <string name="label_dialog_about_developer">Developer</string>
-    <string name="label_dialog_about_email">Email</string>
-    <string name="label_dialog_about_license">License</string>
-    <string name="label_dialog_about_google_play">Google Play</string>
-    <string name="label_dialog_about_link">Link</string>
-    <string name="label_dialog_about_library">[Library]</string>
-
     <!-- Preferences -->
     <string name="title_preference_category_settings">設定</string>
     <string name="title_preference_category_about">About</string>
@@ -120,7 +102,7 @@
     <string name="pref_title_device_auto_start">自動起動管理</string>
     <string name="pref_summary_device_auto_start">デバイスの自動起動マネージャを起動します。一部のデバイスではプラグインの起動に設定が必要です。</string>
 
-    <!-- Info Preferences -->
+    <!-- Preferences - About -->
     <string name="pref_title_info_app_version">アプリバージョン</string>
     <string name="pref_summary_info_app_version" />
     <string name="pref_title_info_author">開発者</string>

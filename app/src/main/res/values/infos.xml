@@ -2,35 +2,14 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
 
     <!-- App Info -->
-    <string name="app_name">Medoly Last.fm Plugin</string>
-    <string name="base_app_name">Medoly</string>
     <string name="package_name">com.wa2c.android.medoly.plugin.action.lastfm</string>
-    <string name="domain_name">wa2c.com</string>
-    <string name="app_mail_name">medoly</string>
-    <string name="app_mail_domain">wa2c.com</string>
+    <string name="app_name">Medoly Last.fm Plugin</string>
     <string name="app_author">wa2c</string>
     <string name="app_author_url">https://github.com/wa2c</string>
     <string name="app_license">MIT License</string>
     <string name="app_license_url">https://github.com/wa2c/medoly-lastfm-plugin/blob/master/LICENSE</string>
-    <string name="app_market">market://details?id=com.wa2c.android.medoly.plugin.action.lastfm</string>
     <string name="app_store_url">https://play.google.com/store/apps/details?id=com.wa2c.android.medoly.plugin.action.lastfm</string>
     <string name="app_privacy_policy_url">https://www.wa2c.com/documents/dokuwiki/doku.php?id=ja:medoly_last.fm_plugin:privacy_policy</string>
-
-    <string name="label_header_separator">:</string>
-
-    <!-- Library  -->
-    <string-array name="about_library_names">
-        <item>lastfm-java</item>
-        <item>AppKillerManager</item>
-        <item>Dynamic Toasts</item>
-        <item>Timber</item>
-    </string-array>
-    <string-array name="about_library_urls">
-        <item>https://code.google.com/p/lastfm-java/</item>
-        <item>https://github.com/thelittlefireman/AppKillerManager</item>
-        <item>https://github.com/pranavpandey/dynamic-toasts</item>
-        <item>https://github.com/JakeWharton/timber</item>
-    </string-array>
 
     <!-- Last.fm info -->
     <string name="lastfm">Last.fm</string>
@@ -61,11 +40,6 @@
     <string name="prefkey_info_privacy_policy">prefkey_info_privacy_policy</string>
     <string name="prefkey_info_app">prefkey_info_app</string>
     <string name="prefkey_info_store">prefkey_info_store</string>
-
-
-    <string name="prefkey_privacy_policy">privacy_policy</string>
-    <string name="prefkey_application_details">application_details</string>
-    <string name="prefkey_about">about</string>
 
     <string name="prefkey_app_version_code">app_version_code</string>
 
