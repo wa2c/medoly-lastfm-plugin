@@ -51,8 +51,8 @@ class AboutDialogFragment : AbstractDialogFragment() {
         Linkify.addLinks(
                 binding.dialogAboutGooglePlayTextView,
                 Pattern.compile(getString(R.string.label_dialog_about_link)),
-                getString(R.string.app_market_web), null,
-                Linkify.TransformFilter { _, _ -> getString(R.string.app_market_web) })
+                getString(R.string.app_store_url), null,
+                Linkify.TransformFilter { _, _ -> getString(R.string.app_store_url) })
 
 
         // Library

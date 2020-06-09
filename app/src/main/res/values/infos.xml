@@ -9,10 +9,11 @@
     <string name="app_mail_name">medoly</string>
     <string name="app_mail_domain">wa2c.com</string>
     <string name="app_author">wa2c</string>
+    <string name="app_author_url">https://github.com/wa2c</string>
     <string name="app_license">MIT License</string>
     <string name="app_license_url">https://github.com/wa2c/medoly-lastfm-plugin/blob/master/LICENSE</string>
     <string name="app_market">market://details?id=com.wa2c.android.medoly.plugin.action.lastfm</string>
-    <string name="app_market_web">https://play.google.com/store/apps/details?id=com.wa2c.android.medoly.plugin.action.lastfm</string>
+    <string name="app_store_url">https://play.google.com/store/apps/details?id=com.wa2c.android.medoly.plugin.action.lastfm</string>
     <string name="app_privacy_policy_url">https://www.wa2c.com/documents/dokuwiki/doku.php?id=ja:medoly_last.fm_plugin:privacy_policy</string>
 
     <string name="label_header_separator">:</string>
@@ -50,8 +51,18 @@
     <string name="prefkey_unsent_max">unsent_max</string>
     <string name="prefkey_post_success_message_show">post_success_message_show</string>
     <string name="prefkey_post_failure_message_show">post_failure_message_show</string>
-
     <string name="prefkey_device_auto_start">device_auto_start</string>
+
+    <!-- Preferences - About -->
+    <string name="prefkey_info_app_version">prefkey_info_app_version</string>
+    <string name="prefkey_info_author">prefkey_info_author</string>
+    <string name="prefkey_info_app_license">prefkey_info_app_license</string>
+    <string name="prefkey_info_library_license">prefkey_info_library_license</string>
+    <string name="prefkey_info_privacy_policy">prefkey_info_privacy_policy</string>
+    <string name="prefkey_info_app">prefkey_info_app</string>
+    <string name="prefkey_info_store">prefkey_info_store</string>
+
+
     <string name="prefkey_privacy_policy">privacy_policy</string>
     <string name="prefkey_application_details">application_details</string>
     <string name="prefkey_about">about</string>
