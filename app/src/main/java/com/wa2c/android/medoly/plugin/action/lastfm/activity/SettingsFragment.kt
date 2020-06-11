@@ -8,7 +8,13 @@ import android.provider.Settings
 import android.text.InputFilter
 import android.text.InputType
 import android.text.method.DigitsKeyListener
-import androidx.preference.*
+import android.view.View
+import androidx.preference.EditTextPreference
+import androidx.preference.Preference
+import androidx.preference.PreferenceFragmentCompat
+import com.mikepenz.aboutlibraries.LibsBuilder
+import com.mikepenz.aboutlibraries.LibsCompat
+import com.mikepenz.aboutlibraries.LibsConfiguration
 import com.thelittlefireman.appkillermanager.managers.KillerManager
 import com.wa2c.android.medoly.plugin.action.lastfm.BuildConfig
 import com.wa2c.android.medoly.plugin.action.lastfm.R
@@ -108,7 +114,13 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
         // Open Source License
         setListener(R.string.prefkey_info_library_license) {
-            // TODO
+            val libs = LibsBuilder()
+                    .withAboutAppName(getString(R.string.app_name))
+
+            val ft = parentFragmentManager.beginTransaction()
+            ft.replace(android.R.id.content, libs.supportFragment())
+            ft.addToBackStack(getString(R.string.pref_title_info_library_license))
+            ft.commit()
         }
 
         // Privacy Policy

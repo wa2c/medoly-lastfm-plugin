@@ -18,18 +18,29 @@ class SettingsActivity : AppCompatActivity() {
             setDisplayShowHomeEnabled(true)
             setDisplayHomeAsUpEnabled(true)
             setDisplayShowTitleEnabled(true)
-            setTitle(R.string.title_activity_settings)
+
+            // title
+            supportFragmentManager.addOnBackStackChangedListener {
+                title = if (supportFragmentManager.backStackEntryCount > 0) {
+                    supportFragmentManager.getBackStackEntryAt(0).name
+                } else {
+                    getString(R.string.title_activity_settings)
+                }
+            }
         }
+
 
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction().add(android.R.id.content, SettingsFragment()).commit()
         }
+
+
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> {
-                finish()
+                onBackPressed()
                 return true
             }
         }
