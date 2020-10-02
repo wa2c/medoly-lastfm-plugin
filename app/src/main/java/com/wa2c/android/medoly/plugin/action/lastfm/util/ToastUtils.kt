@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import com.pranavpandey.android.dynamic.toasts.DynamicToast
 import com.wa2c.android.medoly.plugin.action.lastfm.R
 
@@ -42,4 +43,14 @@ fun Context.toast(@StringRes messageRes: Int) {
 /** Show toast message */
 fun Context.toast(message: Any?) {
     ToastReceiver.showToast(this.applicationContext, message.toString())
+}
+
+/** Show toast message */
+fun Fragment.toast(@StringRes messageRes: Int) {
+    context?.toast(messageRes)
+}
+
+/** Show toast message */
+fun Fragment.toast(message: Any?) {
+    context?.toast(message)
 }

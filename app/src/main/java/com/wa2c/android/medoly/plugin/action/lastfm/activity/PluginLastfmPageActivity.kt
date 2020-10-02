@@ -3,8 +3,8 @@ package com.wa2c.android.medoly.plugin.action.lastfm.activity
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import com.wa2c.android.medoly.library.PluginBroadcastResult
 import com.wa2c.android.medoly.plugin.action.lastfm.R
 import com.wa2c.android.medoly.plugin.action.lastfm.util.AppUtils.startPage

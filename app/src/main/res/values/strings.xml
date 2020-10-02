@@ -22,8 +22,8 @@
 
 
     <!-- Activity -->
-    <string name="title_activity_unsent_list">Unsent List</string>
-    <string name="title_activity_settings">Setting</string>
+    <string name="title_screen_unsent_list">Unsent List</string>
+    <string name="title_screen_settings">Setting</string>
 
 
     <!-- Post -->

@@ -8,6 +8,7 @@ import android.provider.Settings
 import android.text.InputFilter
 import android.text.InputType
 import android.text.method.DigitsKeyListener
+import android.view.View
 import androidx.preference.EditTextPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
@@ -55,9 +56,9 @@ class SettingsFragment : PreferenceFragmentCompat() {
         setClickListener()
     }
 
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        activity?.setTitle(R.string.title_screen_settings)
         initSummary(preferenceScreen)
         preference<Preference>(R.string.prefkey_info_app_version)?.summary = BuildConfig.VERSION_NAME
     }
@@ -106,7 +107,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         setListener(R.string.prefkey_info_library_license) {
             val libs = LibsBuilder().withAboutAppName(getString(R.string.app_name))
             val ft = parentFragmentManager.beginTransaction()
-            ft.replace(android.R.id.content, libs.supportFragment())
+            ft.replace(R.id.fragment_container, libs.supportFragment())
             ft.addToBackStack(getString(R.string.pref_title_info_library_license))
             ft.commit()
         }

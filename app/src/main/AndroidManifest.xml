@@ -29,44 +29,6 @@
             </intent-filter>
         </activity>
 
-        <activity
-            android:name=".activity.UnsentListActivity"
-            android:label="@string/title_activity_unsent_list" />
-
-        <activity
-            android:name=".activity.SettingsActivity"
-            android:label="@string/title_activity_settings" />
-
-        <!-- Track page open activity -->
-        <activity
-            android:name=".activity.PluginTrackPageActivity"
-            android:exported="true"
-            android:icon="@drawable/ic_track"
-            android:label="@string/label_execute_page_track"
-            android:launchMode="standard">
-            <intent-filter android:priority="102">
-                <action android:name="com.wa2c.android.medoly.plugin.action.ACTION_MEDIA" />
-
-                <category android:name="com.wa2c.android.medoly.plugin.category.TYPE_RUN" />
-                <category android:name="com.wa2c.android.medoly.plugin.category.OPERATION_EXECUTE" />
-            </intent-filter>
-        </activity>
-
-        <!-- Last.fm page open activity -->
-        <activity
-            android:name=".activity.PluginLastfmPageActivity"
-            android:exported="true"
-            android:icon="@drawable/ic_lastfm"
-            android:label="@string/label_execute_site"
-            android:launchMode="standard">
-            <intent-filter android:priority="101">
-                <action android:name="com.wa2c.android.medoly.plugin.action.ACTION_MEDIA" />
-
-                <category android:name="com.wa2c.android.medoly.plugin.category.TYPE_RUN" />
-                <category android:name="com.wa2c.android.medoly.plugin.category.OPERATION_EXECUTE" />
-            </intent-filter>
-        </activity>
-
         <!-- Service -->
 
         <service
@@ -196,6 +158,36 @@
                 <category android:name="com.wa2c.android.medoly.plugin.category.OPERATION_EXECUTE" />
             </intent-filter>
         </receiver>
+
+        <!-- Track page open activity -->
+        <activity
+            android:name=".activity.PluginTrackPageActivity"
+            android:exported="true"
+            android:icon="@drawable/ic_track"
+            android:label="@string/label_execute_page_track"
+            android:launchMode="standard">
+            <intent-filter android:priority="102">
+                <action android:name="com.wa2c.android.medoly.plugin.action.ACTION_MEDIA" />
+
+                <category android:name="com.wa2c.android.medoly.plugin.category.TYPE_RUN" />
+                <category android:name="com.wa2c.android.medoly.plugin.category.OPERATION_EXECUTE" />
+            </intent-filter>
+        </activity>
+
+        <!-- Last.fm page open activity -->
+        <activity
+            android:name=".activity.PluginLastfmPageActivity"
+            android:exported="true"
+            android:icon="@drawable/ic_lastfm"
+            android:label="@string/label_execute_site"
+            android:launchMode="standard">
+            <intent-filter android:priority="101">
+                <action android:name="com.wa2c.android.medoly.plugin.action.ACTION_MEDIA" />
+
+                <category android:name="com.wa2c.android.medoly.plugin.category.TYPE_RUN" />
+                <category android:name="com.wa2c.android.medoly.plugin.category.OPERATION_EXECUTE" />
+            </intent-filter>
+        </activity>
 
         <receiver
             android:name=".util.ToastReceiver"

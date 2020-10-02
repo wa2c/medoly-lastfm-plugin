@@ -23,8 +23,8 @@
 
 
     <!-- Activity -->
-    <string name="title_activity_unsent_list">未送信リスト</string>
-    <string name="title_activity_settings">設定</string>
+    <string name="title_screen_unsent_list">未送信リスト</string>
+    <string name="title_screen_settings">設定</string>
 
     <!-- Post -->
     <string name="message_no_media">メディアが選択されていません。</string>

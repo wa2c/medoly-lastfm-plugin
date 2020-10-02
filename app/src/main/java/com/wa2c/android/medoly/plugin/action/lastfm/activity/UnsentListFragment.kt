@@ -5,16 +5,16 @@ import android.content.DialogInterface
 import android.os.Bundle
 import android.text.format.DateUtils
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.softartdev.lastfm.scrobble.ScrobbleData
 import com.wa2c.android.medoly.plugin.action.lastfm.R
-import com.wa2c.android.medoly.plugin.action.lastfm.databinding.ActivityUnsentListBinding
+import com.wa2c.android.medoly.plugin.action.lastfm.activity.component.viewBinding
+import com.wa2c.android.medoly.plugin.action.lastfm.databinding.FragmentUnsentListBinding
 import com.wa2c.android.medoly.plugin.action.lastfm.databinding.LayoutUnsentListItemBinding
 import com.wa2c.android.medoly.plugin.action.lastfm.dialog.ConfirmDialogFragment
 import com.wa2c.android.medoly.plugin.action.lastfm.util.logE
@@ -26,26 +26,20 @@ import java.util.*
 /**
  * Unsent list activity.
  */
-class UnsentListActivity : AppCompatActivity() {
-    private lateinit var prefs: Prefs
-    private lateinit var binding: ActivityUnsentListBinding
+class UnsentListFragment : Fragment(R.layout.fragment_unsent_list) {
+    /** Binding */
+    private val binding: FragmentUnsentListBinding by viewBinding()
+    /** Prefs */
+    private val prefs: Prefs by lazy { Prefs(requireContext()) }
 
     /** List items.  */
     private  lateinit var items: Array<ScrobbleData>
     /** List adapter */
     private lateinit var adapter: UnsentListAdapter
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        prefs = Prefs(this)
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_unsent_list)
-
-        supportActionBar?.apply {
-            setDisplayShowHomeEnabled(true)
-            setDisplayHomeAsUpEnabled(true)
-            setDisplayShowTitleEnabled(true)
-            setTitle(R.string.title_activity_unsent_list)
-        }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        activity?.setTitle(R.string.title_screen_unsent_list)
 
         // not save
         binding.unsentNotSaveCheckBox.setOnCheckedChangeListener { _, isChecked ->  prefs.putBoolean(R.string.prefkey_unsent_scrobble_not_save, isChecked) }
@@ -93,7 +87,7 @@ class UnsentListActivity : AppCompatActivity() {
                     initializeListView()
                 }
 
-                dialogFragment.show(this)
+                dialogFragment.show(requireActivity())
             }
         }
 
@@ -127,21 +121,10 @@ class UnsentListActivity : AppCompatActivity() {
 
         //adapter = UnsentListAdapter(this, items!!, checkedSet)
         adapter = UnsentListAdapter(items)
-        binding.unsentListView.layoutManager = LinearLayoutManager(this)
+        binding.unsentListView.layoutManager = LinearLayoutManager(requireContext())
         binding.unsentListView.adapter = adapter
         adapter.notifyDataSetChanged()
     }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            android.R.id.home -> {
-                finish()
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
-
 
 
     /**

@@ -13,7 +13,6 @@ import com.wa2c.android.medoly.plugin.action.lastfm.R
 import com.wa2c.android.medoly.plugin.action.lastfm.Token
 import com.wa2c.android.medoly.plugin.action.lastfm.util.AppUtils
 import com.wa2c.android.medoly.plugin.action.lastfm.util.logE
-import java.util.*
 
 
 /**

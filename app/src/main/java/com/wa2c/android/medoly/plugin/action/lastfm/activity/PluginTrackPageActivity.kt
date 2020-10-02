@@ -2,12 +2,8 @@ package com.wa2c.android.medoly.plugin.action.lastfm.activity
 
 import android.content.Intent
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.View
-import android.view.ViewGroup
-import android.widget.ProgressBar
-import com.softartdev.lastfm.Session
+import androidx.appcompat.app.AppCompatActivity
 import com.softartdev.lastfm.Track
 import com.wa2c.android.medoly.library.MediaPluginIntent
 import com.wa2c.android.medoly.library.MediaProperty
@@ -15,10 +11,7 @@ import com.wa2c.android.medoly.library.PluginBroadcastResult
 import com.wa2c.android.medoly.library.PropertyData
 import com.wa2c.android.medoly.plugin.action.lastfm.R
 import com.wa2c.android.medoly.plugin.action.lastfm.Token
-import com.wa2c.android.medoly.plugin.action.lastfm.service.CommandResult
-import com.wa2c.android.medoly.plugin.action.lastfm.util.AppUtils
 import com.wa2c.android.medoly.plugin.action.lastfm.util.AppUtils.startPage
-import com.wa2c.android.medoly.plugin.action.lastfm.util.logD
 import com.wa2c.android.medoly.plugin.action.lastfm.util.logE
 import com.wa2c.android.medoly.plugin.action.lastfm.util.toast
 import kotlinx.coroutines.GlobalScope
