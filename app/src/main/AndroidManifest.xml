@@ -39,7 +39,7 @@
 
         <!-- Track page open activity -->
         <activity
-            android:name=".activity.TrackPageActivity"
+            android:name=".activity.PluginTrackPageActivity"
             android:exported="true"
             android:icon="@drawable/ic_track"
             android:label="@string/label_execute_page_track"
@@ -54,7 +54,7 @@
 
         <!-- Last.fm page open activity -->
         <activity
-            android:name=".activity.LastfmPageActivity"
+            android:name=".activity.PluginLastfmPageActivity"
             android:exported="true"
             android:icon="@drawable/ic_lastfm"
             android:label="@string/label_execute_site"
@@ -87,7 +87,7 @@
             android:exported="true"
             android:icon="@drawable/ic_post"
             android:label="@string/label_event_scrobble">
-            <intent-filter android:order="100">
+            <intent-filter android:priority="110">
                 <action android:name="com.wa2c.android.medoly.plugin.action.ACTION_MEDIA" />
 
                 <category android:name="com.wa2c.android.medoly.plugin.category.TYPE_POST_MESSAGE" />

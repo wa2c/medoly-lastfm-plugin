@@ -28,7 +28,7 @@ import kotlinx.coroutines.runBlocking
 /**
  * Track page open activity
  */
-class TrackPageActivity : AppCompatActivity(R.layout.layout_loading) {
+class PluginTrackPageActivity : AppCompatActivity(R.layout.layout_loading) {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -78,8 +78,10 @@ class TrackPageActivity : AppCompatActivity(R.layout.layout_loading) {
                 }
 
                 setResult(result.resultCode)
-                finish()
             }
         }
+
+        moveTaskToBack(true)
+        finish()
     }
 }

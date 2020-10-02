@@ -72,7 +72,7 @@ abstract class AbstractPluginService(name: String) : IntentService(name) {
         prefs = Prefs(this)
         pluginIntent = MediaPluginIntent(intent)
         propertyData = pluginIntent.propertyData ?: PropertyData()
-        receivedClassName = pluginIntent.getStringExtra(RECEIVED_CLASS_NAME)
+        receivedClassName = pluginIntent.getStringExtra(RECEIVED_CLASS_NAME) ?: ""
 
         createSession()
     }

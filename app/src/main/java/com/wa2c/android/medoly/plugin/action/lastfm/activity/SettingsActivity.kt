@@ -29,12 +29,9 @@ class SettingsActivity : AppCompatActivity() {
             }
         }
 
-
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction().add(android.R.id.content, SettingsFragment()).commit()
         }
-
-
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

@@ -8,13 +8,10 @@ import android.provider.Settings
 import android.text.InputFilter
 import android.text.InputType
 import android.text.method.DigitsKeyListener
-import android.view.View
 import androidx.preference.EditTextPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.mikepenz.aboutlibraries.LibsBuilder
-import com.mikepenz.aboutlibraries.LibsCompat
-import com.mikepenz.aboutlibraries.LibsConfiguration
 import com.thelittlefireman.appkillermanager.managers.KillerManager
 import com.wa2c.android.medoly.plugin.action.lastfm.BuildConfig
 import com.wa2c.android.medoly.plugin.action.lastfm.R
@@ -92,31 +89,22 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
         // App Version
         setListener(R.string.prefkey_info_app_version) {
-            Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.app_version_url))).let {
-                startActivity(it)
-            }
+            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.app_version_url))))
         }
 
         // Author
         setListener(R.string.prefkey_info_author) {
-            Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.app_author_url))).let {
-                startActivity(it)
-            }
+            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.app_author_url))))
         }
 
         // License
         setListener(R.string.prefkey_info_app_license) {
-            Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.app_license_url))).let {
-                it.putExtra("title", getString(R.string.pref_title_info_library_license))
-                startActivity(it)
-            }
+            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.app_license_url))))
         }
 
         // Open Source License
         setListener(R.string.prefkey_info_library_license) {
-            val libs = LibsBuilder()
-                    .withAboutAppName(getString(R.string.app_name))
-
+            val libs = LibsBuilder().withAboutAppName(getString(R.string.app_name))
             val ft = parentFragmentManager.beginTransaction()
             ft.replace(android.R.id.content, libs.supportFragment())
             ft.addToBackStack(getString(R.string.pref_title_info_library_license))
@@ -126,25 +114,18 @@ class SettingsFragment : PreferenceFragmentCompat() {
         // Privacy Policy
         setListener(R.string.prefkey_info_privacy_policy) {
             val url = getString(R.string.app_privacy_policy_url)
-            Intent(Intent.ACTION_VIEW, Uri.parse(url)).let {
-                startActivity(it)
-            }
+            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
         }
 
         // App Info
         setListener(R.string.prefkey_info_app) {
-            Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:" + requireContext().packageName)).let {
-                it.putExtra("title", getString(R.string.pref_title_info_library_license))
-                startActivity(it)
-            }
+            startActivity(Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:" + requireContext().packageName)))
         }
 
         // App Store
         setListener(R.string.prefkey_info_store) {
             val url = getString(R.string.app_store_url)
-            Intent(Intent.ACTION_VIEW, Uri.parse(url)).let {
-                startActivity(it)
-            }
+            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
         }
     }
 
