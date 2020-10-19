@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/MedolyLastfmPlugin.iml" filepath="$PROJECT_DIR$/MedolyLastfmPlugin.iml" group="MedolyLastfmPlugin" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" group="MedolyLastfmPlugin/app" />
+      <module fileurl="file://$PROJECT_DIR$/MedolyLastfmPlugin.iml" filepath="$PROJECT_DIR$/MedolyLastfmPlugin.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/MedolyLastfmPlugin.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/MedolyLastfmPlugin.app.iml" />
     </modules>
   </component>
 </project>
