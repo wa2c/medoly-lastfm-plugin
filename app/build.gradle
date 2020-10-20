@@ -71,7 +71,7 @@ android {
     // output file
     applicationVariants.all { variant ->
         if (variant.buildType.name == "release") {
-            def newName = "MedolyLastfmPlugin_${defaultConfig.versionName}"
+            def newName = "MedolyLastfmPlugin ${defaultConfig.versionName}"
             variant.outputs.all {
                 // filename
                 outputFileName = "${newName}.apk"
@@ -82,7 +82,7 @@ android {
                             from variant.mappingFile
                             into outputFile.parent
                             rename { String fileName ->
-                                "${newName}_mapping.txt"
+                                "${newName} mapping.txt"
                             }
                         }
                     }
