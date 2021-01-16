@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Package -->
-    <string name="app_version_url">https://www.wa2c.com/documents/dokuwiki/doku.php?id=ja:medoly_last.fm_plugin:history</string>
     <string name="app_description">Medolyに、Last.fmに対するScrobble、Love、Unlove、サイトアクセス等の機能を提供します。</string>
     <string name="label_event_scrobble">Scrobble</string>
     <string name="label_event_now_playing">Now Playing</string>
@@ -11,6 +10,10 @@
     <string name="label_execute_site">Last.fmを開く</string>
     <string name="label_execute_get_property">プロパティ取得</string>
     <string name="label_execute_get_album_art">アルバムアート取得</string>
+    <string name="app_manual_url">https://github.com/wa2c/medoly-lastfm-plugin/wiki/Home-ja</string>
+    <string name="app_version_url">https://github.com/wa2c/medoly-lastfm-plugin/wiki/History-ja</string>
+    <string name="app_privacy_policy_url">https://github.com/wa2c/medoly-lastfm-plugin/wiki/Privacy-Policy-ja</string>
+
 
     <!-- Extra Data -->
     <string name="label_property_title">Last.fm プロパティ</string>
@@ -107,6 +110,8 @@
     <string name="pref_summary_info_app_version" />
     <string name="pref_title_info_author">開発者</string>
     <string name="pref_summary_info_author">@string/app_author</string>
+    <string name="pref_title_info_manual">マニュアル</string>
+    <string name="pref_summary_info_manual">マニュアルを表示します。</string>
     <string name="pref_title_info_app_license">ライセンス</string>
     <string name="pref_summary_info_app_license">@string/app_license</string>
     <string name="pref_title_info_library_license">オープンソースライセンス</string>

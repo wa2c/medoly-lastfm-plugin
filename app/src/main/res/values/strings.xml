@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Package -->
-    <string name="app_version_url">https://www.wa2c.com/documents/dokuwiki/doku.php?id=en:medoly_last.fm_plugin:history</string>
     <string name="app_description">Add functions to Medoly  such as Scrobble, Love, Unlove, Site Access, etc for Last.fm.</string>
     <string name="label_event_scrobble">Scrobble</string>
     <string name="label_event_now_playing">Now Playing</string>
@@ -11,6 +10,11 @@
     <string name="label_execute_site">Last.fm</string>
     <string name="label_execute_get_property">Get Properties</string>
     <string name="label_execute_get_album_art">Get Album Art</string>
+    <string name="app_manual_url">https://github.com/wa2c/medoly-lastfm-plugin/wiki/Home</string>
+    <string name="app_version_url">https://github.com/wa2c/medoly-lastfm-plugin/wiki/History</string>
+    <string name="app_privacy_policy_url">https://github.com/wa2c/medoly-lastfm-plugin/wiki/Privacy-Policy</string>
+
+
     <!-- Extra Data -->
     <string name="label_property_title">Last.fm Property</string>
     <string name="label_extra_title">Last.fm Information</string>
@@ -107,6 +111,8 @@
     <string name="pref_summary_info_app_version" />
     <string name="pref_title_info_author">Author</string>
     <string name="pref_summary_info_author">@string/app_author</string>
+    <string name="pref_title_info_manual">Manual</string>
+    <string name="pref_summary_info_manual">Show manual</string>
     <string name="pref_title_info_app_license">License</string>
     <string name="pref_summary_info_app_license">@string/app_license</string>
     <string name="pref_title_info_library_license">Open Source License</string>
