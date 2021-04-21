@@ -86,28 +86,29 @@ dependencies {
 
     // Support Library
     implementation 'androidx.appcompat:appcompat:1.2.0'
-    implementation 'androidx.navigation:navigation-ui-ktx:2.3.2'
-    implementation 'androidx.navigation:navigation-fragment-ktx:2.3.2'
-    implementation 'androidx.recyclerview:recyclerview:1.1.0'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.3.5'
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.3.5'
+    implementation 'androidx.recyclerview:recyclerview:1.2.0'
     implementation "androidx.preference:preference-ktx:1.1.1"
     implementation 'androidx.multidex:multidex:2.0.1'
-    implementation "com.google.android.material:material:1.2.1"
+    implementation "com.google.android.material:material:1.3.0"
 
     // Kotlin
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.1'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.1'
 
     // Firebase
-    implementation platform('com.google.firebase:firebase-bom:25.12.0')
+    implementation platform('com.google.firebase:firebase-bom:26.8.0')
     implementation 'com.google.firebase:firebase-analytics'
     implementation 'com.google.firebase:firebase-crashlytics'
 
+    implementation "com.mikepenz:aboutlibraries-core:${about_libs_version}"
     implementation "com.mikepenz:aboutlibraries:${about_libs_version}"
 
     // https://mvnrepository.com/artifact/com.jakewharton.timber/timber
     implementation 'com.jakewharton.timber:timber:4.7.1'
     // https://mvnrepository.com/artifact/com.pranavpandey.android/dynamic-toasts
-    implementation 'com.pranavpandey.android:dynamic-toasts:3.2.0'
+    implementation 'com.pranavpandey.android:dynamic-toasts:3.3.1'
     // https://mvnrepository.com/artifact/de.u-mass/lastfm-java
     //implementation group: 'de.u-mass', name: 'lastfm-java', version: '0.1.2'
     //implementation files('libs/lastfm-java-0.1.2-fix.jar')
