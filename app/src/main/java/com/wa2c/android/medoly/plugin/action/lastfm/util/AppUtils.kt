@@ -31,7 +31,6 @@ object AppUtils {
      * @return Shared URI.
      */
     fun downloadUrl(context: Context, downloadUrl: String): Uri? {
-        var providerUri: Uri? = null
         try {
             val url = URL(downloadUrl)
             if (ContentResolver.SCHEME_FILE == url.protocol || ContentResolver.SCHEME_CONTENT == url.protocol) {
@@ -45,8 +44,7 @@ object AppUtils {
                 sharedDir.mkdir()
             } else {
                 // Delete all files
-                val files = sharedDir.listFiles()
-                files.filter { it.isFile }.forEach { it.delete() }
+                sharedDir.listFiles()?.filter { it.isFile }?.forEach { it.delete() }
             }
 
             // InputStream
@@ -73,15 +71,12 @@ object AppUtils {
                         output.write(buffer, 0, len)
                     }
                     output.flush()
-                    providerUri = FileProvider.getUriForFile(context, PROVIDER_AUTHORITIES, sharedFile)
+                    return FileProvider.getUriForFile(context, PROVIDER_AUTHORITIES, sharedFile)
                 }
             }
         } catch (e: Exception) {
             return null
         }
-
-        // URI
-        return providerUri
     }
 
     /**
