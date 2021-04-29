@@ -142,12 +142,12 @@ class PluginPostService : AbstractPluginService(PluginPostService::class.java.si
                 result = if (dataList.size == 0)
                     CommandResult.SUCCEEDED
                 else
-                    CommandResult.FAILED
+                    CommandResult.SAVED
             } else {
                 result = if (username.isNullOrEmpty())
                     CommandResult.AUTH_FAILED
                 else
-                    CommandResult.FAILED
+                    CommandResult.SAVED
             }
 
             val notSave = prefs.getBoolean(R.string.prefkey_unsent_scrobble_not_save)

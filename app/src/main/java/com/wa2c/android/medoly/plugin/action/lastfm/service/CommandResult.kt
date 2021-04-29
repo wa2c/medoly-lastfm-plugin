@@ -8,6 +8,8 @@ enum class CommandResult {
     SUCCEEDED,
     /** Failed.  */
     FAILED,
+    /** Scrobble saved */
+    SAVED,
     /** Authorization failed.  */
     AUTH_FAILED,
     /** No media.  */
