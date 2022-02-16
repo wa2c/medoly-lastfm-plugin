@@ -1,6 +1,6 @@
 package com.wa2c.android.medoly.plugin.action.lastfm
 
-import androidx.multidex.MultiDexApplication
+import android.app.Application
 import com.wa2c.android.medoly.plugin.action.lastfm.service.AbstractPluginService
 import timber.log.Timber
 
@@ -8,7 +8,7 @@ import timber.log.Timber
 /**
  * App
  */
-class App : MultiDexApplication() {
+class App : Application() {
 
     override fun onCreate() {
         super.onCreate()

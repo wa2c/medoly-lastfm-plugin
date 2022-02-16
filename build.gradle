@@ -2,7 +2,7 @@
 
 buildscript {
     ext {
-        about_libs_version = '8.8.5'
+        about_libs_version = '8.9.4'
     }
 
     repositories {
