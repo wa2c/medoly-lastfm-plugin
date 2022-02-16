@@ -14,9 +14,10 @@ import com.wa2c.android.medoly.plugin.action.lastfm.Token
 import com.wa2c.android.medoly.plugin.action.lastfm.util.AppUtils.startPage
 import com.wa2c.android.medoly.plugin.action.lastfm.util.logE
 import com.wa2c.android.medoly.plugin.action.lastfm.util.toast
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 
 /**
  * Track page open activity
@@ -38,40 +39,38 @@ class PluginTrackPageActivity : AppCompatActivity(R.layout.layout_loading) {
      * Open track page.
      */
     private fun openTrackPage(launchIntent: Intent?) {
-        runBlocking {
-            GlobalScope.launch {
-                val result = let result@{
-                    try {
-                        if (launchIntent == null) {
+        CoroutineScope(Dispatchers.Main + Job()).launch {
+            val result = let result@{
+                try {
+                    if (launchIntent == null) {
+                        setResult(PluginBroadcastResult.CANCEL.resultCode)
+                        return@result PluginBroadcastResult.COMPLETE
+                    }
+
+                    val intent = MediaPluginIntent(intent)
+                    val propertyData: PropertyData = intent.propertyData.let {
+                        if (it == null || it.isEmpty()) {
+                            toast(R.string.message_no_media)
                             setResult(PluginBroadcastResult.CANCEL.resultCode)
                             return@result PluginBroadcastResult.COMPLETE
                         }
-
-                        val intent = MediaPluginIntent(intent)
-                        val propertyData: PropertyData = intent.propertyData.let {
-                            if (it == null || it.isEmpty()) {
-                                toast(R.string.message_no_media)
-                                setResult(PluginBroadcastResult.CANCEL.resultCode)
-                                return@result PluginBroadcastResult.COMPLETE
-                            }
-                            it
-                        }
-
-                        val trackText = propertyData.getFirst(MediaProperty.TITLE)
-                        val artistText = propertyData.getFirst(MediaProperty.ARTIST)
-                        val track = Track.getInfo(artistText, trackText, Token.getConsumerKey())
-
-                        startPage(Uri.parse(track.url))
-                        PluginBroadcastResult.COMPLETE
-                    } catch (e: Exception) {
-                        logE(e)
-                        toast(R.string.message_page_failure)
-                        PluginBroadcastResult.CANCEL
+                        it
                     }
-                }
 
-                setResult(result.resultCode)
+                    val trackText = propertyData.getFirst(MediaProperty.TITLE)
+                    val artistText = propertyData.getFirst(MediaProperty.ARTIST)
+                    val track = Track.getInfo(artistText, trackText, Token.getConsumerKey())
+
+                    startPage(Uri.parse(track.url))
+                    PluginBroadcastResult.COMPLETE
+                } catch (e: Exception) {
+                    logE(e)
+                    toast(R.string.message_page_failure)
+                    PluginBroadcastResult.CANCEL
+                }
             }
+
+            setResult(result.resultCode)
         }
 
         moveTaskToBack(true)

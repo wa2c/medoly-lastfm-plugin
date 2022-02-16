@@ -9,7 +9,6 @@ import com.wa2c.android.medoly.library.MediaProperty
 import com.wa2c.android.medoly.plugin.action.lastfm.R
 import com.wa2c.android.medoly.plugin.action.lastfm.util.logD
 import com.wa2c.android.medoly.plugin.action.lastfm.util.logE
-import java.util.*
 import kotlin.math.min
 
 

@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Develop/Android/AndroidstudioProjects/MedolyLastfmPlugin/app/src/main/res/layout/activity_main.xml" value="0.1" />
         <entry key="..\:/Develop/Android/AndroidstudioProjects/MedolyLastfmPlugin/app/src/main/res/layout/dialog_auth.xml" value="0.2265625" />
         <entry key="..\:/Develop/Android/AndroidstudioProjects/MedolyLastfmPlugin/app/src/main/res/xml/pref_settings.xml" value="0.1" />
       </map>

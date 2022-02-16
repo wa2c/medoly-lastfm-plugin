@@ -11,9 +11,7 @@ import com.wa2c.android.medoly.plugin.action.lastfm.util.AppUtils.startPage
 import com.wa2c.android.medoly.plugin.action.lastfm.util.logD
 import com.wa2c.android.medoly.plugin.action.lastfm.util.toast
 import com.wa2c.android.prefs.Prefs
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.*
 
 /**
  * Last.fm page open activity
@@ -36,7 +34,7 @@ class PluginLastfmPageActivity : AppCompatActivity(R.layout.layout_loading) {
      */
     private fun openLastfmPage() {
         runBlocking {
-            GlobalScope.launch {
+            CoroutineScope(Dispatchers.Main + Job()).launch {
                 val result = try {
                     // Last.fm
                     val username = Prefs(this@PluginLastfmPageActivity).getStringOrNull(R.string.prefkey_auth_username)

@@ -18,10 +18,7 @@ import com.wa2c.android.medoly.plugin.action.lastfm.dialog.AuthDialogFragment
 import com.wa2c.android.medoly.plugin.action.lastfm.util.logE
 import com.wa2c.android.medoly.plugin.action.lastfm.util.toast
 import com.wa2c.android.prefs.Prefs
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import java.io.File
 
 /**
@@ -119,9 +116,9 @@ class MainFragment : Fragment(R.layout.fragment_main) {
      * @param password Password
      */
     private fun authUser(username: String, password: String) {
-        GlobalScope.launch(Dispatchers.Main) {
+        CoroutineScope(Dispatchers.Main + Job()).launch {
             // Auth
-            val session = GlobalScope.async(Dispatchers.Default) {
+            val session = async(Dispatchers.Default) {
                 try {
                     Caller.getInstance().cache = FileSystemCache(File(requireContext().cacheDir.path + File.separator + "last.fm"))
                     return@async Authenticator.getMobileSession(username, password, Token.getConsumerKey(), Token.getConsumerSecret())
