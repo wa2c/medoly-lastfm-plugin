@@ -12,8 +12,8 @@ if (file('./token.gradle').exists()) {
 android {
     compileSdkVersion 31
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
 
     defaultConfig {
@@ -43,10 +43,6 @@ android {
                 mappingFileUploadEnabled false
             }
         }
-    }
-
-    dexOptions {
-        javaMaxHeapSize "2g"
     }
 
     gradle.projectsEvaluated {
@@ -113,7 +109,4 @@ dependencies {
     //implementation group: 'de.u-mass', name: 'lastfm-java', version: '0.1.2'
     //implementation files('libs/lastfm-java-0.1.2-fix.jar')
     implementation files('libs/lastfm-kotlin-0.1.4-SNAPSHOT.jar')
-
-    implementation 'com.thelittlefireman:AppKillerManager:2.1.1'
-
 }
