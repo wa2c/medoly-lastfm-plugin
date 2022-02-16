@@ -29,7 +29,6 @@
     <string name="prefkey_unsent_max">unsent_max</string>
     <string name="prefkey_post_success_message_show">post_success_message_show</string>
     <string name="prefkey_post_failure_message_show">post_failure_message_show</string>
-    <string name="prefkey_device_auto_start">device_auto_start</string>
 
     <!-- Preferences - About -->
     <string name="prefkey_info_app_version">prefkey_info_app_version</string>

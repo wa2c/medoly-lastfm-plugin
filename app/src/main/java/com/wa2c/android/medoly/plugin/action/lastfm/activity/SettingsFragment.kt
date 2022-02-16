@@ -13,15 +13,12 @@ import androidx.preference.EditTextPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.mikepenz.aboutlibraries.LibsBuilder
-import com.thelittlefireman.appkillermanager.managers.KillerManager
 import com.wa2c.android.medoly.plugin.action.lastfm.BuildConfig
 import com.wa2c.android.medoly.plugin.action.lastfm.R
 import com.wa2c.android.medoly.plugin.action.lastfm.activity.component.initSummary
 import com.wa2c.android.medoly.plugin.action.lastfm.activity.component.preference
 import com.wa2c.android.medoly.plugin.action.lastfm.activity.component.setListener
 import com.wa2c.android.medoly.plugin.action.lastfm.activity.component.updatePrefSummary
-import com.wa2c.android.medoly.plugin.action.lastfm.util.toast
-
 
 /**
  * Settings fragment
@@ -31,20 +28,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
     /** On change settings. */
     private val changeListener = SharedPreferences.OnSharedPreferenceChangeListener { _, key -> updatePrefSummary(key) }
 
-    /** KillerManager action */
-    private var managerAction: KillerManager.Actions? = null
-
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         addPreferencesFromResource(R.xml.pref_settings)
-
-        // Auto Start Manager
-        KillerManager.init(activity)
-        managerAction = when {
-            KillerManager.isActionAvailable(activity, KillerManager.Actions.ACTION_POWERSAVING) -> KillerManager.Actions.ACTION_POWERSAVING
-            KillerManager.isActionAvailable(activity, KillerManager.Actions.ACTION_AUTOSTART) -> KillerManager.Actions.ACTION_AUTOSTART
-            KillerManager.isActionAvailable(activity, KillerManager.Actions.ACTION_NOTIFICATIONS) -> KillerManager.Actions.ACTION_NOTIFICATIONS
-            else -> null
-        }
 
         // Unsent Max
         (findPreference(getString(R.string.prefkey_unsent_max)) as? EditTextPreference)?.setOnBindEditTextListener {
@@ -65,29 +50,16 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
     override fun onResume() {
         super.onResume()
-        preferenceScreen.sharedPreferences.registerOnSharedPreferenceChangeListener(changeListener)
+        preferenceScreen.sharedPreferences?.registerOnSharedPreferenceChangeListener(changeListener)
     }
 
     override fun onPause() {
         super.onPause()
-        preferenceScreen.sharedPreferences.unregisterOnSharedPreferenceChangeListener(changeListener)
+        preferenceScreen.sharedPreferences?.unregisterOnSharedPreferenceChangeListener(changeListener)
     }
 
 
     private fun setClickListener() {
-        // Auto Start Manager
-        if (managerAction != null) {
-            setListener(R.string.prefkey_device_auto_start) {
-                activity?.let {
-                    if (!KillerManager.doAction(it, managerAction)) {
-                        it.toast(R.string.message_unsupported_device)
-                    }
-                }
-            }
-        } else {
-            preference<Preference>(R.string.prefkey_device_auto_start)?.isEnabled = false
-        }
-
         // App Version
         setListener(R.string.prefkey_info_app_version) {
             startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.app_version_url))))
