@@ -33,28 +33,26 @@ class PluginLastfmPageActivity : AppCompatActivity(R.layout.layout_loading) {
      * Open Last.fm page.
      */
     private fun openLastfmPage() {
-        runBlocking {
-            CoroutineScope(Dispatchers.Main + Job()).launch {
-                val result = try {
-                    // Last.fm
-                    val username = Prefs(this@PluginLastfmPageActivity).getStringOrNull(R.string.prefkey_auth_username)
-                    val siteUri = if (!username.isNullOrEmpty()) {
-                        Uri.parse(getString(R.string.lastfm_url_user, username)) // Authorized
-                    } else {
-                        Uri.parse(getString(R.string.lastfm_url)) // Unauthorized
-                    }
-
-                    startPage(siteUri)
-                    PluginBroadcastResult.COMPLETE
-                } catch (e: ActivityNotFoundException) {
-                    logD(e)
-                    toast(R.string.message_page_failure)
-                    PluginBroadcastResult.CANCEL
+        CoroutineScope(Dispatchers.Main + Job()).launch {
+            val result = try {
+                // Last.fm
+                val username =
+                    Prefs(this@PluginLastfmPageActivity).getStringOrNull(R.string.prefkey_auth_username)
+                val siteUri = if (!username.isNullOrEmpty()) {
+                    Uri.parse(getString(R.string.lastfm_url_user, username)) // Authorized
+                } else {
+                    Uri.parse(getString(R.string.lastfm_url)) // Unauthorized
                 }
 
-                setResult(result.resultCode)
-                finish()
+                startPage(siteUri)
+                PluginBroadcastResult.COMPLETE
+            } catch (e: ActivityNotFoundException) {
+                logD(e)
+                toast(R.string.message_page_failure)
+                PluginBroadcastResult.CANCEL
             }
+
+            setResult(result.resultCode)
         }
 
         moveTaskToBack(true)

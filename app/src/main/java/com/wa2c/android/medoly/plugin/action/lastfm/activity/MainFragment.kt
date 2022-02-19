@@ -54,17 +54,17 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         binding.unsentListButton.setOnClickListener {
             //startActivity(Intent(requireContext(), UnsentListActivity::class.java))
             parentFragmentManager.beginTransaction()
-                    .replace(R.id.fragment_container, UnsentListFragment())
-                    .addToBackStack(null)
-                    .commit()
+                .replace(R.id.fragment_container, UnsentListFragment())
+                .addToBackStack(null)
+                .commit()
         }
 
         // Settings
         binding.settingsButton.setOnClickListener {
             parentFragmentManager.beginTransaction()
-                    .replace(R.id.fragment_container, SettingsFragment())
-                    .addToBackStack(null)
-                    .commit()
+                .replace(R.id.fragment_container, SettingsFragment())
+                .addToBackStack(null)
+                .commit()
         }
 
         // Open Last.fm
@@ -118,15 +118,22 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     private fun authUser(username: String, password: String) {
         CoroutineScope(Dispatchers.Main + Job()).launch {
             // Auth
-            val session = async(Dispatchers.Default) {
+            val session = withContext(Dispatchers.IO) {
                 try {
-                    Caller.getInstance().cache = FileSystemCache(File(requireContext().cacheDir.path + File.separator + "last.fm"))
-                    return@async Authenticator.getMobileSession(username, password, Token.getConsumerKey(), Token.getConsumerSecret())
+                    Caller.getInstance().cache =
+                        FileSystemCache(File(requireContext().cacheDir.path + File.separator + "last.fm"))
+                    Authenticator.getMobileSession(
+                        username,
+                        password,
+                        Token.getConsumerKey(),
+                        Token.getConsumerSecret()
+                    )
                 } catch (e: Exception) {
                     logE(e)
-                    return@async null
+                    null
                 }
-            }.await()
+            }
+
             // Save user
             if (session != null) {
                 prefs[R.string.prefkey_auth_username] = username

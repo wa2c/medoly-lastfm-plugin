@@ -1,12 +1,12 @@
 package com.wa2c.android.medoly.plugin.action.lastfm.service
 
-import android.annotation.SuppressLint
-import android.app.IntentService
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import com.softartdev.lastfm.Authenticator
 import com.softartdev.lastfm.Caller
@@ -22,6 +22,7 @@ import com.wa2c.android.medoly.plugin.action.lastfm.util.AppUtils
 import com.wa2c.android.medoly.plugin.action.lastfm.util.logD
 import com.wa2c.android.medoly.plugin.action.lastfm.util.toast
 import com.wa2c.android.prefs.Prefs
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.InvalidObjectException
 
@@ -29,7 +30,7 @@ import java.io.InvalidObjectException
 /**
  * Abstract plugin service.
  */
-abstract class AbstractPluginService(name: String) : IntentService(name) {
+abstract class AbstractPluginService(name: String) : Service() {
 
     /** Context.  */
     protected lateinit var context: Context
@@ -50,10 +51,14 @@ abstract class AbstractPluginService(name: String) : IntentService(name) {
     /** Notification manager. */
     private var notificationManager : NotificationManager? = null
 
+    protected abstract fun runPlugin()
 
-    @SuppressLint("NewApi")
-    override fun onHandleIntent(intent: Intent?) {
-        logD("onHandleIntent")
+    override fun onBind(intent: Intent): IBinder? {
+        throw UnsupportedOperationException()
+    }
+
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        logD("onStartCommand")
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -75,6 +80,11 @@ abstract class AbstractPluginService(name: String) : IntentService(name) {
         receivedClassName = pluginIntent.getStringExtra(RECEIVED_CLASS_NAME) ?: ""
 
         createSession()
+
+        stopSelf()
+
+        runPlugin()
+        return START_NOT_STICKY
     }
 
     override fun onDestroy() {
