@@ -4,9 +4,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import androidx.core.content.ContextCompat
-import androidx.work.OneTimeWorkRequestBuilder
-import androidx.work.OutOfQuotaPolicy
-import androidx.work.WorkManager
+import androidx.work.*
 import com.wa2c.android.medoly.library.*
 import com.wa2c.android.medoly.plugin.action.lastfm.R
 import com.wa2c.android.medoly.plugin.action.lastfm.util.logD
@@ -97,12 +95,7 @@ class PluginReceivers {
                     return result
                 }
 
-                val workManager = WorkManager.getInstance(context.applicationContext)
-                val request = OneTimeWorkRequestBuilder<PluginGetAlbumArtWorker>()
-                    .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
-                    .setInputData(pluginIntent.toWorkParams())
-                    .build()
-                workManager.enqueue(request)
+                launchWorker<PluginGetAlbumArtWorker>(context.applicationContext, pluginIntent.toWorkParams())
                 return PluginBroadcastResult.PROCESSING
             } else if (this is EventGetPropertyReceiver || this is ExecuteGetPropertyReceiver) {
                 // category
@@ -124,12 +117,7 @@ class PluginReceivers {
                     return result
                 }
 
-                val workManager = WorkManager.getInstance(context.applicationContext)
-                val request = OneTimeWorkRequestBuilder<PluginGetPropertyWorker>()
-                    .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
-                    .setInputData(pluginIntent.toWorkParams())
-                    .build()
-                workManager.enqueue(request)
+                launchWorker<PluginGetPropertyWorker>(context.applicationContext, pluginIntent.toWorkParams())
                 return PluginBroadcastResult.PROCESSING
             }
 
@@ -137,36 +125,19 @@ class PluginReceivers {
             ContextCompat.startForegroundService(context, pluginIntent)
             return result
         }
+
+        /**
+         * Launch worker
+         */
+        private inline fun <reified T : Worker> launchWorker(context: Context, params: Data) {
+            val workManager = WorkManager.getInstance(context.applicationContext)
+            val request = OneTimeWorkRequestBuilder<T>()
+                .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
+                .setInputData(params)
+                .build()
+            workManager.enqueue(request)
+        }
     }
-
-
-
-
-
-
-//    /**
-//     * Create a response intent.
-//     * @param propertyData Property data. Not set if null.
-//     * @param extraData Extra data. Not set if null.
-//     * @return A response intent.
-//     */
-//    @JvmOverloads
-//    fun createResultIntent(propertyData: PropertyData? = null, extraData: ExtraData? = null): MediaPluginIntent {
-//        val returnIntent = MediaPluginIntent()
-//        if (srcClass != null && srcClass != null)
-//            returnIntent.setClassName(srcPackage!!, srcClass!!)
-//        else if (srcPackage != null)
-//            returnIntent.`package` = srcPackage
-//        if (propertyData != null)
-//            returnIntent.propertyData = propertyData
-//        if (extraData != null)
-//            returnIntent.extraData = extraData
-//        returnIntent.actionId = actionId
-//        returnIntent.actionLabel = actionLabel
-//        returnIntent.flags = FLAG_ACTIVITY_NEW_TASK or FLAG_GRANT_READ_URI_PERMISSION or FLAG_GRANT_WRITE_URI_PERMISSION
-//        return returnIntent
-//    }
-
 
     // Event
 
