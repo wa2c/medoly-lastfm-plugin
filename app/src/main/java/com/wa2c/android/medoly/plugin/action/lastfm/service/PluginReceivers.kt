@@ -4,9 +4,13 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import androidx.core.content.ContextCompat
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.OutOfQuotaPolicy
+import androidx.work.WorkManager
 import com.wa2c.android.medoly.library.*
 import com.wa2c.android.medoly.plugin.action.lastfm.R
 import com.wa2c.android.medoly.plugin.action.lastfm.util.logD
+import com.wa2c.android.medoly.plugin.action.lastfm.util.toWorkParams
 import com.wa2c.android.medoly.plugin.action.lastfm.util.toast
 import com.wa2c.android.prefs.Prefs
 
@@ -116,17 +120,50 @@ class PluginReceivers {
                     return result
                 }
 
-                // service
-                pluginIntent.setClass(context, PluginGetPropertyService::class.java)
-                result = PluginBroadcastResult.PROCESSING
+//                // service
+                val workManager = WorkManager.getInstance(context.applicationContext)
+                val request = OneTimeWorkRequestBuilder<PluginGetPropertyWorker>()
+                    .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
+                    .setInputData(pluginIntent.toWorkParams())
+                    .build()
+                workManager.enqueue(request)
+                return PluginBroadcastResult.PROCESSING
             }
 
             pluginIntent.putExtra(AbstractPluginService.RECEIVED_CLASS_NAME, this.javaClass.name)
             ContextCompat.startForegroundService(context, pluginIntent)
             return result
         }
-
     }
+
+
+
+
+
+
+//    /**
+//     * Create a response intent.
+//     * @param propertyData Property data. Not set if null.
+//     * @param extraData Extra data. Not set if null.
+//     * @return A response intent.
+//     */
+//    @JvmOverloads
+//    fun createResultIntent(propertyData: PropertyData? = null, extraData: ExtraData? = null): MediaPluginIntent {
+//        val returnIntent = MediaPluginIntent()
+//        if (srcClass != null && srcClass != null)
+//            returnIntent.setClassName(srcPackage!!, srcClass!!)
+//        else if (srcPackage != null)
+//            returnIntent.`package` = srcPackage
+//        if (propertyData != null)
+//            returnIntent.propertyData = propertyData
+//        if (extraData != null)
+//            returnIntent.extraData = extraData
+//        returnIntent.actionId = actionId
+//        returnIntent.actionLabel = actionLabel
+//        returnIntent.flags = FLAG_ACTIVITY_NEW_TASK or FLAG_GRANT_READ_URI_PERMISSION or FLAG_GRANT_WRITE_URI_PERMISSION
+//        return returnIntent
+//    }
+
 
     // Event
 

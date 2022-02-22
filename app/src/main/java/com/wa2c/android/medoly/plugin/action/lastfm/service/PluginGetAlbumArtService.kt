@@ -11,7 +11,7 @@ import com.wa2c.android.medoly.library.MediaProperty
 import com.wa2c.android.medoly.library.PropertyData
 import com.wa2c.android.medoly.plugin.action.lastfm.R
 import com.wa2c.android.medoly.plugin.action.lastfm.Token
-import com.wa2c.android.medoly.plugin.action.lastfm.util.AppUtils
+import com.wa2c.android.medoly.plugin.action.lastfm.util.downloadUrl
 import com.wa2c.android.medoly.plugin.action.lastfm.util.logE
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
@@ -65,7 +65,7 @@ class PluginGetAlbumArtService : AbstractPluginService(PluginGetAlbumArtService:
                         for (i in imageSizes.indices.reversed()) {
                             remoteUri = album.getImageURL(imageSizes[i])
                             if (!remoteUri.isNullOrEmpty()) {
-                                localUri = AppUtils.downloadUrl(context, remoteUri)
+                                localUri = downloadUrl(context, remoteUri)
                                 break
                             }
                         }
@@ -86,7 +86,7 @@ class PluginGetAlbumArtService : AbstractPluginService(PluginGetAlbumArtService:
                         for (i in imageSizes.indices.reversed()) {
                             remoteUri = track.getImageURL(imageSizes[i])
                             if (!remoteUri.isNullOrEmpty()) {
-                                localUri = AppUtils.downloadUrl(context, remoteUri)
+                                localUri = downloadUrl(context, remoteUri)
                                 break
                             }
                         }
@@ -107,7 +107,7 @@ class PluginGetAlbumArtService : AbstractPluginService(PluginGetAlbumArtService:
                         for (i in imageSizes.indices.reversed()) {
                             remoteUri = artist.getImageURL(imageSizes[i])
                             if (!remoteUri.isNullOrEmpty()) {
-                                localUri = AppUtils.downloadUrl(context, remoteUri)
+                                localUri = downloadUrl(context, remoteUri)
                                 break
                             }
                         }

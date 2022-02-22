@@ -7,8 +7,8 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.wa2c.android.medoly.library.PluginBroadcastResult
 import com.wa2c.android.medoly.plugin.action.lastfm.R
-import com.wa2c.android.medoly.plugin.action.lastfm.util.AppUtils.startPage
 import com.wa2c.android.medoly.plugin.action.lastfm.util.logD
+import com.wa2c.android.medoly.plugin.action.lastfm.util.startPage
 import com.wa2c.android.medoly.plugin.action.lastfm.util.toast
 import com.wa2c.android.prefs.Prefs
 import kotlinx.coroutines.*

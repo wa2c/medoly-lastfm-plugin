@@ -11,8 +11,8 @@ import com.wa2c.android.medoly.library.PluginBroadcastResult
 import com.wa2c.android.medoly.library.PropertyData
 import com.wa2c.android.medoly.plugin.action.lastfm.R
 import com.wa2c.android.medoly.plugin.action.lastfm.Token
-import com.wa2c.android.medoly.plugin.action.lastfm.util.AppUtils.startPage
 import com.wa2c.android.medoly.plugin.action.lastfm.util.logE
+import com.wa2c.android.medoly.plugin.action.lastfm.util.startPage
 import com.wa2c.android.medoly.plugin.action.lastfm.util.toast
 import kotlinx.coroutines.*
 

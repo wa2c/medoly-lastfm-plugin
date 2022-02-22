@@ -1,19 +1,16 @@
 package com.wa2c.android.medoly.plugin.action.lastfm.service
 
-import android.content.Intent
 import com.softartdev.lastfm.Session
 import com.softartdev.lastfm.Track
 import com.softartdev.lastfm.scrobble.ScrobbleData
 import com.softartdev.lastfm.scrobble.ScrobbleResult
 import com.wa2c.android.medoly.library.MediaProperty
 import com.wa2c.android.medoly.plugin.action.lastfm.R
-import com.wa2c.android.medoly.plugin.action.lastfm.util.logD
 import com.wa2c.android.medoly.plugin.action.lastfm.util.logE
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import kotlin.math.min
-
 
 /**
  * Post plugin service.
