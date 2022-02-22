@@ -19,7 +19,7 @@ import kotlinx.coroutines.withContext
 import java.lang.RuntimeException
 
 /**
- * Get album art plugin.
+ * Get album art worker.
  */
 class PluginGetAlbumArtWorker(private val context: Context, private val params: WorkerParameters) : Worker(context, params) {
 

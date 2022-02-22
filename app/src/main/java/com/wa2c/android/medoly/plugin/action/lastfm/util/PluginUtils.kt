@@ -7,11 +7,16 @@ import android.net.Uri
 import androidx.core.content.FileProvider
 import androidx.work.Data
 import androidx.work.WorkerParameters
+import com.softartdev.lastfm.Authenticator
+import com.softartdev.lastfm.Caller
+import com.softartdev.lastfm.Session
+import com.softartdev.lastfm.cache.FileSystemCache
 import com.wa2c.android.medoly.library.ExtraData
 import com.wa2c.android.medoly.library.MediaPluginIntent
 import com.wa2c.android.medoly.library.PropertyData
 import com.wa2c.android.medoly.plugin.action.lastfm.BuildConfig
 import com.wa2c.android.medoly.plugin.action.lastfm.R
+import com.wa2c.android.medoly.plugin.action.lastfm.Token
 import com.wa2c.android.medoly.plugin.action.lastfm.service.CommandResult
 import com.wa2c.android.prefs.Prefs
 import java.io.File
@@ -35,6 +40,21 @@ val WorkerParameters.srcPackage: String?
 /** True if the action was run automatically. */
 val WorkerParameters.isAutomaticallyAction: Boolean
     get() = inputData.getBoolean(INTENT_ACTION_IS_AUTOMATICALLY, false)
+
+/**
+ * Create last.fm session
+ */
+fun createSession(context: Context): Session {
+    try {
+        // Initialize last.fm library
+        Caller.getInstance().cache = FileSystemCache(File(context.cacheDir, "last.fm"))
+    } catch (ignore: Exception) {
+    }
+    val prefs = Prefs(context)
+    val username = prefs.getString(R.string.prefkey_auth_username)
+    return Authenticator.getMobileSession(username, prefs.getString(R.string.prefkey_auth_password), Token.getConsumerKey(), Token.getConsumerSecret())
+}
+
 
 /**
  * Download URI data.

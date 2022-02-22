@@ -19,7 +19,7 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 
 /**
- * Get album art plugin.
+ * Get property worker.
  */
 class PluginGetPropertyWorker(private val context: Context, private val params: WorkerParameters) : Worker(context, params) {
 
@@ -48,11 +48,7 @@ class PluginGetPropertyWorker(private val context: Context, private val params: 
             val trackText = params.inputData.getString(MediaProperty.TITLE.keyName)
             val artistText = params.inputData.getString(MediaProperty.ARTIST.keyName)
             val track = Track.getInfo(artistText, trackText, Token.getConsumerKey())
-//            val track = if (session != null) {
-//                Track.getInfo(artistText, trackText, null, session?.username, session?.apiKey)
-//            } else {
-//                Track.getInfo(artistText, trackText, Token.getConsumerKey())
-//            }
+            // Track.getInfo(artistText, trackText, null, session?.username, session?.apiKey)
 
             // Property data
             val resultProperty = PropertyData().apply {
