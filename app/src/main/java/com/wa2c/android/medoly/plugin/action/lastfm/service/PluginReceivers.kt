@@ -97,9 +97,13 @@ class PluginReceivers {
                     return result
                 }
 
-                // service
-                pluginIntent.setClass(context, PluginGetAlbumArtService::class.java)
-                result = PluginBroadcastResult.PROCESSING
+                val workManager = WorkManager.getInstance(context.applicationContext)
+                val request = OneTimeWorkRequestBuilder<PluginGetAlbumArtWorker>()
+                    .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
+                    .setInputData(pluginIntent.toWorkParams())
+                    .build()
+                workManager.enqueue(request)
+                return PluginBroadcastResult.PROCESSING
             } else if (this is EventGetPropertyReceiver || this is ExecuteGetPropertyReceiver) {
                 // category
                 if (!pluginIntent.hasCategory(PluginTypeCategory.TYPE_GET_PROPERTY)) {
@@ -120,7 +124,6 @@ class PluginReceivers {
                     return result
                 }
 
-//                // service
                 val workManager = WorkManager.getInstance(context.applicationContext)
                 val request = OneTimeWorkRequestBuilder<PluginGetPropertyWorker>()
                     .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)

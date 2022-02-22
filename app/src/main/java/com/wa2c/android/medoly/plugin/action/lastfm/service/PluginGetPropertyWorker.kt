@@ -10,6 +10,7 @@ import com.wa2c.android.medoly.library.MediaProperty
 import com.wa2c.android.medoly.library.PropertyData
 import com.wa2c.android.medoly.plugin.action.lastfm.R
 import com.wa2c.android.medoly.plugin.action.lastfm.Token
+import com.wa2c.android.medoly.plugin.action.lastfm.util.isAutomaticallyAction
 import com.wa2c.android.medoly.plugin.action.lastfm.util.logE
 import com.wa2c.android.medoly.plugin.action.lastfm.util.showMessage
 import com.wa2c.android.medoly.plugin.action.lastfm.util.toPluginIntent
@@ -33,10 +34,9 @@ class PluginGetPropertyWorker(private val context: Context, private val params: 
             }
         }
 
-        val isAutomatically = params.inputData.getBoolean("INTENT_ACTION_IS_AUTOMATICALLY", false)
         val succeeded = context.getString(R.string.message_get_property_success)
         val failed = context.getString(R.string.message_get_property_failure)
-        context.showMessage(result, succeeded, failed, isAutomatically)
+        context.showMessage(result, succeeded, failed, params.isAutomaticallyAction)
         return Result.success()
     }
 
@@ -45,7 +45,6 @@ class PluginGetPropertyWorker(private val context: Context, private val params: 
      */
     private suspend fun getProperties(): MediaPluginIntent {
         return withContext(Dispatchers.IO) {
-
             val trackText = params.inputData.getString(MediaProperty.TITLE.keyName)
             val artistText = params.inputData.getString(MediaProperty.ARTIST.keyName)
             val track = Track.getInfo(artistText, trackText, Token.getConsumerKey())

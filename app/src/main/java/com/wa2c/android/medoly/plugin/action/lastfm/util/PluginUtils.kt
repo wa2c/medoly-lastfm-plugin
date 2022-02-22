@@ -6,6 +6,7 @@ import android.content.Intent
 import android.net.Uri
 import androidx.core.content.FileProvider
 import androidx.work.Data
+import androidx.work.WorkerParameters
 import com.wa2c.android.medoly.library.ExtraData
 import com.wa2c.android.medoly.library.MediaPluginIntent
 import com.wa2c.android.medoly.library.PropertyData
@@ -13,8 +14,6 @@ import com.wa2c.android.medoly.plugin.action.lastfm.BuildConfig
 import com.wa2c.android.medoly.plugin.action.lastfm.R
 import com.wa2c.android.medoly.plugin.action.lastfm.service.CommandResult
 import com.wa2c.android.prefs.Prefs
-import java.io.BufferedInputStream
-import java.io.BufferedOutputStream
 import java.io.File
 import java.net.HttpURLConnection
 import java.net.URL
@@ -29,6 +28,14 @@ private const val INTENT_ACTION_LABEL = "INTENT_ACTION_LABEL"
 private const val INTENT_ACTION_PRIORITY = "INTENT_ACTION_PRIORITY"
 private const val INTENT_ACTION_IS_AUTOMATICALLY = "INTENT_ACTION_IS_AUTOMATICALLY"
 
+/** Src package */
+val WorkerParameters.srcPackage: String?
+    get() = inputData.getString(INTENT_SRC_PACKAGE)
+
+/** True if the action was run automatically. */
+val WorkerParameters.isAutomaticallyAction: Boolean
+    get() = inputData.getBoolean(INTENT_ACTION_IS_AUTOMATICALLY, false)
+
 /**
  * Download URI data.
  * @param context A context.
@@ -38,7 +45,7 @@ private const val INTENT_ACTION_IS_AUTOMATICALLY = "INTENT_ACTION_IS_AUTOMATICAL
 fun downloadUrl(context: Context, downloadUrl: String): Uri? {
     try {
         val url = URL(downloadUrl)
-        if (ContentResolver.SCHEME_FILE == url.protocol || ContentResolver.SCHEME_CONTENT == url.protocol) {
+        if (url.protocol == ContentResolver.SCHEME_FILE || url.protocol == ContentResolver.SCHEME_CONTENT) {
             return Uri.parse(downloadUrl)
         }
 
@@ -52,33 +59,16 @@ fun downloadUrl(context: Context, downloadUrl: String): Uri? {
             sharedDir.listFiles()?.filter { it.isFile }?.forEach { it.delete() }
         }
 
-        // InputStream
-        val con = url.openConnection() as HttpURLConnection
-        con.requestMethod = "GET"
-        con.connect()
-        val status = con.responseCode
-        if (status != HttpURLConnection.HTTP_OK) {
-            return null
-        }
-
         val pathElements = url.path.split("/".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
         val saveFileName = pathElements[pathElements.size - 1]
         val sharedFile = File(sharedDir, saveFileName)
 
-        BufferedInputStream(con.inputStream).use { input ->
-            BufferedOutputStream(sharedFile.outputStream()).use { output ->
-                val buffer = ByteArray(16384)
-                while (true) {
-                    val len = input.read(buffer)
-                    if (len < 0) {
-                        break
-                    }
-                    output.write(buffer, 0, len)
-                }
-                output.flush()
-                return FileProvider.getUriForFile(context, PROVIDER_AUTHORITIES, sharedFile)
+        url.openStream().use { input ->
+            sharedFile.outputStream().use { output ->
+                input.copyTo(output)
             }
         }
+        return FileProvider.getUriForFile(context, PROVIDER_AUTHORITIES, sharedFile)
     } catch (e: Exception) {
         return null
     }
@@ -105,13 +95,11 @@ fun Data.toPluginIntent(resultProperty: PropertyData?, resultExtra: ExtraData? =
     val returnIntent = MediaPluginIntent()
     val srcPackage = getString(INTENT_SRC_PACKAGE) ?: throw IllegalArgumentException()
     val srcClass = getString(INTENT_SRC_CLASS) ?: throw IllegalArgumentException()
-    val actionId = getString(INTENT_ACTION_ID)
-    val actionLabel = getString(INTENT_ACTION_LABEL)
     returnIntent.setClassName(srcPackage, srcClass)
     returnIntent.propertyData = resultProperty
     returnIntent.extraData = resultExtra
-    returnIntent.actionId = actionId
-    returnIntent.actionLabel = actionLabel
+    returnIntent.actionId = getString(INTENT_ACTION_ID)
+    returnIntent.actionLabel = getString(INTENT_ACTION_LABEL)
     returnIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
     return returnIntent
 }
@@ -136,7 +124,6 @@ fun Context.showMessage(result: CommandResult, succeededMessage: String?, failed
         }
     }
 }
-
 
 /**
  * Send result.
