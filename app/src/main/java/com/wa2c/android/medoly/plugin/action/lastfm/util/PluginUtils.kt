@@ -1,13 +1,21 @@
 package com.wa2c.android.medoly.plugin.action.lastfm.util
 
+import android.annotation.SuppressLint
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
+import androidx.core.app.NotificationCompat
 import androidx.core.content.FileProvider
 import androidx.work.Data
+import androidx.work.ForegroundInfo
 import androidx.work.Worker
 import androidx.work.WorkerParameters
+import androidx.work.impl.utils.futures.SettableFuture
+import com.google.common.util.concurrent.ListenableFuture
 import com.softartdev.lastfm.Authenticator
 import com.softartdev.lastfm.Caller
 import com.softartdev.lastfm.Session
@@ -36,6 +44,11 @@ private const val INTENT_ACTION_ID = "INTENT_ACTION_ID"
 private const val INTENT_ACTION_LABEL = "INTENT_ACTION_LABEL"
 private const val INTENT_ACTION_PRIORITY = "INTENT_ACTION_PRIORITY"
 private const val INTENT_ACTION_IS_AUTOMATICALLY = "INTENT_ACTION_IS_AUTOMATICALLY"
+
+/** Notification ID */
+private const val NOTIFICATION_ID = 1
+/** Notification Channel ID */
+private const val NOTIFICATION_CHANNEL_ID = "Notification"
 
 /** Src package */
 val WorkerParameters.srcPackage: String?
@@ -179,6 +192,28 @@ fun Data.toScrobbleData(): ScrobbleData {
     return newData
 }
 
+/**
+ * Get worker future.
+ */
+@SuppressLint("RestrictedApi")
+fun createForegroundFuture(context: Context): ListenableFuture<ForegroundInfo> {
+    val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        if (notificationManager.getNotificationChannel(NOTIFICATION_CHANNEL_ID) == null) {
+            val channel = NotificationChannel(NOTIFICATION_CHANNEL_ID, context.getString(R.string.app_name), NotificationManager.IMPORTANCE_DEFAULT)
+            notificationManager.createNotificationChannel(channel)
+        }
+    }
+
+    val notification = NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID).apply {
+        setContentTitle(context.getString(R.string.app_name))
+        setSmallIcon(R.drawable.ic_notification)
+    }.build()
+
+    return SettableFuture.create<ForegroundInfo>().apply {
+        set(ForegroundInfo(NOTIFICATION_ID, notification))
+    }
+}
 
 /**
  * Show message.

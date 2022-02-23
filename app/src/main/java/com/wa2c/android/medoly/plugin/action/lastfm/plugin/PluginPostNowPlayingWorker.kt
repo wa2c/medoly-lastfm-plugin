@@ -1,9 +1,12 @@
 package com.wa2c.android.medoly.plugin.action.lastfm.plugin
 
 import android.content.Context
+import androidx.work.ForegroundInfo
 import androidx.work.Worker
 import androidx.work.WorkerParameters
+import com.google.common.util.concurrent.ListenableFuture
 import com.softartdev.lastfm.Track
+import com.wa2c.android.medoly.plugin.action.lastfm.util.createForegroundFuture
 import com.wa2c.android.medoly.plugin.action.lastfm.util.createSession
 import com.wa2c.android.medoly.plugin.action.lastfm.util.logE
 import com.wa2c.android.medoly.plugin.action.lastfm.util.toScrobbleData
@@ -12,12 +15,17 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 
+
 /**
  * NowPlaying worker.
  */
 class PluginPostNowPlayingWorker(private val context: Context, private val params: WorkerParameters) : Worker(context, params) {
 
     private val prefs: Prefs by lazy { Prefs(context) }
+
+    override fun getForegroundInfoAsync(): ListenableFuture<ForegroundInfo> {
+        return createForegroundFuture(context)
+     }
 
     override fun doWork(): Result {
         runBlocking {
