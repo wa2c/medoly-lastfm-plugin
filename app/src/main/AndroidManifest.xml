@@ -35,7 +35,7 @@
 
         <!-- Scrobble -->
         <receiver
-            android:name=".plugin.PluginReceivers$EventScrobbleReceiver"
+            android:name=".plugin.EventScrobbleReceiver"
             android:exported="true"
             android:icon="@drawable/ic_post"
             android:label="@string/label_event_scrobble"
@@ -50,7 +50,7 @@
 
         <!-- Now Playing -->
         <receiver
-            android:name=".plugin.PluginReceivers$EventNowPlayingReceiver"
+            android:name=".plugin.EventNowPlayingReceiver"
             android:exported="true"
             android:icon="@drawable/ic_post"
             android:label="@string/label_event_now_playing"
@@ -65,7 +65,7 @@
 
         <!-- Get Album Art -->
         <receiver
-            android:name=".plugin.PluginReceivers$EventGetAlbumArtReceiver"
+            android:name=".plugin.EventGetAlbumArtReceiver"
             android:exported="true"
             android:icon="@drawable/ic_image"
             android:label="@string/label_execute_get_album_art"
@@ -81,7 +81,7 @@
 
         <!-- Get Property -->
         <receiver
-            android:name=".plugin.PluginReceivers$EventGetPropertyReceiver"
+            android:name=".plugin.EventGetPropertyReceiver"
             android:exported="true"
             android:icon="@drawable/ic_info"
             android:label="@string/label_execute_get_property"
@@ -99,7 +99,7 @@
 
         <!-- Love -->
         <receiver
-            android:name=".plugin.PluginReceivers$ExecuteLoveReceiver"
+            android:name=".plugin.ExecuteLoveReceiver"
             android:exported="true"
             android:icon="@drawable/ic_love"
             android:label="@string/label_execute_love"
@@ -114,7 +114,7 @@
 
         <!-- UnLove -->
         <receiver
-            android:name=".plugin.PluginReceivers$ExecuteUnLoveReceiver"
+            android:name=".plugin.ExecuteUnLoveReceiver"
             android:exported="true"
             android:icon="@drawable/ic_unlove"
             android:label="@string/label_execute_unlove"
@@ -129,7 +129,7 @@
 
         <!-- Get Album Art -->
         <receiver
-            android:name=".plugin.PluginReceivers$ExecuteGetAlbumArtReceiver"
+            android:name=".plugin.ExecuteGetAlbumArtReceiver"
             android:exported="true"
             android:icon="@drawable/ic_image"
             android:label="@string/label_execute_get_album_art"
@@ -144,7 +144,7 @@
 
         <!-- Get Property -->
         <receiver
-            android:name=".plugin.PluginReceivers$ExecuteGetPropertyReceiver"
+            android:name=".plugin.ExecuteGetPropertyReceiver"
             android:exported="true"
             android:icon="@drawable/ic_info"
             android:label="@string/label_execute_get_property"
