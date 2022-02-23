@@ -6,7 +6,6 @@ import androidx.core.view.get
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
-import com.wa2c.android.medoly.plugin.action.lastfm.R
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 

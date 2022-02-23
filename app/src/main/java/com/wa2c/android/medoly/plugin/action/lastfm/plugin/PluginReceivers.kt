@@ -16,36 +16,54 @@ import com.wa2c.android.prefs.Prefs
  */
 abstract class AbstractPluginReceiver : BroadcastReceiver() {
 
-    lateinit var prefs: Prefs
+    protected lateinit var prefs: Prefs
 
     override fun onReceive(context: Context, intent: Intent) {
         logD("onReceive: %s", this.javaClass.simpleName)
         prefs = Prefs(context)
-
         val pluginIntent = MediaPluginIntent(intent)
-        val result = if( this is EventScrobbleReceiver) {
-            scrobble(context, pluginIntent)
-        } else if (this is EventNowPlayingReceiver) {
-            updateNowPlaying(context, pluginIntent)
-        } else if( this is ExecuteLoveReceiver) {
-            love(context, pluginIntent)
-        } else if( this is ExecuteUnLoveReceiver) {
-            unlove(context, pluginIntent)
-        } else if (this is EventGetAlbumArtReceiver || this is ExecuteGetAlbumArtReceiver) {
-            getAlbumArt(context, pluginIntent)
-        } else if (this is EventGetPropertyReceiver || this is ExecuteGetPropertyReceiver) {
-            getProperty(context, pluginIntent)
-        } else {
-            return
-        }
-
+        val result = runPlugin(context, pluginIntent)
         setResult(result.resultCode, null, null)
     }
 
+    abstract fun runPlugin(context: Context, pluginIntent: MediaPluginIntent): PluginBroadcastResult
+
     /**
-     * Scrobble.
+     * True if exists media.
      */
-    private fun scrobble(context: Context, pluginIntent: MediaPluginIntent): PluginBroadcastResult {
+    protected fun existsMedia(context: Context, propertyData: PropertyData): Boolean {
+        // media
+        if (propertyData.isMediaEmpty) {
+            context.toast(R.string.message_no_media)
+            return false
+        }
+        // property
+        if (propertyData.getFirst(MediaProperty.TITLE).isNullOrEmpty() || propertyData.getFirst(MediaProperty.ARTIST).isNullOrEmpty()) {
+            return false
+        }
+        return true
+    }
+
+    /**
+     * Launch worker.
+     */
+    protected inline fun <reified T : Worker> launchWorker(context: Context, params: Data) {
+        val workManager = WorkManager.getInstance(context.applicationContext)
+        val request = OneTimeWorkRequestBuilder<T>()
+            .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
+            .setInputData(params)
+            .build()
+        workManager.enqueue(request)
+    }
+}
+
+// Event
+
+/**
+ * Scrobble.
+ */
+class EventScrobbleReceiver : AbstractPluginReceiver() {
+    override fun runPlugin(context: Context, pluginIntent: MediaPluginIntent): PluginBroadcastResult {
         val propertyData = pluginIntent.propertyData ?: return PluginBroadcastResult.CANCEL
         if (!existsMedia(context, propertyData)) return PluginBroadcastResult.CANCEL
 
@@ -65,11 +83,13 @@ abstract class AbstractPluginReceiver : BroadcastReceiver() {
         launchWorker<PluginPostScrobbleWorker>(context.applicationContext, pluginIntent.toWorkParams())
         return PluginBroadcastResult.COMPLETE
     }
+}
 
-    /**
-     * Now Playing.
-     */
-    private fun updateNowPlaying(context: Context, pluginIntent: MediaPluginIntent): PluginBroadcastResult {
+/**
+ * Now Playing.
+ */
+class EventNowPlayingReceiver : AbstractPluginReceiver() {
+    override fun runPlugin(context: Context, pluginIntent: MediaPluginIntent): PluginBroadcastResult {
         val propertyData = pluginIntent.propertyData ?: return PluginBroadcastResult.CANCEL
         if (!existsMedia(context, propertyData)) return PluginBroadcastResult.CANCEL
 
@@ -81,33 +101,13 @@ abstract class AbstractPluginReceiver : BroadcastReceiver() {
         launchWorker<PluginPostNowPlayingWorker>(context.applicationContext, pluginIntent.toWorkParams())
         return PluginBroadcastResult.COMPLETE
     }
+}
 
-    /**
-     * Love
-     */
-    private fun love(context: Context, pluginIntent: MediaPluginIntent): PluginBroadcastResult {
-        val propertyData = pluginIntent.propertyData ?: return PluginBroadcastResult.CANCEL
-        if (!existsMedia(context, propertyData)) return PluginBroadcastResult.CANCEL
-
-        launchWorker<PluginPostLoveWorker>(context.applicationContext, pluginIntent.toWorkParams())
-        return PluginBroadcastResult.COMPLETE
-    }
-
-    /**
-     * Unlove
-     */
-    private fun unlove(context: Context, pluginIntent: MediaPluginIntent): PluginBroadcastResult {
-        val propertyData = pluginIntent.propertyData ?: return PluginBroadcastResult.CANCEL
-        if (!existsMedia(context, propertyData)) return PluginBroadcastResult.CANCEL
-
-        launchWorker<PluginPostUnloveWorker>(context.applicationContext, pluginIntent.toWorkParams())
-        return PluginBroadcastResult.COMPLETE
-    }
-
-    /**
-     * Get album art.
-     */
-    private fun getAlbumArt(context: Context, pluginIntent: MediaPluginIntent): PluginBroadcastResult {
+/**
+ * Get album art.
+ */
+open class EventGetAlbumArtReceiver : AbstractPluginReceiver() {
+    override fun runPlugin(context: Context, pluginIntent: MediaPluginIntent): PluginBroadcastResult {
         val propertyData = pluginIntent.propertyData ?: return PluginBroadcastResult.CANCEL
         if (!existsMedia(context, propertyData)) return PluginBroadcastResult.CANCEL
 
@@ -120,11 +120,13 @@ abstract class AbstractPluginReceiver : BroadcastReceiver() {
         launchWorker<PluginGetAlbumArtWorker>(context.applicationContext, pluginIntent.toWorkParams())
         return PluginBroadcastResult.PROCESSING
     }
+}
 
-    /**
-     * Get property.
-     */
-    private fun getProperty(context: Context, pluginIntent: MediaPluginIntent): PluginBroadcastResult {
+/**
+ * Get property.
+ */
+open class EventGetPropertyReceiver : AbstractPluginReceiver() {
+    override fun runPlugin(context: Context, pluginIntent: MediaPluginIntent): PluginBroadcastResult {
         val propertyData = pluginIntent.propertyData ?: return PluginBroadcastResult.CANCEL
         if (!existsMedia(context, propertyData)) return PluginBroadcastResult.CANCEL
 
@@ -137,52 +139,42 @@ abstract class AbstractPluginReceiver : BroadcastReceiver() {
         launchWorker<PluginGetPropertyWorker>(context.applicationContext, pluginIntent.toWorkParams())
         return PluginBroadcastResult.PROCESSING
     }
-
-    /**
-     * True if exists media.
-     */
-    private fun existsMedia(context: Context, propertyData: PropertyData): Boolean {
-        // media
-        if (propertyData.isMediaEmpty) {
-            context.toast(R.string.message_no_media)
-            return false
-        }
-        // property
-        if (propertyData.getFirst(MediaProperty.TITLE).isNullOrEmpty() || propertyData.getFirst(MediaProperty.ARTIST).isNullOrEmpty()) {
-            return false
-        }
-        return true
-    }
-
-    /**
-     * Launch worker.
-     */
-    private inline fun <reified T : Worker> launchWorker(context: Context, params: Data) {
-        val workManager = WorkManager.getInstance(context.applicationContext)
-        val request = OneTimeWorkRequestBuilder<T>()
-            .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
-            .setInputData(params)
-            .build()
-        workManager.enqueue(request)
-    }
 }
-
-// Event
-
-class EventScrobbleReceiver : AbstractPluginReceiver()
-
-class EventNowPlayingReceiver : AbstractPluginReceiver()
-
-class EventGetAlbumArtReceiver : AbstractPluginReceiver()
-
-class EventGetPropertyReceiver : AbstractPluginReceiver()
 
 // Execution
 
-class ExecuteLoveReceiver : AbstractPluginReceiver()
+/**
+ * Love
+ */
+class ExecuteLoveReceiver : AbstractPluginReceiver() {
+    override fun runPlugin(context: Context, pluginIntent: MediaPluginIntent): PluginBroadcastResult {
+        val propertyData = pluginIntent.propertyData ?: return PluginBroadcastResult.CANCEL
+        if (!existsMedia(context, propertyData)) return PluginBroadcastResult.CANCEL
 
-class ExecuteUnLoveReceiver : AbstractPluginReceiver()
+        launchWorker<PluginPostLoveWorker>(context.applicationContext, pluginIntent.toWorkParams())
+        return PluginBroadcastResult.COMPLETE
+    }
+}
 
-class ExecuteGetAlbumArtReceiver : AbstractPluginReceiver()
+/**
+ * Unlove
+ */
+class ExecuteUnLoveReceiver : AbstractPluginReceiver() {
+    override fun runPlugin(context: Context, pluginIntent: MediaPluginIntent): PluginBroadcastResult {
+        val propertyData = pluginIntent.propertyData ?: return PluginBroadcastResult.CANCEL
+        if (!existsMedia(context, propertyData)) return PluginBroadcastResult.CANCEL
 
-class ExecuteGetPropertyReceiver : AbstractPluginReceiver()
+        launchWorker<PluginPostUnloveWorker>(context.applicationContext, pluginIntent.toWorkParams())
+        return PluginBroadcastResult.COMPLETE
+    }
+}
+
+/**
+ * Get album art.
+ */
+class ExecuteGetAlbumArtReceiver : EventGetAlbumArtReceiver()
+
+/**
+ * Get property.
+ */
+class ExecuteGetPropertyReceiver : EventGetPropertyReceiver()
