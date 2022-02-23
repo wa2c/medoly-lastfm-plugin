@@ -29,19 +29,22 @@ abstract class AbstractPluginReceiver : BroadcastReceiver() {
     abstract fun runPlugin(context: Context, pluginIntent: MediaPluginIntent): PluginBroadcastResult
 
     /**
-     * True if exists media.
+     * Validate property data.
      */
-    protected fun existsMedia(context: Context, propertyData: PropertyData): Boolean {
+    protected fun validatePropertyData(context: Context, pluginIntent: MediaPluginIntent): PropertyData? {
+        val propertyData = pluginIntent.propertyData
+
         // media
-        if (propertyData.isMediaEmpty) {
+        if (propertyData == null || propertyData.isMediaEmpty) {
             context.toast(R.string.message_no_media)
-            return false
+            return null
         }
         // property
         if (propertyData.getFirst(MediaProperty.TITLE).isNullOrEmpty() || propertyData.getFirst(MediaProperty.ARTIST).isNullOrEmpty()) {
-            return false
+            return null
         }
-        return true
+
+        return propertyData
     }
 
     /**
@@ -64,8 +67,7 @@ abstract class AbstractPluginReceiver : BroadcastReceiver() {
  */
 class EventScrobbleReceiver : AbstractPluginReceiver() {
     override fun runPlugin(context: Context, pluginIntent: MediaPluginIntent): PluginBroadcastResult {
-        val propertyData = pluginIntent.propertyData ?: return PluginBroadcastResult.CANCEL
-        if (!existsMedia(context, propertyData)) return PluginBroadcastResult.CANCEL
+        val propertyData = validatePropertyData(context, pluginIntent) ?: return PluginBroadcastResult.CANCEL
 
         // enabled
         if (!prefs.getBoolean(R.string.prefkey_scrobble_enabled, defRes = R.bool.pref_default_scrobble_enabled)) {
@@ -90,8 +92,7 @@ class EventScrobbleReceiver : AbstractPluginReceiver() {
  */
 class EventNowPlayingReceiver : AbstractPluginReceiver() {
     override fun runPlugin(context: Context, pluginIntent: MediaPluginIntent): PluginBroadcastResult {
-        val propertyData = pluginIntent.propertyData ?: return PluginBroadcastResult.CANCEL
-        if (!existsMedia(context, propertyData)) return PluginBroadcastResult.CANCEL
+        validatePropertyData(context, pluginIntent) ?: return PluginBroadcastResult.CANCEL
 
         // enabled
         if (!prefs.getBoolean(R.string.prefkey_now_playing_enabled, defRes = R.bool.pref_default_now_playing_enabled)) {
@@ -108,8 +109,7 @@ class EventNowPlayingReceiver : AbstractPluginReceiver() {
  */
 open class EventGetAlbumArtReceiver : AbstractPluginReceiver() {
     override fun runPlugin(context: Context, pluginIntent: MediaPluginIntent): PluginBroadcastResult {
-        val propertyData = pluginIntent.propertyData ?: return PluginBroadcastResult.CANCEL
-        if (!existsMedia(context, propertyData)) return PluginBroadcastResult.CANCEL
+        validatePropertyData(context, pluginIntent) ?: return PluginBroadcastResult.CANCEL
 
         // operation
         val operation = prefs.getString(R.string.prefkey_event_get_album_art_operation, defRes = R.string.pref_default_event_get_album_art_operation)
@@ -127,8 +127,7 @@ open class EventGetAlbumArtReceiver : AbstractPluginReceiver() {
  */
 open class EventGetPropertyReceiver : AbstractPluginReceiver() {
     override fun runPlugin(context: Context, pluginIntent: MediaPluginIntent): PluginBroadcastResult {
-        val propertyData = pluginIntent.propertyData ?: return PluginBroadcastResult.CANCEL
-        if (!existsMedia(context, propertyData)) return PluginBroadcastResult.CANCEL
+        validatePropertyData(context, pluginIntent) ?: return PluginBroadcastResult.CANCEL
 
         // operation
         val operation = prefs.getString(R.string.prefkey_event_get_property_operation, defRes = R.string.pref_default_event_get_property_operation)
@@ -148,8 +147,7 @@ open class EventGetPropertyReceiver : AbstractPluginReceiver() {
  */
 class ExecuteLoveReceiver : AbstractPluginReceiver() {
     override fun runPlugin(context: Context, pluginIntent: MediaPluginIntent): PluginBroadcastResult {
-        val propertyData = pluginIntent.propertyData ?: return PluginBroadcastResult.CANCEL
-        if (!existsMedia(context, propertyData)) return PluginBroadcastResult.CANCEL
+        validatePropertyData(context, pluginIntent) ?: return PluginBroadcastResult.CANCEL
 
         launchWorker<PluginPostLoveWorker>(context.applicationContext, pluginIntent.toWorkParams())
         return PluginBroadcastResult.COMPLETE
@@ -161,8 +159,7 @@ class ExecuteLoveReceiver : AbstractPluginReceiver() {
  */
 class ExecuteUnLoveReceiver : AbstractPluginReceiver() {
     override fun runPlugin(context: Context, pluginIntent: MediaPluginIntent): PluginBroadcastResult {
-        val propertyData = pluginIntent.propertyData ?: return PluginBroadcastResult.CANCEL
-        if (!existsMedia(context, propertyData)) return PluginBroadcastResult.CANCEL
+        validatePropertyData(context, pluginIntent) ?: return PluginBroadcastResult.CANCEL
 
         launchWorker<PluginPostUnloveWorker>(context.applicationContext, pluginIntent.toWorkParams())
         return PluginBroadcastResult.COMPLETE
