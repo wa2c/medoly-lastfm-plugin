@@ -28,7 +28,7 @@ import java.util.*
  */
 class UnsentListFragment : Fragment(R.layout.fragment_unsent_list) {
     /** Binding */
-    private val binding: FragmentUnsentListBinding by viewBinding()
+    private val binding: FragmentUnsentListBinding? by viewBinding()
     /** Prefs */
     private val prefs: Prefs by lazy { Prefs(requireContext()) }
 
@@ -41,53 +41,60 @@ class UnsentListFragment : Fragment(R.layout.fragment_unsent_list) {
         super.onViewCreated(view, savedInstanceState)
         activity?.setTitle(R.string.title_screen_unsent_list)
 
-        // not save
-        binding.unsentNotSaveCheckBox.setOnCheckedChangeListener { _, isChecked ->  prefs.putBoolean(R.string.prefkey_unsent_scrobble_not_save, isChecked) }
-        binding.unsentNotSaveCheckBox.isChecked = prefs.getBoolean(R.string.prefkey_unsent_scrobble_not_save)
-
-        // check all
-        binding.unsentCheckAllButton.setOnClickListener {
-            val checkedCount = adapter.checkedSet.size
-            if (checkedCount == adapter.itemCount) {
-                adapter.checkedSet.clear()
-            } else {
-                adapter.checkedSet.addAll(Array(adapter.itemCount) {it})
+        binding?.let { binding ->
+            // not save
+            binding.unsentNotSaveCheckBox.setOnCheckedChangeListener { _, isChecked ->
+                prefs.putBoolean(R.string.prefkey_unsent_scrobble_not_save, isChecked)
             }
-            adapter.notifyItemRangeChanged(0, adapter.itemCount)
-        }
+            binding.unsentNotSaveCheckBox.isChecked = prefs.getBoolean(R.string.prefkey_unsent_scrobble_not_save)
 
-        // delete
-        binding.unsentDeleteButton.setOnClickListener {
-            if (adapter.itemList.isEmpty()) {
-                toast(R.string.message_unsent_check_data)
-            } else {
-                val dialogFragment = ConfirmDialogFragment.newInstance(getString(R.string.message_dialog_unsent_delete_confirm), getString(R.string.title_dialog_unsent_delete_confirm))
-                dialogFragment.clickListener = listener@{ _, which, _ ->
-                    if (which != DialogInterface.BUTTON_POSITIVE)
-                        return@listener
+            // check all
+            binding.unsentCheckAllButton.setOnClickListener {
+                val checkedCount = adapter.checkedSet.size
+                if (checkedCount == adapter.itemCount) {
+                    adapter.checkedSet.clear()
+                } else {
+                    adapter.checkedSet.addAll(Array(adapter.itemCount) { it })
+                }
+                adapter.notifyItemRangeChanged(0, adapter.itemCount)
+            }
 
-                    try {
-                        // delete from list
-                        val checks = adapter.checkedSet.toTypedArray()
-                        val itemList =  ArrayList(items.toList())
-                        for (i in checks.indices.reversed()) {
-                            itemList.removeAt(checks[i])
+            // delete
+            binding.unsentDeleteButton.setOnClickListener {
+                if (adapter.itemList.isEmpty()) {
+                    toast(R.string.message_unsent_check_data)
+                } else {
+                    val dialogFragment = ConfirmDialogFragment.newInstance(
+                        getString(R.string.message_dialog_unsent_delete_confirm),
+                        getString(R.string.title_dialog_unsent_delete_confirm)
+                    )
+                    dialogFragment.clickListener = listener@{ _, which, _ ->
+                        if (which != DialogInterface.BUTTON_POSITIVE)
+                            return@listener
+
+                        try {
+                            // delete from list
+                            val checks = adapter.checkedSet.toTypedArray()
+                            val itemList = ArrayList(items.toList())
+                            for (i in checks.indices.reversed()) {
+                                itemList.removeAt(checks[i])
+                            }
+
+                            // save result
+                            val dataArray = itemList.toTypedArray()
+                            prefs.putObject(R.string.prefkey_unsent_scrobble_data, dataArray)
+                            items = dataArray
+                            adapter.checkedSet.clear()
+                        } catch (e: Exception) {
+                            logE(e)
+                            toast(R.string.message_unsent_delete_failure)
                         }
 
-                        // save result
-                        val dataArray = itemList.toTypedArray()
-                        prefs.putObject(R.string.prefkey_unsent_scrobble_data, dataArray)
-                        items = dataArray
-                        adapter.checkedSet.clear()
-                    } catch (e: Exception) {
-                        logE(e)
-                        toast(R.string.message_unsent_delete_failure)
+                        initializeListView()
                     }
 
-                    initializeListView()
+                    dialogFragment.show(requireActivity())
                 }
-
-                dialogFragment.show(requireActivity())
             }
         }
 
@@ -99,30 +106,32 @@ class UnsentListFragment : Fragment(R.layout.fragment_unsent_list) {
      * Initialize list.
      */
     private fun initializeListView() {
-        val list = prefs.getObjectOrNull<Array<ScrobbleData>>(R.string.prefkey_unsent_scrobble_data)
+        binding?.let { binding ->
+            val list = prefs.getObjectOrNull<Array<ScrobbleData>>(R.string.prefkey_unsent_scrobble_data)
 
-        if (list == null || list.isEmpty()) {
-            val data = ScrobbleData()
-            data.track = getString(R.string.message_unsent_no_data)
-            items = arrayOf(data)
+            if (list == null || list.isEmpty()) {
+                val data = ScrobbleData()
+                data.track = getString(R.string.message_unsent_no_data)
+                items = arrayOf(data)
 
-            binding.unsentListView.visibility = View.INVISIBLE
-            binding.unsentNoDataTextView.visibility = View.VISIBLE
-            binding.unsentCheckAllButton.isEnabled = false
-            binding.unsentDeleteButton.isEnabled = false
-        } else {
-            items = list
+                binding.unsentListView.visibility = View.INVISIBLE
+                binding.unsentNoDataTextView.visibility = View.VISIBLE
+                binding.unsentCheckAllButton.isEnabled = false
+                binding.unsentDeleteButton.isEnabled = false
+            } else {
+                items = list
 
-            binding.unsentListView.visibility = View.VISIBLE
-            binding.unsentNoDataTextView.visibility = View.INVISIBLE
-            binding.unsentCheckAllButton.isEnabled = true
-            binding.unsentDeleteButton.isEnabled = true
+                binding.unsentListView.visibility = View.VISIBLE
+                binding.unsentNoDataTextView.visibility = View.INVISIBLE
+                binding.unsentCheckAllButton.isEnabled = true
+                binding.unsentDeleteButton.isEnabled = true
+            }
+
+            //adapter = UnsentListAdapter(this, items!!, checkedSet)
+            adapter = UnsentListAdapter(items)
+            binding.unsentListView.layoutManager = LinearLayoutManager(requireContext())
+            binding.unsentListView.adapter = adapter
         }
-
-        //adapter = UnsentListAdapter(this, items!!, checkedSet)
-        adapter = UnsentListAdapter(items)
-        binding.unsentListView.layoutManager = LinearLayoutManager(requireContext())
-        binding.unsentListView.adapter = adapter
     }
 
 

@@ -79,7 +79,4 @@
         <item>@string/label_plugin_operation_play_start</item>
     </string-array>
 
-    <!-- Binding -->
-    <item name="tag_binding" type="id"/>
-
 </resources>

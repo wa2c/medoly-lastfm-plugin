@@ -27,7 +27,7 @@ import java.io.File
 class MainFragment : Fragment(R.layout.fragment_main) {
 
     /** Binding */
-    private val binding: FragmentMainBinding by viewBinding()
+    private val binding: FragmentMainBinding? by viewBinding()
     /** Prefs */
     private val prefs: Prefs by lazy { Prefs(requireContext()) }
 
@@ -36,57 +36,59 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         activity?.setTitle(R.string.app_name)
 
         // Account Auth
-        binding.accountAuthButton.setOnClickListener {
-            val dialogFragment = AuthDialogFragment.newInstance()
-            dialogFragment.clickListener = { _, which, bundle ->
-                if (which == DialogInterface.BUTTON_POSITIVE) {
-                    val username = bundle?.getString(AuthDialogFragment.RESULT_USERNAME) ?: ""
-                    val password = bundle?.getString(AuthDialogFragment.RESULT_PASSWORD) ?: ""
-                    authUser(username, password)
-                } else if (which == DialogInterface.BUTTON_NEGATIVE) {
-                    clearUser()
+        binding?.let { binding ->
+            binding.accountAuthButton.setOnClickListener {
+                val dialogFragment = AuthDialogFragment.newInstance()
+                dialogFragment.clickListener = { _, which, bundle ->
+                    if (which == DialogInterface.BUTTON_POSITIVE) {
+                        val username = bundle?.getString(AuthDialogFragment.RESULT_USERNAME) ?: ""
+                        val password = bundle?.getString(AuthDialogFragment.RESULT_PASSWORD) ?: ""
+                        authUser(username, password)
+                    } else if (which == DialogInterface.BUTTON_NEGATIVE) {
+                        clearUser()
+                    }
                 }
+                dialogFragment.show(requireActivity())
             }
-            dialogFragment.show(requireActivity())
-        }
 
-        // Unsent List
-        binding.unsentListButton.setOnClickListener {
-            //startActivity(Intent(requireContext(), UnsentListActivity::class.java))
-            parentFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, UnsentListFragment())
-                .addToBackStack(null)
-                .commit()
-        }
-
-        // Settings
-        binding.settingsButton.setOnClickListener {
-            parentFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, SettingsFragment())
-                .addToBackStack(null)
-                .commit()
-        }
-
-        // Open Last.fm
-        binding.lastfmSiteButton.setOnClickListener {
-            val username = prefs.getStringOrNull(R.string.prefkey_auth_username)
-            val uri = if (username.isNullOrEmpty()) {
-                Uri.parse(getString(R.string.lastfm_url)) // Authorized
-            } else {
-                Uri.parse(getString(R.string.lastfm_url_user, username)) // Unauthorized
+            // Unsent List
+            binding.unsentListButton.setOnClickListener {
+                //startActivity(Intent(requireContext(), UnsentListActivity::class.java))
+                parentFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, UnsentListFragment())
+                    .addToBackStack(null)
+                    .commit()
             }
-            val i = Intent(Intent.ACTION_VIEW, uri)
-            startActivity(i)
-        }
 
-        // Launch Medoly
-        binding.launchMedolyButton.setOnClickListener {
-            val intent = requireContext().packageManager.getLaunchIntentForPackage(MedolyEnvironment.MEDOLY_PACKAGE)
-            if (intent == null) {
-                toast(R.string.message_no_medoly)
-                return@setOnClickListener
+            // Settings
+            binding.settingsButton.setOnClickListener {
+                parentFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, SettingsFragment())
+                    .addToBackStack(null)
+                    .commit()
             }
-            startActivity(intent)
+
+            // Open Last.fm
+            binding.lastfmSiteButton.setOnClickListener {
+                val username = prefs.getStringOrNull(R.string.prefkey_auth_username)
+                val uri = if (username.isNullOrEmpty()) {
+                    Uri.parse(getString(R.string.lastfm_url)) // Authorized
+                } else {
+                    Uri.parse(getString(R.string.lastfm_url_user, username)) // Unauthorized
+                }
+                val i = Intent(Intent.ACTION_VIEW, uri)
+                startActivity(i)
+            }
+
+            // Launch Medoly
+            binding.launchMedolyButton.setOnClickListener {
+                val intent = requireContext().packageManager.getLaunchIntentForPackage(MedolyEnvironment.MEDOLY_PACKAGE)
+                if (intent == null) {
+                    toast(R.string.message_no_medoly)
+                    return@setOnClickListener
+                }
+                startActivity(intent)
+            }
         }
     }
 
@@ -103,10 +105,10 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         val username: String? = prefs[R.string.prefkey_auth_username]
         val password: String? = prefs[R.string.prefkey_auth_password]
 
-        if (!username.isNullOrEmpty() && !password.isNullOrEmpty()) {
-            binding.accountAuthTextView.text = getString(R.string.message_account_auth)
+        binding?.accountAuthTextView?.text = if (!username.isNullOrEmpty() && !password.isNullOrEmpty()) {
+            getString(R.string.message_account_auth)
         } else {
-            binding.accountAuthTextView.text = getString(R.string.message_account_not_auth)
+            getString(R.string.message_account_not_auth)
         }
     }
 
