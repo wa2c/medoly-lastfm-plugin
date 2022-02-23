@@ -16,7 +16,7 @@ import kotlinx.coroutines.withContext
 import kotlin.math.min
 
 /**
- * Love worker.
+ * Scrobble worker.
  */
 class PluginPostScrobbleWorker(private val context: Context, private val params: WorkerParameters) : Worker(context, params) {
 
@@ -44,9 +44,8 @@ class PluginPostScrobbleWorker(private val context: Context, private val params:
      */
     private suspend fun scrobble(): CommandResult {
         return withContext(Dispatchers.IO) {
-            val session = createSession(context)
-            if (session?.username.isNullOrEmpty()) {
-                return@withContext CommandResult.AUTH_FAILED
+            val session = createSession(context).also {
+                if (it?.username.isNullOrEmpty()) return@withContext CommandResult.AUTH_FAILED
             }
             val scrobbleData = params.inputData.toScrobbleData()
 

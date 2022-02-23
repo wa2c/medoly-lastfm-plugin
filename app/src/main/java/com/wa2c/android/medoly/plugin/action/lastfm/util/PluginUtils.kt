@@ -61,7 +61,6 @@ val WorkerParameters.mediaAlbum: String?
 val WorkerParameters.mediaUri: String?
     get() = inputData.getString(MediaProperty.ALBUM.keyName)
 
-
 /**
  * Create last.fm session
  */
@@ -78,7 +77,6 @@ suspend fun createSession(context: Context): Session? {
         }
     }
 }
-
 
 /**
  * Download URI data.

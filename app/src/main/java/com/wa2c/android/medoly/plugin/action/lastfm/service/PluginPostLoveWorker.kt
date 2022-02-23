@@ -42,9 +42,8 @@ class PluginPostLoveWorker(private val context: Context, private val params: Wor
      */
     private suspend fun love(): CommandResult {
         return withContext(Dispatchers.IO) {
-            val session = createSession(context)
-            if (session?.username.isNullOrEmpty()) {
-                return@withContext CommandResult.AUTH_FAILED
+            val session = createSession(context).also {
+                if (it?.username.isNullOrEmpty()) return@withContext CommandResult.AUTH_FAILED
             }
 
             val res = Track.love(params.mediaArtist, params.mediaTitle, session)

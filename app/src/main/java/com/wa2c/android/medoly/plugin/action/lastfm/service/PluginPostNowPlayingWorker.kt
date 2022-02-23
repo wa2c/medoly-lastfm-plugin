@@ -4,22 +4,26 @@ import android.content.Context
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.softartdev.lastfm.Track
+import com.softartdev.lastfm.scrobble.ScrobbleData
+import com.softartdev.lastfm.scrobble.ScrobbleResult
 import com.wa2c.android.medoly.library.MediaProperty
 import com.wa2c.android.medoly.plugin.action.lastfm.R
 import com.wa2c.android.medoly.plugin.action.lastfm.util.*
+import com.wa2c.android.prefs.Prefs
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
+import kotlin.math.min
 
 /**
- * Unlove worker.
+ * NowPlaying worker.
  */
-class PluginPostUnloveWorker(private val context: Context, private val params: WorkerParameters) : Worker(context, params) {
+class PluginPostNowPlayingWorker(private val context: Context, private val params: WorkerParameters) : Worker(context, params) {
 
     override fun doWork(): Result {
         val result = runBlocking {
             try {
-                unlove()
+                updateNowPlaying()
                 CommandResult.SUCCEEDED
             } catch (e: Exception) {
                 logE(e)
@@ -27,27 +31,28 @@ class PluginPostUnloveWorker(private val context: Context, private val params: W
             }
         }
 
-        val succeeded = context.getString(R.string.message_unlove_success, params.inputData.getString(MediaProperty.TITLE.keyName))
-        val failed = context.getString(R.string.message_unlove_failure)
+        val succeeded = context.getString(R.string.message_post_success, params.mediaTitle)
+        val failed = context.getString(R.string.message_post_failure)
         context.showMessage(result, succeeded, failed, params.isAutomaticallyAction)
         return Result.success()
     }
 
     /**
-     * Unlove.
+     * Update now playing.
      */
-    private suspend fun unlove(): CommandResult {
+    private suspend fun updateNowPlaying(): CommandResult {
         return withContext(Dispatchers.IO) {
             val session = createSession(context).also {
                 if (it?.username.isNullOrEmpty()) return@withContext CommandResult.AUTH_FAILED
             }
-
-            val res = Track.unlove(params.mediaArtist, params.mediaTitle, session)
-            return@withContext if (res.isSuccessful) {
+            val scrobbleData = params.inputData.toScrobbleData()
+            val scrobbleResult = Track.updateNowPlaying(scrobbleData, session)
+            if (scrobbleResult.isSuccessful) {
                 CommandResult.SUCCEEDED
             } else {
                 CommandResult.FAILED
             }
         }
     }
+
 }
