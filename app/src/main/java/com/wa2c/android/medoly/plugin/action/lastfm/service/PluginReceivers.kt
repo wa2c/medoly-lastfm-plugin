@@ -26,7 +26,6 @@ class PluginReceivers {
         override fun onReceive(context: Context, intent: Intent) {
             logD("onReceive: %s", this.javaClass.simpleName)
             prefs = Prefs(context)
-            //val result = receive(context, MediaPluginIntent(intent))
 
             val pluginIntent = MediaPluginIntent(intent)
             val result = if( this is EventScrobbleReceiver) {
@@ -129,11 +128,19 @@ class PluginReceivers {
             if (!existsMedia(context, propertyData)) return PluginBroadcastResult.CANCEL
 
             // enabled
-            if (!prefs.getBoolean(R.string.prefkey_now_playing_enabled, defRes = R.bool.pref_default_now_playing_enabled)) {
+            if (!prefs.getBoolean(R.string.prefkey_scrobble_enabled, defRes = R.bool.pref_default_scrobble_enabled)) {
                 return PluginBroadcastResult.CANCEL
             }
 
-            launchWorker<PluginPostNowPlayingWorker>(context.applicationContext, pluginIntent.toWorkParams())
+            // previous media
+            val mediaUriText = propertyData.mediaUri.toString()
+            val previousMediaUri = prefs.getString(PluginPostScrobbleWorker.PREFKEY_PREVIOUS_MEDIA_URI)
+            val previousMediaEnabled = prefs.getBoolean(R.string.prefkey_previous_media_enabled, defRes = R.bool.pref_default_previous_media_enabled)
+            if (!previousMediaEnabled && mediaUriText.isNotEmpty() && previousMediaUri.isNotEmpty() && mediaUriText == previousMediaUri) {
+                return PluginBroadcastResult.CANCEL
+            }
+
+            launchWorker<PluginPostScrobbleWorker>(context.applicationContext, pluginIntent.toWorkParams())
             return PluginBroadcastResult.COMPLETE
         }
 
@@ -145,19 +152,11 @@ class PluginReceivers {
             if (!existsMedia(context, propertyData)) return PluginBroadcastResult.CANCEL
 
             // enabled
-            if (!prefs.getBoolean(R.string.prefkey_scrobble_enabled, defRes = R.bool.pref_default_scrobble_enabled)) {
+            if (!prefs.getBoolean(R.string.prefkey_now_playing_enabled, defRes = R.bool.pref_default_now_playing_enabled)) {
                 return PluginBroadcastResult.CANCEL
             }
 
-            // previous media
-            val mediaUriText = propertyData.mediaUri.toString()
-            val previousMediaUri = prefs.getString(AbstractPluginService.PREFKEY_PREVIOUS_MEDIA_URI)
-            val previousMediaEnabled = prefs.getBoolean(R.string.prefkey_previous_media_enabled, defRes = R.bool.pref_default_previous_media_enabled)
-            if (!previousMediaEnabled && mediaUriText.isNotEmpty() && previousMediaUri.isNotEmpty() && mediaUriText == previousMediaUri) {
-                return PluginBroadcastResult.CANCEL
-            }
-
-            launchWorker<PluginPostScrobbleWorker>(context.applicationContext, pluginIntent.toWorkParams())
+            launchWorker<PluginPostNowPlayingWorker>(context.applicationContext, pluginIntent.toWorkParams())
             return PluginBroadcastResult.COMPLETE
         }
 

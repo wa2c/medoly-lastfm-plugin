@@ -21,7 +21,7 @@ import kotlin.math.min
 class PluginPostNowPlayingWorker(private val context: Context, private val params: WorkerParameters) : Worker(context, params) {
 
     override fun doWork(): Result {
-        val result = runBlocking {
+        runBlocking {
             try {
                 updateNowPlaying()
                 CommandResult.SUCCEEDED
@@ -30,10 +30,6 @@ class PluginPostNowPlayingWorker(private val context: Context, private val param
                 CommandResult.FAILED
             }
         }
-
-        val succeeded = context.getString(R.string.message_post_success, params.mediaTitle)
-        val failed = context.getString(R.string.message_post_failure)
-        context.showMessage(result, succeeded, failed, params.isAutomaticallyAction)
         return Result.success()
     }
 
