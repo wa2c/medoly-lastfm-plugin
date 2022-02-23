@@ -3,8 +3,11 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Develop/Android/AndroidstudioProjects/MedolyLastfmPlugin/app/src/main/res/drawable/ic_notification.xml" value="0.12" />
         <entry key="..\:/Develop/Android/AndroidstudioProjects/MedolyLastfmPlugin/app/src/main/res/layout/activity_main.xml" value="0.1" />
         <entry key="..\:/Develop/Android/AndroidstudioProjects/MedolyLastfmPlugin/app/src/main/res/layout/dialog_auth.xml" value="0.2265625" />
+        <entry key="..\:/Develop/Android/AndroidstudioProjects/MedolyLastfmPlugin/app/src/main/res/layout/fragment_main.xml" value="0.21354166666666666" />
+        <entry key="..\:/Develop/Android/AndroidstudioProjects/MedolyLastfmPlugin/app/src/main/res/layout/fragment_unsent_list.xml" value="0.21354166666666666" />
         <entry key="..\:/Develop/Android/AndroidstudioProjects/MedolyLastfmPlugin/app/src/main/res/xml/pref_settings.xml" value="0.1" />
       </map>
     </option>

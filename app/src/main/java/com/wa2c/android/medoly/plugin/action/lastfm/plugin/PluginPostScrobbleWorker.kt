@@ -1,4 +1,4 @@
-package com.wa2c.android.medoly.plugin.action.lastfm.service
+package com.wa2c.android.medoly.plugin.action.lastfm.plugin
 
 import android.content.Context
 import androidx.work.Worker

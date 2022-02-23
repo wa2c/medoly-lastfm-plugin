@@ -53,7 +53,7 @@ class UnsentListFragment : Fragment(R.layout.fragment_unsent_list) {
             } else {
                 adapter.checkedSet.addAll(Array(adapter.itemCount) {it})
             }
-            adapter.notifyDataSetChanged()
+            adapter.notifyItemRangeChanged(0, adapter.itemCount)
         }
 
         // delete
@@ -123,7 +123,6 @@ class UnsentListFragment : Fragment(R.layout.fragment_unsent_list) {
         adapter = UnsentListAdapter(items)
         binding.unsentListView.layoutManager = LinearLayoutManager(requireContext())
         binding.unsentListView.adapter = adapter
-        adapter.notifyDataSetChanged()
     }
 
 

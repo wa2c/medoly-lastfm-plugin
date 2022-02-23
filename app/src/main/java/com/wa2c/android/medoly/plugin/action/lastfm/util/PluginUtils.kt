@@ -19,12 +19,11 @@ import com.wa2c.android.medoly.library.PropertyData
 import com.wa2c.android.medoly.plugin.action.lastfm.BuildConfig
 import com.wa2c.android.medoly.plugin.action.lastfm.R
 import com.wa2c.android.medoly.plugin.action.lastfm.Token
-import com.wa2c.android.medoly.plugin.action.lastfm.service.CommandResult
+import com.wa2c.android.medoly.plugin.action.lastfm.plugin.CommandResult
 import com.wa2c.android.prefs.Prefs
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
-import java.net.HttpURLConnection
 import java.net.URL
 
 private const val SHARED_DIR_NAME = "download"
@@ -199,17 +198,6 @@ fun Context.showMessage(result: CommandResult, succeededMessage: String?, failed
             toast(failedMessage)
         }
     }
-}
-
-/**
- * Send result.
- * @param context A context.
- * @param pluginIntent A plugin intent.
- * @param resultProperty A result property data.
- * @param resultExtra A result extra data.
- */
-fun sendResult(context: Context, pluginIntent: MediaPluginIntent, resultProperty: PropertyData? = null, resultExtra: ExtraData? = null) {
-    context.sendBroadcast(pluginIntent.createResultIntent(resultProperty, resultExtra))
 }
 
 /**

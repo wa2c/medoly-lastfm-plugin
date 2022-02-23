@@ -1,4 +1,4 @@
-package com.wa2c.android.medoly.plugin.action.lastfm.service
+package com.wa2c.android.medoly.plugin.action.lastfm.plugin
 
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -46,79 +46,6 @@ class PluginReceivers {
 
             setResult(result.resultCode, null, null)
         }
-
-//        /**
-//         * Receive data.
-//         */
-//        private fun receive(context: Context, pluginIntent: MediaPluginIntent): PluginBroadcastResult  {
-//            var result =  PluginBroadcastResult.CANCEL
-//
-//            val propertyData = pluginIntent.propertyData ?: return result
-//
-//            if (this is EventScrobbleReceiver ||
-//                    this is EventNowPlayingReceiver ) {
-//                // category
-//                if (!pluginIntent.hasCategory(PluginTypeCategory.TYPE_POST_MESSAGE)) {
-//                    return result
-//                }
-//                // media
-//                if (propertyData.isMediaEmpty) {
-//                    context.toast(R.string.message_no_media)
-//                    return result
-//                }
-//                // property
-//                if (propertyData.getFirst(MediaProperty.TITLE)
-//                        .isNullOrEmpty() || propertyData.getFirst(MediaProperty.ARTIST)
-//                        .isNullOrEmpty()
-//                ) {
-//                    return result
-//                }
-//                if (this is EventNowPlayingReceiver) {
-//                    // enabled
-//                    if (!prefs.getBoolean(
-//                            R.string.prefkey_now_playing_enabled,
-//                            defRes = R.bool.pref_default_now_playing_enabled
-//                        )
-//                    ) {
-//                        return result
-//                    }
-//                } else if (this is EventScrobbleReceiver) {
-//                    // enabled
-//                    if (!prefs.getBoolean(
-//                            R.string.prefkey_scrobble_enabled,
-//                            defRes = R.bool.pref_default_scrobble_enabled
-//                        )
-//                    ) {
-//                        return result
-//                    }
-//                    // previous media
-//                    val mediaUriText = propertyData.mediaUri.toString()
-//                    val previousMediaUri = prefs.getString(AbstractPluginService.PREFKEY_PREVIOUS_MEDIA_URI)
-//                    val previousMediaEnabled = prefs.getBoolean(R.string.prefkey_previous_media_enabled, defRes = R.bool.pref_default_previous_media_enabled)
-//                    if (!previousMediaEnabled && mediaUriText.isNotEmpty() && previousMediaUri.isNotEmpty() && mediaUriText == previousMediaUri) {
-//                        return result
-//                    }
-//                }
-//
-//                // service
-//                pluginIntent.setClass(context, PluginPostService::class.java)
-//                result = PluginBroadcastResult.COMPLETE
-//            } else if( this is EventScrobbleReceiver) {
-//                return scrobble(context, pluginIntent)
-//            } else if( this is ExecuteLoveReceiver) {
-//                return love(context, pluginIntent)
-//            } else if( this is ExecuteUnLoveReceiver) {
-//                return unlove(context, pluginIntent)
-//            } else if (this is EventGetAlbumArtReceiver || this is ExecuteGetAlbumArtReceiver) {
-//                return getAlbumArt(context, pluginIntent)
-//            } else if (this is EventGetPropertyReceiver || this is ExecuteGetPropertyReceiver) {
-//                return getProperty(context, pluginIntent)
-//            }
-//
-//            pluginIntent.putExtra(AbstractPluginService.RECEIVED_CLASS_NAME, this.javaClass.name)
-//            ContextCompat.startForegroundService(context, pluginIntent)
-//            return result
-//        }
 
         /**
          * Scrobble.

@@ -1,19 +1,15 @@
-package com.wa2c.android.medoly.plugin.action.lastfm.service
+package com.wa2c.android.medoly.plugin.action.lastfm.plugin
 
 import android.content.Context
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.softartdev.lastfm.Track
-import com.softartdev.lastfm.scrobble.ScrobbleData
-import com.softartdev.lastfm.scrobble.ScrobbleResult
-import com.wa2c.android.medoly.library.MediaProperty
-import com.wa2c.android.medoly.plugin.action.lastfm.R
-import com.wa2c.android.medoly.plugin.action.lastfm.util.*
-import com.wa2c.android.prefs.Prefs
+import com.wa2c.android.medoly.plugin.action.lastfm.util.createSession
+import com.wa2c.android.medoly.plugin.action.lastfm.util.logE
+import com.wa2c.android.medoly.plugin.action.lastfm.util.toScrobbleData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
-import kotlin.math.min
 
 /**
  * NowPlaying worker.
