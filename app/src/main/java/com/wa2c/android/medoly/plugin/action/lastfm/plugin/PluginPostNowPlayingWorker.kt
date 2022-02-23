@@ -7,6 +7,7 @@ import com.softartdev.lastfm.Track
 import com.wa2c.android.medoly.plugin.action.lastfm.util.createSession
 import com.wa2c.android.medoly.plugin.action.lastfm.util.logE
 import com.wa2c.android.medoly.plugin.action.lastfm.util.toScrobbleData
+import com.wa2c.android.prefs.Prefs
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
@@ -15,6 +16,8 @@ import kotlinx.coroutines.withContext
  * NowPlaying worker.
  */
 class PluginPostNowPlayingWorker(private val context: Context, private val params: WorkerParameters) : Worker(context, params) {
+
+    private val prefs: Prefs by lazy { Prefs(context) }
 
     override fun doWork(): Result {
         runBlocking {
@@ -34,7 +37,7 @@ class PluginPostNowPlayingWorker(private val context: Context, private val param
      */
     private suspend fun updateNowPlaying(): CommandResult {
         return withContext(Dispatchers.IO) {
-            val session = createSession(context).also {
+            val session = createSession(context, prefs).also {
                 if (it?.username.isNullOrEmpty()) return@withContext CommandResult.AUTH_FAILED
             }
             val scrobbleData = params.inputData.toScrobbleData()

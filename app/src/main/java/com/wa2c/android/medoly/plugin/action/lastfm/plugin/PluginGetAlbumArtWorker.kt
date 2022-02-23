@@ -15,6 +15,7 @@ import com.wa2c.android.medoly.library.PropertyData
 import com.wa2c.android.medoly.plugin.action.lastfm.R
 import com.wa2c.android.medoly.plugin.action.lastfm.Token
 import com.wa2c.android.medoly.plugin.action.lastfm.util.*
+import com.wa2c.android.prefs.Prefs
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
@@ -23,6 +24,8 @@ import kotlinx.coroutines.withContext
  * Get album art worker.
  */
 class PluginGetAlbumArtWorker(private val context: Context, private val params: WorkerParameters) : Worker(context, params) {
+
+    private val prefs: Prefs by lazy { Prefs(context) }
 
     override fun doWork(): Result {
         val result = runBlocking {
@@ -37,7 +40,7 @@ class PluginGetAlbumArtWorker(private val context: Context, private val params: 
 
         val succeeded = context.getString(R.string.message_get_album_art_success)
         val failed = context.getString(R.string.message_get_album_art_failure)
-        context.showMessage(result, succeeded, failed, params.isAutomaticallyAction)
+        showMessage(prefs, result, succeeded, failed, params.isAutomaticallyAction)
         return Result.success()
     }
 

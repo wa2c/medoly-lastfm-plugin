@@ -6,6 +6,7 @@ import android.content.Intent
 import android.net.Uri
 import androidx.core.content.FileProvider
 import androidx.work.Data
+import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.softartdev.lastfm.Authenticator
 import com.softartdev.lastfm.Caller
@@ -56,21 +57,20 @@ val WorkerParameters.mediaArtist: String?
 val WorkerParameters.mediaAlbum: String?
     get() = inputData.getString(MediaProperty.ALBUM.keyName)
 
-/** Media album */
-val WorkerParameters.mediaUri: String?
-    get() = inputData.getString(MediaProperty.ALBUM.keyName)
-
 /**
  * Create last.fm session
  */
-suspend fun createSession(context: Context): Session? {
+suspend fun createSession(context: Context, prefs: Prefs): Session? {
     return withContext(Dispatchers.IO) {
         try {
             // Initialize last.fm library
             Caller.getInstance().cache = FileSystemCache(File(context.cacheDir, "last.fm"))
-            val prefs = Prefs(context)
-            val username = prefs.getString(R.string.prefkey_auth_username)
-            Authenticator.getMobileSession(username, prefs.getString(R.string.prefkey_auth_password), Token.getConsumerKey(), Token.getConsumerSecret())
+            Authenticator.getMobileSession(
+                prefs.getString(R.string.prefkey_auth_username),
+                prefs.getString(R.string.prefkey_auth_password),
+                Token.getConsumerKey(),
+                Token.getConsumerSecret()
+            )
         } catch (ignore: Exception) {
             null
         }
@@ -183,19 +183,18 @@ fun Data.toScrobbleData(): ScrobbleData {
 /**
  * Show message.
  */
-fun Context.showMessage(result: CommandResult, succeededMessage: String?, failedMessage: String?, isAutomatically: Boolean) {
-    val prefs = Prefs(this)
+fun Worker.showMessage(prefs: Prefs, result: CommandResult, succeededMessage: String?, failedMessage: String?, isAutomatically: Boolean) {
     if (result == CommandResult.AUTH_FAILED) {
-        toast(R.string.message_account_not_auth)
+        applicationContext.toast(R.string.message_account_not_auth)
     } else if (result == CommandResult.NO_MEDIA) {
-        toast(R.string.message_no_media)
+        applicationContext.toast(R.string.message_no_media)
     } else if (result == CommandResult.SUCCEEDED && !succeededMessage.isNullOrEmpty()) {
         if (!isAutomatically || prefs.getBoolean(R.string.prefkey_post_success_message_show, defRes = R.bool.pref_default_post_success_message_show)) {
-            toast(succeededMessage)
+            applicationContext.toast(succeededMessage)
         }
     } else if (result == CommandResult.FAILED && !failedMessage.isNullOrEmpty()) {
         if (!isAutomatically|| prefs.getBoolean(R.string.prefkey_post_failure_message_show, defRes = R.bool.pref_default_post_failure_message_show)) {
-            toast(failedMessage)
+            applicationContext.toast(failedMessage)
         }
     }
 }

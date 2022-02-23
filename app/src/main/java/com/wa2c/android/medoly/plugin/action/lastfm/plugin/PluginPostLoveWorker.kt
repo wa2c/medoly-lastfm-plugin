@@ -6,6 +6,7 @@ import androidx.work.WorkerParameters
 import com.softartdev.lastfm.Track
 import com.wa2c.android.medoly.plugin.action.lastfm.R
 import com.wa2c.android.medoly.plugin.action.lastfm.util.*
+import com.wa2c.android.prefs.Prefs
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
@@ -14,6 +15,8 @@ import kotlinx.coroutines.withContext
  * Love worker.
  */
 class PluginPostLoveWorker(private val context: Context, private val params: WorkerParameters) : Worker(context, params) {
+
+    private val prefs: Prefs by lazy { Prefs(context) }
 
     override fun doWork(): Result {
         val result = runBlocking {
@@ -28,7 +31,7 @@ class PluginPostLoveWorker(private val context: Context, private val params: Wor
 
         val succeeded = context.getString(R.string.message_love_success, params.mediaTitle)
         val failed = context.getString(R.string.message_love_failure)
-        context.showMessage(result, succeeded, failed, params.isAutomaticallyAction)
+        showMessage(prefs, result, succeeded, failed, params.isAutomaticallyAction)
         return Result.success()
     }
 
@@ -37,7 +40,7 @@ class PluginPostLoveWorker(private val context: Context, private val params: Wor
      */
     private suspend fun love(): CommandResult {
         return withContext(Dispatchers.IO) {
-            val session = createSession(context).also {
+            val session = createSession(context, prefs).also {
                 if (it?.username.isNullOrEmpty()) return@withContext CommandResult.AUTH_FAILED
             }
 

@@ -35,7 +35,7 @@ class PluginPostScrobbleWorker(private val context: Context, private val params:
 
         val succeeded = context.getString(R.string.message_post_success, params.mediaTitle)
         val failed = context.getString(R.string.message_post_failure)
-        context.showMessage(result, succeeded, failed, params.isAutomaticallyAction)
+        showMessage(prefs, result, succeeded, failed, params.isAutomaticallyAction)
         return Result.success()
     }
 
@@ -44,7 +44,7 @@ class PluginPostScrobbleWorker(private val context: Context, private val params:
      */
     private suspend fun scrobble(): CommandResult {
         return withContext(Dispatchers.IO) {
-            val session = createSession(context).also {
+            val session = createSession(context, prefs).also {
                 if (it?.username.isNullOrEmpty()) return@withContext CommandResult.AUTH_FAILED
             }
             val scrobbleData = params.inputData.toScrobbleData()
