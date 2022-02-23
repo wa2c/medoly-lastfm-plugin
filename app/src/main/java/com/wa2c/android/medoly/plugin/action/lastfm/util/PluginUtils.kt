@@ -11,14 +11,18 @@ import com.softartdev.lastfm.Authenticator
 import com.softartdev.lastfm.Caller
 import com.softartdev.lastfm.Session
 import com.softartdev.lastfm.cache.FileSystemCache
+import com.softartdev.lastfm.scrobble.ScrobbleData
 import com.wa2c.android.medoly.library.ExtraData
 import com.wa2c.android.medoly.library.MediaPluginIntent
+import com.wa2c.android.medoly.library.MediaProperty
 import com.wa2c.android.medoly.library.PropertyData
 import com.wa2c.android.medoly.plugin.action.lastfm.BuildConfig
 import com.wa2c.android.medoly.plugin.action.lastfm.R
 import com.wa2c.android.medoly.plugin.action.lastfm.Token
 import com.wa2c.android.medoly.plugin.action.lastfm.service.CommandResult
 import com.wa2c.android.prefs.Prefs
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.net.HttpURLConnection
 import java.net.URL
@@ -41,18 +45,38 @@ val WorkerParameters.srcPackage: String?
 val WorkerParameters.isAutomaticallyAction: Boolean
     get() = inputData.getBoolean(INTENT_ACTION_IS_AUTOMATICALLY, false)
 
+/** Media title */
+val WorkerParameters.mediaTitle: String?
+    get() = inputData.getString(MediaProperty.TITLE.keyName)
+
+/** Media artist */
+val WorkerParameters.mediaArtist: String?
+    get() = inputData.getString(MediaProperty.ARTIST.keyName)
+
+/** Media album */
+val WorkerParameters.mediaAlbum: String?
+    get() = inputData.getString(MediaProperty.ALBUM.keyName)
+
+/** Media album */
+val WorkerParameters.mediaUri: String?
+    get() = inputData.getString(MediaProperty.ALBUM.keyName)
+
+
 /**
  * Create last.fm session
  */
-fun createSession(context: Context): Session {
-    try {
-        // Initialize last.fm library
-        Caller.getInstance().cache = FileSystemCache(File(context.cacheDir, "last.fm"))
-    } catch (ignore: Exception) {
+suspend fun createSession(context: Context): Session? {
+    return withContext(Dispatchers.IO) {
+        try {
+            // Initialize last.fm library
+            Caller.getInstance().cache = FileSystemCache(File(context.cacheDir, "last.fm"))
+            val prefs = Prefs(context)
+            val username = prefs.getString(R.string.prefkey_auth_username)
+            Authenticator.getMobileSession(username, prefs.getString(R.string.prefkey_auth_password), Token.getConsumerKey(), Token.getConsumerSecret())
+        } catch (ignore: Exception) {
+            null
+        }
     }
-    val prefs = Prefs(context)
-    val username = prefs.getString(R.string.prefkey_auth_username)
-    return Authenticator.getMobileSession(username, prefs.getString(R.string.prefkey_auth_password), Token.getConsumerKey(), Token.getConsumerSecret())
 }
 
 
@@ -94,6 +118,9 @@ fun downloadUrl(context: Context, downloadUrl: String): Uri? {
     }
 }
 
+/**
+ * Create WorkParams data from plugin intent.
+ */
 fun MediaPluginIntent.toWorkParams(): Data {
     return Data.Builder().apply {
         putString(INTENT_SRC_PACKAGE, srcPackage)
@@ -102,15 +129,18 @@ fun MediaPluginIntent.toWorkParams(): Data {
         putString(INTENT_ACTION_LABEL, actionLabel)
         putInt(INTENT_ACTION_PRIORITY, actionPriority ?: 0)
         putBoolean(INTENT_ACTION_IS_AUTOMATICALLY, isAutomatically)
-        putAll(propertyData?.mapNotNull {
-            (it.key ?: return@mapNotNull null) to (it.value?.firstOrNull() ?: return@mapNotNull null)
+        putAll(propertyData?.keys?.mapNotNull {
+            (it ?: return@mapNotNull null) to (propertyData?.getFirst(it) ?: return@mapNotNull null)
         }?.toMap() ?: emptyMap())
-        putAll(extraData?.mapNotNull {
-            (it.key ?: return@mapNotNull null) to (it.value?.firstOrNull() ?: return@mapNotNull null)
+        putAll(extraData?.keys?.mapNotNull {
+            (it ?: return@mapNotNull null) to (propertyData?.getFirst(it) ?: return@mapNotNull null)
         }?.toMap() ?: emptyMap())
     }.build()
 }
 
+/**
+ * Create plugin intent from WorkParams data.
+ */
 fun Data.toPluginIntent(resultProperty: PropertyData?, resultExtra: ExtraData? = null): MediaPluginIntent {
     val returnIntent = MediaPluginIntent()
     val srcPackage = getString(INTENT_SRC_PACKAGE) ?: throw IllegalArgumentException()
@@ -122,6 +152,34 @@ fun Data.toPluginIntent(resultProperty: PropertyData?, resultExtra: ExtraData? =
     returnIntent.actionLabel = getString(INTENT_ACTION_LABEL)
     returnIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
     return returnIntent
+}
+
+/**
+ * Crate scrobble data from WorkParams data.
+ * @return The scrobble data.
+ */
+fun Data.toScrobbleData(): ScrobbleData {
+    val newData = ScrobbleData()
+    newData.musicBrainzId = getString(MediaProperty.MUSICBRAINZ_TRACK_ID.keyName)
+    newData.track = getString(MediaProperty.TITLE.keyName)
+    newData.artist = getString(MediaProperty.ARTIST.keyName)
+    newData.albumArtist = getString(MediaProperty.ALBUM_ARTIST.keyName)
+    newData.album = getString(MediaProperty.ALBUM.keyName)
+
+    try {
+        newData.duration = ((getString(MediaProperty.DURATION.keyName)?.toLong() ?: 0) / 1000).toInt()
+    } catch (ignore: NumberFormatException) {
+    } catch (ignore: NullPointerException) {
+    }
+
+    try {
+        newData.trackNumber = getString(MediaProperty.TRACK.keyName)?.toInt() ?: 0
+    } catch (ignore: NumberFormatException) {
+    } catch (ignore: NullPointerException) {
+    }
+
+    newData.timestamp = (System.currentTimeMillis() / 1000).toInt()
+    return newData
 }
 
 

@@ -57,11 +57,7 @@ class PluginTrackPageActivity : AppCompatActivity(R.layout.layout_loading) {
                     val trackText = propertyData.getFirst(MediaProperty.TITLE)
                     val artistText = propertyData.getFirst(MediaProperty.ARTIST)
                     val track = runBlocking(Dispatchers.IO) {
-                        Track.getInfo(
-                            artistText,
-                            trackText,
-                            Token.getConsumerKey()
-                        )
+                        Track.getInfo(artistText, trackText, Token.getConsumerKey())
                     }
 
                     startPage(Uri.parse(track.url))

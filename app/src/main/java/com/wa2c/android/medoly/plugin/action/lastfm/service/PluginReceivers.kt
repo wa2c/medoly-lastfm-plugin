@@ -77,12 +77,8 @@ class PluginReceivers {
                     }
                     // previous media
                     val mediaUriText = propertyData.mediaUri.toString()
-                    val previousMediaUri =
-                        prefs.getString(AbstractPluginService.PREFKEY_PREVIOUS_MEDIA_URI)
-                    val previousMediaEnabled = prefs.getBoolean(
-                        R.string.prefkey_previous_media_enabled,
-                        defRes = R.bool.pref_default_previous_media_enabled
-                    )
+                    val previousMediaUri = prefs.getString(AbstractPluginService.PREFKEY_PREVIOUS_MEDIA_URI)
+                    val previousMediaEnabled = prefs.getBoolean(R.string.prefkey_previous_media_enabled, defRes = R.bool.pref_default_previous_media_enabled)
                     if (!previousMediaEnabled && mediaUriText.isNotEmpty() && previousMediaUri.isNotEmpty() && mediaUriText == previousMediaUri) {
                         return result
                     }
@@ -91,6 +87,8 @@ class PluginReceivers {
                 // service
                 pluginIntent.setClass(context, PluginPostService::class.java)
                 result = PluginBroadcastResult.COMPLETE
+            } else if( this is EventScrobbleReceiver) {
+                return scrobble(context, pluginIntent)
             } else if( this is ExecuteLoveReceiver) {
                 return love(context, pluginIntent)
             } else if( this is ExecuteUnLoveReceiver) {
@@ -107,19 +105,35 @@ class PluginReceivers {
         }
 
         /**
+         * Scrobble.
+         */
+        private fun scrobble(context: Context, pluginIntent: MediaPluginIntent): PluginBroadcastResult {
+            val propertyData = pluginIntent.propertyData ?: return PluginBroadcastResult.CANCEL
+            if (!existsMedia(context, propertyData)) return PluginBroadcastResult.CANCEL
+
+            // enabled
+            if (!prefs.getBoolean(R.string.prefkey_scrobble_enabled, defRes = R.bool.pref_default_scrobble_enabled)) {
+                return PluginBroadcastResult.CANCEL
+            }
+
+            // previous media
+            val mediaUriText = propertyData.mediaUri.toString()
+            val previousMediaUri = prefs.getString(AbstractPluginService.PREFKEY_PREVIOUS_MEDIA_URI)
+            val previousMediaEnabled = prefs.getBoolean(R.string.prefkey_previous_media_enabled, defRes = R.bool.pref_default_previous_media_enabled)
+            if (!previousMediaEnabled && mediaUriText.isNotEmpty() && previousMediaUri.isNotEmpty() && mediaUriText == previousMediaUri) {
+                return PluginBroadcastResult.CANCEL
+            }
+
+            launchWorker<PluginPostScrobbleWorker>(context.applicationContext, pluginIntent.toWorkParams())
+            return PluginBroadcastResult.COMPLETE
+        }
+
+        /**
          * Love
          */
         private fun love(context: Context, pluginIntent: MediaPluginIntent): PluginBroadcastResult {
             val propertyData = pluginIntent.propertyData ?: return PluginBroadcastResult.CANCEL
-
-            if (!existsMedia(context, propertyData)) {
-                return PluginBroadcastResult.CANCEL
-            }
-
-            // category
-            if (!pluginIntent.hasCategory(PluginTypeCategory.TYPE_POST_MESSAGE)) {
-                return PluginBroadcastResult.CANCEL
-            }
+            if (!existsMedia(context, propertyData)) return PluginBroadcastResult.CANCEL
 
             launchWorker<PluginPostLoveWorker>(context.applicationContext, pluginIntent.toWorkParams())
             return PluginBroadcastResult.COMPLETE
@@ -130,15 +144,7 @@ class PluginReceivers {
          */
         private fun unlove(context: Context, pluginIntent: MediaPluginIntent): PluginBroadcastResult {
             val propertyData = pluginIntent.propertyData ?: return PluginBroadcastResult.CANCEL
-
-            if (!existsMedia(context, propertyData)) {
-                return PluginBroadcastResult.CANCEL
-            }
-
-            // category
-            if (!pluginIntent.hasCategory(PluginTypeCategory.TYPE_POST_MESSAGE)) {
-                return PluginBroadcastResult.CANCEL
-            }
+            if (!existsMedia(context, propertyData)) return PluginBroadcastResult.CANCEL
 
             launchWorker<PluginPostUnloveWorker>(context.applicationContext, pluginIntent.toWorkParams())
             return PluginBroadcastResult.COMPLETE
@@ -149,15 +155,7 @@ class PluginReceivers {
          */
         private fun getAlbumArt(context: Context, pluginIntent: MediaPluginIntent): PluginBroadcastResult {
             val propertyData = pluginIntent.propertyData ?: return PluginBroadcastResult.CANCEL
-
-            if (!existsMedia(context, propertyData)) {
-                return PluginBroadcastResult.CANCEL
-            }
-
-            // category
-            if (!pluginIntent.hasCategory(PluginTypeCategory.TYPE_GET_ALBUM_ART)) {
-                return PluginBroadcastResult.CANCEL
-            }
+            if (!existsMedia(context, propertyData)) return PluginBroadcastResult.CANCEL
 
             // operation
             val operation = prefs.getString(R.string.prefkey_event_get_album_art_operation, defRes = R.string.pref_default_event_get_album_art_operation)
@@ -174,15 +172,7 @@ class PluginReceivers {
          */
         private fun getProperty(context: Context, pluginIntent: MediaPluginIntent): PluginBroadcastResult {
             val propertyData = pluginIntent.propertyData ?: return PluginBroadcastResult.CANCEL
-
-            if (!existsMedia(context, propertyData)) {
-                return PluginBroadcastResult.CANCEL
-            }
-
-            // category
-            if (!pluginIntent.hasCategory(PluginTypeCategory.TYPE_GET_PROPERTY)) {
-                return PluginBroadcastResult.CANCEL
-            }
+            if (!existsMedia(context, propertyData)) return PluginBroadcastResult.CANCEL
 
             // operation
             val operation = prefs.getString(R.string.prefkey_event_get_property_operation, defRes = R.string.pref_default_event_get_property_operation)

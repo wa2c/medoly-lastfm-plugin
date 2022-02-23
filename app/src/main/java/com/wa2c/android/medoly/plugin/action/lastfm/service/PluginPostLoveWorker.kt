@@ -31,7 +31,7 @@ class PluginPostLoveWorker(private val context: Context, private val params: Wor
             }
         }
 
-        val succeeded = context.getString(R.string.message_love_success, params.inputData.getString(MediaProperty.TITLE.keyName))
+        val succeeded = context.getString(R.string.message_love_success, params.mediaTitle)
         val failed = context.getString(R.string.message_love_failure)
         context.showMessage(result, succeeded, failed, params.isAutomaticallyAction)
         return Result.success()
@@ -43,13 +43,11 @@ class PluginPostLoveWorker(private val context: Context, private val params: Wor
     private suspend fun love(): CommandResult {
         return withContext(Dispatchers.IO) {
             val session = createSession(context)
-            if (session.username.isNullOrEmpty()) {
+            if (session?.username.isNullOrEmpty()) {
                 return@withContext CommandResult.AUTH_FAILED
             }
 
-            val trackText = params.inputData.getString(MediaProperty.TITLE.keyName)
-            val artistText = params.inputData.getString(MediaProperty.ARTIST.keyName)
-            val res = Track.love(artistText, trackText, session)
+            val res = Track.love(params.mediaArtist, params.mediaTitle, session)
             return@withContext if (res.isSuccessful) {
                 CommandResult.SUCCEEDED
             } else {

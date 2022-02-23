@@ -39,13 +39,11 @@ class PluginPostUnloveWorker(private val context: Context, private val params: W
     private suspend fun unlove(): CommandResult {
         return withContext(Dispatchers.IO) {
             val session = createSession(context)
-            if (session.username.isNullOrEmpty()) {
+            if (session?.username.isNullOrEmpty()) {
                 return@withContext CommandResult.AUTH_FAILED
             }
 
-            val trackText = params.inputData.getString(MediaProperty.TITLE.keyName)
-            val artistText = params.inputData.getString(MediaProperty.ARTIST.keyName)
-            val res = Track.unlove(artistText, trackText, session)
+            val res = Track.unlove(params.mediaArtist, params.mediaTitle, session)
             return@withContext if (res.isSuccessful) {
                 CommandResult.SUCCEEDED
             } else {

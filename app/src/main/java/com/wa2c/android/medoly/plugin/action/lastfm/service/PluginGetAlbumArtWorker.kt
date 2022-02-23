@@ -45,14 +45,10 @@ class PluginGetAlbumArtWorker(private val context: Context, private val params: 
      */
     private suspend fun getProperties(): MediaPluginIntent {
         return withContext(Dispatchers.IO) {
-            val trackText = params.inputData.getString(MediaProperty.TITLE.keyName)
-            val artistText = params.inputData.getString(MediaProperty.ARTIST.keyName)
-            val albumText = params.inputData.getString(MediaProperty.ALBUM.keyName)
-
             var uriPair: Pair<Uri, Uri>? = null // URI (first: remote, second: local)
-            if (uriPair == null) uriPair = getAlbumImage(artistText, albumText) // Album image
-            if (uriPair == null) uriPair = getTrackImage(artistText, trackText) // Track image
-            if (uriPair == null) uriPair = getArtistImage(artistText) // Artist image
+            if (uriPair == null) uriPair = getAlbumImage(params.mediaArtist, params.mediaAlbum) // Album image
+            if (uriPair == null) uriPair = getTrackImage(params.mediaArtist, params.mediaTitle) // Track image
+            if (uriPair == null) uriPair = getArtistImage(params.mediaArtist) // Artist image
             if (uriPair == null) { throw RuntimeException() }
             val (remoteUri, localUri) = uriPair
 
