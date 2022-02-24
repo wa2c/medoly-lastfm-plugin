@@ -119,10 +119,9 @@ class PluginPostScrobbleWorker(private val context: Context, private val params:
             // save unsent data
             prefs.putObject(R.string.prefkey_unsent_scrobble_data, dataList.toTypedArray())
             prefs.putString(PREFKEY_PREVIOUS_MEDIA_URI, params.inputData.getString(MediaProperty.DATA_URI.keyName))
-            return@withContext result
+            result
         }
     }
-
 
     companion object {
         /** Previous data key.  */

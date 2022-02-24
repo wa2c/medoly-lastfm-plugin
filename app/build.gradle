@@ -56,10 +56,12 @@ android {
             storeFile file("../debug.keystore")
         }
     }
-
     packagingOptions {
-        exclude 'META-INF/LICENSE'
+        resources {
+            excludes += ['META-INF/LICENSE']
+        }
     }
+
 
     buildFeatures {
         dataBinding = true
